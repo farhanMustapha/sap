@@ -1,0 +1,1778 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz SAP S/4HANA Finance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
+        }
+        .question-card {
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .option-label {
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        /* Custom colors for feedback */
+        .bg-custom-red { background-color: #fcebeb; border-color: #ef4444; }
+        .bg-custom-green { background-color: #ecfdf5; border-color: #10b981; }
+        .border-custom-red { border-color: #ef4444; }
+        .border-custom-green { border-color: #10b981; }
+        /* Style pour le menu de navigation */
+        .nav-link {
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            white-space: nowrap;
+        }
+        .nav-link:hover {
+            background-color: #eef2ff;
+            color: #4f46e5;
+        }
+
+        /* Styles pour la modal d'explication / message */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            backdrop-filter: blur(2px);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%; 
+            max-width: 600px;
+            border-radius: 12px;
+            animation: slide-down 0.3s ease-out;
+        }
+        @keyframes slide-down {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close-btn:hover,
+        .close-btn:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mx-auto p-4 md:p-8">
+    <header class="text-center mb-8 flex justify-between items-center flex-wrap">
+        <div>
+            <h1 class="text-4xl font-bold text-gray-800 border-b-4 border-indigo-500 pb-2 inline-block">Quiz SAP S/4HANA Finance</h1>
+            <p class="text-lg text-gray-600 mt-2">Vérifiez vos connaissances sur les modules FI.</p>
+        </div>
+        <div class="flex items-center space-x-4 mt-4 md:mt-0">
+            <!-- Bouton Réinitialiser l'Historique -->
+            <button 
+                onclick="promptResetQuiz()" 
+                class="px-4 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition duration-150 shadow-md text-sm"
+            >
+                <span class="font-bold">↻</span> Réinitialiser le Quiz
+            </button>
+            
+            <!-- Bouton Administration -->
+            <button 
+                onclick="switchView('admin-view')" 
+                class="px-4 py-2 bg-gray-700 text-white font-medium rounded-lg hover:bg-gray-800 transition duration-150 shadow-md text-sm"
+            >
+                Ajouter une explication
+            </button>
+        </div>
+    </header>
+    
+    <!-- VUE DU QUIZ PRINCIPAL -->
+    <div id="quiz-view">
+        <!-- CONTEUR DE SCORE -->
+        <div class="flex justify-center mb-6">
+            <div id="score-display" class="bg-indigo-100 text-indigo-800 text-xl font-bold py-3 px-6 rounded-lg shadow-inner">
+                Score: 0 / 0
+            </div>
+        </div>
+        <!-- FIN DU CONTEUR DE SCORE -->
+
+        <!-- MENU DE NAVIGATION -->
+        <nav id="chapter-nav" class="mb-8 p-4 bg-white rounded-xl shadow-lg border border-gray-200">
+            <h3 class="text-lg font-bold text-gray-700 mb-3">Accéder à un Chapitre :</h3>
+            <div id="nav-links-container" class="flex flex-wrap gap-2 justify-center text-sm">
+                <!-- Les liens seront insérés ici par JavaScript -->
+            </div>
+        </nav>
+        <!-- FIN DU MENU DE NAVIGATION -->
+
+        <div id="quiz-container" class="space-y-6">
+            <!-- Questions will be dynamically inserted here -->
+        </div>
+    </div>
+    <!-- FIN DU QUIZ PRINCIPAL -->
+
+    <!-- VUE D'ADMINISTRATION -->
+    <div id="admin-view" class="hidden">
+        <h2 class="text-3xl font-extrabold text-gray-800 mt-4 mb-6 pb-2 border-b-2 border-gray-300">Panneau d'Administration</h2>
+        
+        <button 
+            onclick="switchView('quiz-view')" 
+            class="mb-6 px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition duration-150 shadow-md"
+        >
+            &larr; Retour au Quiz
+        </button>
+
+        <div id="admin-content" class="p-6 bg-white rounded-xl shadow-lg border border-gray-200">
+            <!-- Le contenu de l'administration (liste des questions/éditeur) sera injecté ici -->
+        </div>
+    </div>
+    <!-- FIN DE LA VUE D'ADMINISTRATION -->
+</div>
+
+<!-- Modal Général pour Explications et Messages -->
+<div id="message-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeMessageModal()">&times;</span>
+        <h4 id="modal-title" class="text-2xl font-bold text-indigo-700 mb-4">Message</h4>
+        <div id="modal-content-text" class="text-gray-700 space-y-3">
+            <!-- Contenu du message ou de l'explication -->
+        </div>
+    </div>
+</div>
+<!-- Fin de la Modal -->
+
+<script>
+// =====================================================================================
+// VARIABLES ET DONNÉES GLOBALES
+// =====================================================================================
+
+let currentScore = 0;
+let totalQuestions = 0;
+let quizData = []; 
+let userProgress = {}; 
+let currentlyEditingIndex = -1;
+
+const chapterBreaks = [
+    { start: 0, title: "CHAPITRE 0: Bases S/4HANA", anchor: "chapitre-0" },
+    { start: 10, title: "CHAPITRE 1: G/L & R2R", anchor: "chapitre-1" },
+    { start: 29, title: "CHAPITRE 2: États Financiers", anchor: "chapitre-2" },
+    { start: 39, title: "CHAPITRE 3: Procure-to-Pay (P2P)", anchor: "chapitre-3" },
+    { start: 58, title: "CHAPITRE 4: Acomptes Fournisseurs (AP)", anchor: "chapitre-4" },
+    { start: 66, title: "CHAPITRE 5: Programme de Paiement", anchor: "chapitre-5" },
+    { start: 76, title: "CHAPITRE 6: Workflow & Situations", anchor: "chapitre-6" },
+    { start: 86, title: "CHAPITRE 7: Comptes Clients (AR)", anchor: "chapitre-7" },
+    { start: 108, title: "CHAPITRE 8: Transactions Spéciales G/L AR", anchor: "chapitre-8" },
+    { start: 117, title: "CHAPITRE 9: Relance (Dunning)", anchor: "chapitre-9" },
+    { start: 126, title: "CHAPITRE 10/11/12: Comptabilité des Actifs (AA)", anchor: "chapitre-10" },
+    { start: 146, title: "CHAPITRE 14: Gestion Bancaire", anchor: "chapitre-14" },
+];
+
+// Fonction pour obtenir les données initiales (Hardcoded)
+function getInitialQuizData() {
+    return [
+        {
+            question: "SAP S/4HANA runs on which database?",
+            type: "single",
+            options: ["Oracle", "SQL Server", "SAP HANA", "DB2"],
+            correct: ["SAP HANA"],
+            explanation: "SAP S/4HANA is built exclusively on the SAP HANA in-memory database to leverage real-time processing and advanced analytics."
+        },
+        {
+            question: "End-to-end integrated processes in SAP are also called:",
+            type: "single",
+            options: ["Workflows", "Business Scenarios", "Analytical Segments", "Validation Profiles"],
+            correct: ["Business Scenarios"],
+            explanation: "In SAP terminology, end-to-end integrated processes that span multiple modules (like O2C or P2P) are referred to as Business Scenarios."
+        },
+        {
+            question: "What is the purpose of the Universal Journal (ACDOCA) in SAP S/4HANA?",
+            type: "single",
+            options: ["Store data separately for FI and CO", "Integrate FI and CO in a single line-item table", "Replace the Material Ledger", "Manage master data"],
+            correct: ["Integrate FI and CO in a single line-item table"],
+            explanation: "ACDOCA is the single source of truth in S/4HANA, converging financial accounting (FI) and controlling (CO) data into one table, eliminating reconciliation issues."
+        },
+        {
+            question: "Which ledger is mandatory in every SAP S/4HANA system?",
+            type: "single",
+            options: ["Non-leading ledger", "Leading ledger (0L)", "Extension ledger", "Statistical ledger"],
+            correct: ["Leading ledger (0L)"],
+            explanation: "The Leading Ledger (0L) is mandatory and stores data based on the primary accounting principle (e.g., IFRS or GAAP)."
+        },
+        {
+            question: "What defines the structure of G/L accounts in a company code?",
+            type: "single",
+            options: ["Chart of accounts", "Fiscal year variant", "Posting period variant", "Document type"],
+            correct: ["Chart of accounts"],
+            explanation: "The Chart of Accounts defines the structure and grouping of all General Ledger accounts used by one or more company codes."
+        },
+        {
+            question: "Which field is mandatory in every FI document header?",
+            type: "single",
+            options: ["Cost center", "Posting date", "Profit center", "Ledger group"],
+            correct: ["Posting date"],
+            explanation: "The posting date is a fundamental field required in the header of every financial document, along with the document date and document type."
+        },
+        {
+            question: "Customer Accounting (FI-AR) is mainly used to monitor:",
+            type: "single",
+            options: ["Payables", "Receivables", "Assets", "Taxes"],
+            correct: ["Receivables"],
+            explanation: "Accounts Receivable (FI-AR) tracks money owed to the company by its customers (receivables), while Payables (FI-AP) tracks money owed by the company to vendors."
+        },
+        {
+            question: "Asset Accounting (FI-AA) allows tracking:",
+            type: "single",
+            options: ["The life cycle of fixed assets", "Only financial postings", "Employee performance", "Raw material consumption"],
+            correct: ["The life cycle of fixed assets"],
+            explanation: "Asset Accounting manages the entire lifecycle of a company's fixed assets, from acquisition and depreciation to retirement."
+        },
+        {
+            question: "What is the purpose of extension ledgers?",
+            type: "single",
+            options: ["Store simulation and predictive entries", "Replace leading ledgers", "Manage bank postings", "Handle depreciation"],
+            correct: ["Store simulation and predictive entries"],
+            explanation: "Extension ledgers are primarily used to record entries for simulation (predictive accounting) or adjustments without changing the underlying leading ledger data."
+        },
+        {
+            question: "Which are examples of FI subledgers? (Choose 3)",
+            type: "multiple",
+            options: ["Accounts Payable", "Accounts Receivable", "Asset Accounting", "Material Ledger"],
+            correct: ["Accounts Payable", "Accounts Receivable", "Asset Accounting"],
+            explanation: "FI subledgers manage detailed transaction data for vendors (AP), customers (AR), and assets (AA), which is then summarized in the General Ledger (FI-GL)."
+        },
+        {
+            question: "To better control the G/L accounts and assigned company codes, you use the Implementation Status feature in the system. What does this do?",
+            type: "single",
+            options: ["This function allows you to delete G/L accounts from the production system even if postings exist.", "This function determines which G/L accounts are transferred to the production system, transporting only those with status P.", "This function sets a posting block for accounts with status P in the production system.", "This function ensures that all accounts created through content activation are set to P by default."],
+            correct: ["This function determines which G/L accounts are transferred to the production system, transporting only those with status P."],
+            explanation: "Implementation Status 'P' (Productive) ensures that only accounts deemed ready for production are transported and used in the live system, serving as a governance mechanism."
+        },
+        {
+            question: "What is the main purpose of maintaining the chart of accounts in SAP S/4HANA Cloud?",
+            type: "single",
+            options: ["To define cost center hierarchies", "To control document number ranges", "To adapt and manage general ledger accounts for reporting needs", "To create material master data"],
+            correct: ["To adapt and manage general ledger accounts for reporting needs"],
+            explanation: "The Chart of Accounts is the core definition tool for all G/L accounts, which is essential for classifying and reporting financial data."
+        },
+        {
+            question: "Which SAP system allows configuration changes to the chart of accounts?",
+            type: "single",
+            options: ["Production system", "Quality system", "Development system", "Any system with user access"],
+            correct: ["Development system"],
+            explanation: "Configuration changes, including changes to the Chart of Accounts, are typically restricted to the Development system and then transported to Quality and Production environments."
+        },
+        {
+            question: "During regular operations, which users can modify general ledger master data directly?",
+            type: "single",
+            options: ["All accountants", "Only authorized users in the development system", "Test users in quality system", "End users in production"],
+            correct: ["Only authorized users in the development system"],
+            explanation: "G/L Master Data changes are often considered configuration or highly sensitive data, reserved for authorized users, usually in the development or configuration system, following strict change management processes."
+        },
+        {
+            question: "Which standard chart of accounts is commonly delivered with SAP S/4HANA Cloud?",
+            type: "single",
+            options: ["XCOA", "YCOA", "ACOA", "FCOA"],
+            correct: ["YCOA"],
+            explanation: "YCOA is the standard Chart of Accounts delivered by SAP for S/4HANA Cloud systems, often serving as a foundation for customers."
+        },
+        {
+            question: "Which tool is used to plan G/L data modifications in SAP S/4HANA Cloud?",
+            type: "single",
+            options: ["Manage Financial Close Tasks", "Schedule Accounting Data Changes", "Manage Journal Entries", "Plan Financial Variants"],
+            correct: ["Schedule Accounting Data Changes"],
+            explanation: "The 'Schedule Accounting Data Changes' tool is designed to manage future changes to G/L master data in a controlled, scheduled manner."
+        },
+        {
+            question: "Account determination allows you to: (Three answers possible)",
+            type: "multiple",
+            options: ["Automatically post to correct G/L accounts during business processes", "Define tolerance groups for clearing", "Control posting periods", "Integrate postings between FI and MM/Sd"],
+            correct: ["Automatically post to correct G/L accounts during business processes", "Define tolerance groups for clearing", "Integrate postings between FI and MM/Sd"],
+            explanation: "Account determination links logistics transactions (MM, SD) to the correct G/L accounts (FI), defines clearing rules, and automatically posts to the necessary accounts."
+        },
+        {
+            question: "What does a tolerance group define?",
+            type: "single",
+            options: ["Fiscal year variant", "Maximum difference allowed for automatic clearing", "Document type", "Posting key restrictions"],
+            correct: ["Maximum difference allowed for automatic clearing"],
+            explanation: "Tolerance groups define the acceptable limits for discrepancies (like payment differences or cash discounts) when automatically clearing open items."
+        },
+        {
+            question: "Which numbering method allows manual entry?",
+            type: "single",
+            options: ["Internal numbering", "External numbering", "Sequential numbering", "Fixed numbering"],
+            correct: ["External numbering"],
+            explanation: "External numbering allows the user to manually enter the document number during posting, whereas internal numbering is automatically assigned by the system."
+        },
+        {
+            question: "What settings do document types control? (Three answers)",
+            type: "multiple",
+            options: ["Document number range", "Reversal document type", "Company code allowed", "Negative postings allowed", "Posting keys for debit and credit"],
+            correct: ["Document number range", "Reversal document type", "Negative postings allowed"],
+            explanation: "Document types govern crucial properties like the number range, the reversal document type to be used, and whether negative postings are permitted."
+        },
+        {
+            question: "What is the particular characteristic of a negative posting?",
+            type: "single",
+            options: ["It creates a one-sided posting.", "It deletes the erroneous posting.", "It corrects the debit or credit balance of the accounts.", "It only applies to customers."],
+            correct: ["It corrects the debit or credit balance of the accounts."],
+            explanation: "Negative posting is used for reversal, generating an opposite posting that corrects the debit/credit balance of the accounts while maintaining an audit trail."
+        },
+        {
+            question: "At which levels must negative postings for document reversals be allowed in order to perform them? (two answers)",
+            type: "multiple",
+            options: ["Ledger group", "Company code", "Reversal reason", "Accounting principle"],
+            correct: ["Company code", "Reversal reason"],
+            explanation: "For a negative posting reversal to be executed, it must be enabled at both the Company Code settings and the Reversal Reason used in the transaction."
+        },
+        {
+            question: "Where is the field status determined from in accounting documents? (two answers)",
+            type: "multiple",
+            options: ["Posting key", "Company code", "G/L account", "Document type"],
+            correct: ["Posting key", "G/L account"],
+            explanation: "The field status of a line item in an accounting document is determined by a combination of the Posting Key and the Field Status Group assigned to the G/L account master data."
+        },
+        {
+            question: "If you want to enter your own document number and be able to potentially enter the same number to documents once every year, what document number range option is correct?",
+            type: "single",
+            options: ["Internal and continual", "External an continual", "Internal and annual", "External and annual"],
+            correct: ["External and annual"],
+            explanation: "External numbering allows manual input. Setting the range as 'annual' means the numbering sequence resets every fiscal year, allowing reuse of numbers from previous years."
+        },
+        {
+            question: "In which of the following scenarios would you recommend using an extension ledger? (three answers)",
+            type: "multiple",
+            options: ["Managing local GAAP accounting for a subsidiary in a new country.", "Simulate the impact in accounting of a new regulation on provisions accounting.", "Adjustments related to taxes, to calculate a tax-adjusted profit or loss.", "Manage commitments from purchase orders to facilitate the budget availability control."],
+            correct: ["Simulate the impact in accounting of a new regulation on provisions accounting.", "Adjustments related to taxes, to calculate a tax-adjusted profit or loss.", "Manage commitments from purchase orders to facilitate the budget availability control."],
+            explanation: "Extension ledgers are ideal for non-GAAP entries like simulations, tax adjustments, and management reporting additions (like commitments) without affecting the standard ledger."
+        },
+        {
+            question: "What are unique characteristics of extensions ledgers compared to standard ledgers? (two answers)",
+            type: "multiple",
+            options: ["They store considerably less data.", "They can be part of a ledger group.", "They must reference the leading ledger.", "They must reference an underlying ledger."],
+            correct: ["They store considerably less data.", "They must reference an underlying ledger."],
+            explanation: "Extension ledgers contain only their own delta postings, relying on an underlying ledger for base data, hence they store less data directly."
+        },
+        {
+            question: "Which extension ledger type is used to perform simulation postings?",
+            type: "single",
+            options: ["Standard Journal Entries", "P - Line Items with Technical Numbers (No Deletions Possible)", "S - Line Items with Technical Numbers (Deletions Possible)", "G - Journal Entries for G/L Adjustment Postings."],
+            correct: ["S - Line Items with Technical Numbers (Deletions Possible)"],
+            explanation: "The 'S' type ledger is typically used for simulation (predictive) entries which can be deleted and do not require real document numbers."
+        },
+        {
+            question: "Which ledger type supports adjustment entries with real document numbers?",
+            type: "single",
+            options: ["S", "P", "Standard ledger", "G"],
+            correct: ["Standard ledger"],
+            explanation: "Adjustment entries that require real document numbers and affect the official financial reporting must be posted in a Standard Ledger (or the Leading Ledger)."
+        },
+        {
+            question: "Predictive accounting in SAP S/4HANA helps to:",
+            type: "single",
+            options: ["Reconcile AR/AP balances", "Simulate financial impact of future transactions", "Manage asset depreciation", "Transfer budgets"],
+            correct: ["Simulate financial impact of future transactions"],
+            explanation: "Predictive accounting uses noted items and extension ledgers to simulate the financial impact of business transactions (like sales orders or purchase orders) before they are officially posted."
+        },
+        // CHAPITRE 2
+        {
+            question: "Which SAP Fiori application is recommended for creating and managing financial statement versions?",
+            type: "single",
+            options: ["Define Financial Statement Versions (Classic)", "Manage Global Hierarchies", "Display Financial Statements", "Manage Journal Entries"],
+            correct: ["Manage Global Hierarchies"],
+            explanation: "The 'Manage Global Hierarchies' Fiori app is the modern tool used in SAP S/4HANA Cloud to maintain flexible, multi-purpose reporting structures like FSVs."
+        },
+        {
+            question: "What is the main role of Financial Statement Versions (FSV)?",
+            type: "single",
+            options: ["Define posting keys", "Calculate depreciation", "Control document numbering", "Provide a hierarchical structure for accounts used in statutory and management reports"],
+            correct: ["Provide a hierarchical structure for accounts used in statutory and management reports"],
+            explanation: "The FSV provides the structure (tree) by which General Ledger accounts are grouped to generate the Balance Sheet and Profit & Loss statements."
+        },
+        {
+            question: "Which of the following belongs to the configuration of a Financial Statement Version? (2 answers)",
+            type: "multiple",
+            options: ["Currency", "FSV Item", "Accounts", "Posting Period"],
+            correct: ["FSV Item", "Accounts"],
+            explanation: "FSV structure is built using nodes (FSV Items) to which General Ledger Accounts are then assigned."
+        },
+        {
+            question: "What is the best definition of a semantic tag?",
+            type: "single",
+            options: ["A spreadsheet formula that can be imported into SAP.", "A textual identifier used to highlight key figures in Financial Statement Versions (FSV).", "A calculation logic always developed by the company to meet its individual needs.", "A formula that can be manually integrated into SAP reports."],
+            correct: ["A textual identifier used to highlight key figures in Financial Statement Versions (FSV)."],
+            explanation: "Semantic tags are used to flag specific FSV nodes or G/L accounts for use in certain advanced Fiori reports, like the Cash Flow Statement."
+        },
+        {
+            question: "A new financial statement version must be created for every new company joining the group.",
+            type: "single",
+            options: ["True", "FALSE"],
+            correct: ["FALSE"],
+            explanation: "FSVs are typically defined at the Chart of Accounts level, meaning a single FSV can be used by multiple company codes that share that Chart of Accounts."
+        },
+        {
+            question: "The setup of the Statement of Changes report in the General Ledger requires configuring which of the following? (2 answers)",
+            type: "multiple",
+            options: ["Currency", "Transaction Type", "Chart of Accounts", "Semantic Tags"],
+            correct: ["Transaction Type", "Semantic Tags"],
+            explanation: "The Statement of Changes report relies on Transaction Types (to classify the movement) and Semantic Tags (to correctly map the items) for accurate reporting."
+        },
+        {
+            question: "The Balance Sheet/P&L Statement report can be exported to a .xlsx or .pdf file format.",
+            type: "single",
+            options: ["True", "FALSE"],
+            correct: ["FALSE"],
+            explanation: "While data can be exported to formats like .xlsx, the standard P&L/Balance Sheet Fiori report provides display functionality, and the raw output is often optimized for the screen, not direct PDF/Excel export as a formatted statement."
+        },
+        {
+            question: "What happens if an account is not assigned to a node in the FSV?",
+            type: "single",
+            options: ["It is automatically deleted", "It appears under the “Unassigned” node", "It causes reporting errors", "It is included in the net profit calculation"],
+            correct: ["It appears under the “Unassigned” node"],
+            explanation: "Any G/L accounts belonging to the Chart of Accounts but not explicitly assigned to a node in the FSV structure will be grouped under the 'Unassigned' node."
+        },
+        {
+            question: "Which functionality of Manage Global Hierarchies supports node translation?",
+            type: "single",
+            options: ["Automatic translation", "Manual editing in multiple languages under Draft status", "Integration with Google Translate", "Transport requests"],
+            correct: ["Manual editing in multiple languages under Draft status"],
+            explanation: "The 'Manage Global Hierarchies' application allows users to manually maintain texts in different languages, typically while the hierarchy is in Draft status."
+        },
+        {
+            question: "Which of the following statements apply to the Cash Flow Statement - Indirect Method report, provided by SAP? (2 answers)",
+            type: "multiple",
+            options: ["The basic semantic tags required for cash flow statement setup are provided by SAP.", "Its implementation requires specific ABAP development.", "The user must update the cash flow statement version with the semantic tags required by the cash flow statement report.", "The required formula can be imported/exported to a spreadsheet."],
+            correct: ["The basic semantic tags required for cash flow statement setup are provided by SAP.", "The user must update the cash flow statement version with the semantic tags required by the cash flow statement report."],
+            explanation: "SAP provides the standard semantic tags, but the user is responsible for ensuring their FSV structure (or a specific cash flow version) is correctly mapped using those tags."
+        },
+        // CHAPITRE 3
+        {
+            question: "What is the main purpose of the Procure-to-Pay (P2P) process?",
+            type: "single",
+            options: ["To manage sales and customer payments", "To ensure efficient procurement, invoice verification, and vendor payment", "To control inventory valuation", "To manage employee expenses"],
+            correct: ["To ensure efficient procurement, invoice verification, and vendor payment"],
+            explanation: "P2P is the entire integrated business process covering the sourcing, purchasing, receiving, invoicing, and payment for goods and services."
+        },
+        {
+            question: "Which of the following statements best describes the use of one-time vendors in SAP S/4HANA? (2 answers)",
+            type: "multiple",
+            options: ["One-time vendors can only be used for high-value business transactions.", "The standard account group for one-time vendors or customers is marked as « CPD - Conto-Pro-Diverse ».", "Address or bank details are generally not included in the master record of a one-time vendor.", "When the system recognizes a vendor as belonging to the CPD group, it prompts the user to complete the missing data in the master record"],
+            correct: ["Address or bank details are generally not included in the master record of a one-time vendor.", "When the system recognizes a vendor as belonging to the CPD group, it prompts the user to complete the missing data in the master record"],
+            explanation: "One-time vendors (CPD) use generic master data, requiring transaction-specific details (like address/bank) to be entered at the time of posting."
+        },
+        {
+            question: "Which module directly integrates with Accounts Payable in SAP S/4HANA?",
+            type: "single",
+            options: ["Asset Accounting", "Materials Management (MM)", "Controlling (CO)", "Sales and Distribution (SD)"],
+            correct: ["Materials Management (MM)"],
+            explanation: "The Materials Management (MM) module integrates directly with Accounts Payable (FI-AP) for purchasing-related invoices via the Invoice Verification step."
+        },
+        {
+            question: "Which of the following statements is accurate regarding the use of Business Partners in SAP S/4HANA?",
+            type: "single",
+            options: ["A Business Partner can be linked to several BP categories, such as a person and an organization.", "You can change the grouping of a Business Partner after creation.", "A Business Partner can be linked to an unlimited number of BP roles once general data is completed.", "The same vendor cannot be activated in different modules like FI and MM."],
+            correct: ["A Business Partner can be linked to an unlimited number of BP roles once general data is completed."],
+            explanation: "A Business Partner (BP) is the single object representing a person or organization, and multiple roles (e.g., Customer, Vendor, Employee) can be added to it."
+        },
+        {
+            question: "Once payment terms are defined in the vendor master data at company code level, they will be automatically applied by default on vendor invoices and cannot be changed later.",
+            type: "single",
+            options: ["True", "FALSE"],
+            correct: ["FALSE"],
+            explanation: "Payment terms are suggested from the vendor master data but can usually be overridden manually on the invoice document."
+        },
+        {
+            question: "What is the recommended practice in SAP S/4HANA when an existing customer in the database becomes a vendor?",
+            type: "single",
+            options: ["Add a vendor role to the existing Business Partner.", "Delete the customer role from the existing Business Partner and replace it with the vendor role.", "Create a new Business Partner for the vendor.", "Create a separate role for the customer who became a vendor."],
+            correct: ["Add a vendor role to the existing Business Partner."],
+            explanation: "The BP concept promotes consolidation; you simply add the necessary 'Vendor' role to the existing BP record that already holds the 'Customer' role."
+        },
+        {
+            question: "Which of the following statements regarding vendor master data management in SAP S/4HANA is accurate?",
+            type: "single",
+            options: ["SAP S/4HANA does not allow copying an existing vendor to create a new vendor.", "A vendor cannot be extended to several company codes in SAP S/4HANA.", "SAP S/4HANA allows creating a new vendor by copying an existing vendor, with options to review and modify the copied settings in the new vendor’s master record.", "Mass download or changes to vendor master records can be performed by any user."],
+            correct: ["SAP S/4HANA allows creating a new vendor by copying an existing vendor, with options to review and modify the copied settings in the new vendor’s master record."],
+            explanation: "Copying existing master records is a common efficiency feature in SAP to speed up the creation of similar records."
+        },
+        {
+            question: "Which statements about the Manage Vendor Line Items application are correct?",
+            type: "single",
+            options: ["Items with red status are classified as processed. Items with green status are classified as open.", "Items with red status are classified as open. Items with green status are classified as processed.", "Items with blue status are classified as open. Items with green status are classified as processed.", "Items with yellow status are classified as open. Items with blue status are classified as processed."],
+            correct: ["Items with red status are classified as open. Items with green status are classified as processed."],
+            explanation: "In line item displays, red often indicates open items (debit or credit outstanding), and green indicates cleared or processed items."
+        },
+        {
+            question: "You post a vendor invoice in the system. Which of the following statements is correct for this process? (2 answers)",
+            type: "multiple",
+            options: ["Some data is transferred from the vendor master record for posting.", "The tax amount must always be entered manually.", "No tax code should be entered because the system automatically determines the tax from the vendor master record.", "The invoice is processed under the Invoice transaction type."],
+            correct: ["Some data is transferred from the vendor master record for posting.", "The invoice is processed under the Invoice transaction type."],
+            explanation: "The system defaults key information from the vendor master, and the transaction is classified by a document type (Invoice is the common transaction type for AP)."
+        },
+        {
+            question: "It is possible to directly reverse a document containing cleared items.",
+            type: "single",
+            options: ["True", "FALSE"],
+            correct: ["FALSE"],
+            explanation: "A document containing items that have already been cleared (i.e., paid) cannot be directly reversed; the clearing document must be reversed first."
+        },
+        {
+            question: "For which entry option must the entry balance be zero?",
+            type: "single",
+            options: ["Park document", "Save document as complete", "Hold document", "Post document"],
+            correct: ["Post document"],
+            explanation: "Posting a document (saving it to the database with official numbering) requires the fundamental accounting rule of debits equaling credits (balance zero) to be met."
+        },
+        {
+            question: "Which application provides a complete overview of vendor invoices, including those that are held, parked, saved as complete, or posted?",
+            type: "single",
+            options: ["Manage Journal Entries", "Document Flow Application", "Vendor Invoice List Application", "Create Incoming Invoices"],
+            correct: ["Vendor Invoice List Application"],
+            explanation: "The 'Vendor Invoice List Application' is designed to be a central monitor for all statuses of vendor invoices across the company."
+        },
+        {
+            question: "Which parameters are mandatory for the payment run? (Four correct answers)",
+            type: "multiple",
+            options: ["Posting date", "Execution date", "Company code", "Payment amount", "Tax identification number", "Payment method"],
+            correct: ["Execution date", "Company code", "Payment method", "Posting date"],
+            explanation: "The automatic payment program requires these four parameters to define which invoices to select and how to process them."
+        },
+        {
+            question: "What is the posting key for vendor credit entries?",
+            type: "single",
+            options: ["31", "21", "40", "50"],
+            correct: ["31"],
+            explanation: "31 is the standard posting key for a Vendor Credit (e.g., invoice line item). 21 is for Customer Credit, 40 is G/L Debit, and 50 is G/L Credit."
+        },
+        {
+            question: "Which account type is used for vendors?",
+            type: "single",
+            options: ["D", "K", "S", "A"],
+            correct: ["K"],
+            explanation: "K is the account type for Vendors (Kreditor), D for Customers (Debitor), S for G/L Accounts, and A for Assets."
+        },
+        {
+            question: "What happens to open items after payment posting?",
+            type: "single",
+            options: ["Remain open", "They are automatically cleared", "They are archived", "They are deleted"],
+            correct: ["They are automatically cleared"],
+            explanation: "When a payment is successfully posted against an open invoice, the system simultaneously clears both the invoice and the payment document."
+        },
+        {
+            question: "What is the function of the Automatic Payment Program (APP)?",
+            type: "single",
+            options: ["To block invoices", "To automatically select and pay open vendor invoices", "To calculate depreciation", "To create asset postings"],
+            correct: ["To automatically select and pay open vendor invoices"],
+            explanation: "The APP (or F110 in the classic T-Code) is designed to streamline and automate the process of paying numerous vendor or customer open items."
+        },
+        {
+            question: "Which field connects vendor transactions to the General Ledger?",
+            type: "single",
+            options: ["Account group", "Document type", "Reconciliation account", "Number range"],
+            correct: ["Reconciliation account"],
+            explanation: "Vendor transactions are posted to the subledger (AP), and the Reconciliation Account ensures the total balance is simultaneously reflected in the General Ledger (FI-GL)."
+        },
+        {
+            question: "What is the purpose of a Goods Receipt?",
+            type: "single",
+            options: ["To confirm the physical receipt of goods or services", "To pay vendors", "To create an accounting document only", "To post provisions"],
+            correct: ["To confirm the physical receipt of goods or services"],
+            explanation: "The Goods Receipt (GR) confirms the physical delivery and triggers subsequent accounting steps, particularly for inventory valuation."
+        },
+        // CHAPITRE 4
+        {
+            question: "What is the main purpose of the Down Payment process in SAP S/4HANA?",
+            type: "single",
+            options: ["To manage advance payments to vendors before receiving goods or services", "To record incoming customer payments", "To reconcile bank statements", "To calculate depreciation"],
+            correct: ["To manage advance payments to vendors before receiving goods or services"],
+            explanation: "The Down Payment process handles payments made in advance to suppliers (vendors) before the final invoice or goods are received."
+        },
+        {
+            question: "What is required to process a down payment automatically in the payment program?",
+            type: "single",
+            options: ["A standard invoice", "A goods receipt", "A down payment request (noted item)", "A credit memo"],
+            correct: ["A down payment request (noted item)"],
+            explanation: "The down payment request acts as a statistical or 'noted' item, signaling the Automatic Payment Program (APP) that a down payment is due."
+        },
+        {
+            question: "To clear the down payment with the invoice, what are the options? (2 answers)",
+            type: "multiple",
+            options: ["Clearing can be done manually with the Clear Outgoing Payments Manual Clearing application.", "Clearing is performed automatically when posting the invoice.", "Clearing is performed automatically with residual payment in the automatic payment run.", "It must be done by a batch job."],
+            correct: ["Clearing can be done manually with the Clear Outgoing Payments Manual Clearing application.", "Clearing is performed automatically with residual payment in the automatic payment run."],
+            explanation: "Clearing can be manually executed via a clearing app or automatically handled by the APP during the final payment stage."
+        },
+        {
+            question: "Why do we post a down payment request? (2 ANSWERS)",
+            type: "multiple",
+            options: ["To generate invoices.", "To perform the down payment automatically using the payment program.", "To post the down payment manually.", "To block the invoice."],
+            correct: ["To perform the down payment automatically using the payment program.", "To post the down payment manually."],
+            explanation: "The down payment request allows the APP to pick up the due item for automatic payment, and it's also a prerequisite for manual down payment postings."
+        },
+        {
+            question: "To display the open item of the down payment request in the Manage Vendor Line Items application, which item type do you select?",
+            type: "single",
+            options: ["Normal Item", "Special General Ledger Transaction", "Noted Items", "Parked Items", "Customer Items"],
+            correct: ["Noted Items"],
+            explanation: "A down payment request is a noted item, meaning it is statistical and does not affect G/L balances directly until the actual payment is made."
+        },
+        {
+            question: "Why is a special target G/L indicator required when entering a down payment request?",
+            type: "single",
+            options: ["To identify the correct reconciliation account for the down payment", "To control tax calculation", "To define the posting key", "To assign a purchasing group"],
+            correct: ["To identify the correct reconciliation account for the down payment"],
+            explanation: "The special G/L indicator redirects the posting from the standard vendor reconciliation account to a specific G/L account used only for down payments."
+        },
+        {
+            question: "Which application allows you to record the down payment details in a Purchase Order?",
+            type: "single",
+            options: ["Manage Vendor Invoices", "Create Purchase Order – Advanced", "Manage Vendor Line Items", "Display Journal Entries"],
+            correct: ["Create Purchase Order – Advanced"],
+            explanation: "The classic 'Create Purchase Order – Advanced' (ME21N) or its Fiori counterpart is used to capture the down payment condition in the PO item details."
+        },
+        {
+            question: "What is the purpose of the Monitor Purchase Order Deposits application?",
+            type: "single",
+            options: ["To post vendor invoices", "To display purchase orders with down payments and create down payment requests", "To manage basic bank data", "To approve purchase requisitions"],
+            correct: ["To display purchase orders with down payments and create down payment requests"],
+            explanation: "This Fiori application provides visibility into POs that require a down payment and offers the functionality to initiate the down payment request."
+        },
+        // CHAPITRE 5
+        {
+            question: "What is the main purpose of configuring the company code settings in the payment program?",
+            type: "single",
+            options: ["To define tax codes", "To determine payment behavior and rules", "To manage employee payroll", "To configure basic customer data"],
+            correct: ["To determine payment behavior and rules"],
+            explanation: "Company code configurations (like minimum payment amounts, tolerance days) dictate the payment method selection and process behavior for that entity."
+        },
+        {
+            question: "What is the function of the “Tolerance Days” parameter?",
+            type: "single",
+            options: ["Defines the number of days before payment is due", "Allows postponing the payment for a few days", "Calculates interest for late payments", "Determines payment terms"],
+            correct: ["Allows postponing the payment for a few days"],
+            explanation: "Tolerance days extend the allowed window before a document becomes overdue, allowing the APP to potentially delay payment while still claiming an early payment discount."
+        },
+        {
+            question: "What is the purpose of specifying special G/L transactions in the payment program?",
+            type: "single",
+            options: ["To exclude or include specific transactions when processing payments", "To manage tax postings", "To manage asset depreciation", "To process salary payments"],
+            correct: ["To exclude or include specific transactions when processing payments"],
+            explanation: "This setting controls whether special transactions, such as down payments, are included in or excluded from the automatic payment run."
+        },
+        {
+            question: "What does the “Separate payment for each reference” field control?",
+            type: "single",
+            options: ["Groups all invoices into a single payment", "Creates one payment per vendor", "Creates individual payments per invoice reference", "Groups all payments by customer"],
+            correct: ["Creates individual payments per invoice reference"],
+            explanation: "If checked, this parameter ensures that the automatic payment program generates a separate payment for each distinct invoice reference number."
+        },
+        {
+            question: "What is defined in the “Payment medium format by company code” configuration?",
+            type: "single",
+            options: ["The language used for printing", "The layout and format of payment details", "The document type for payments", "The tax code used"],
+            correct: ["The layout and format of payment details"],
+            explanation: "This setting controls the output appearance, structure, and format of the payment medium (e.g., check printout, bank file format)."
+        },
+        {
+            question: "What does the “Payment Method” format specify?",
+            type: "single",
+            options: ["The invoice type", "How payment information is structured and transmitted", "Which vendor to pay", "How discounts are calculated"],
+            correct: ["How payment information is structured and transmitted"],
+            explanation: "The payment method configuration defines the mode of payment (e.g., check, wire transfer) and the required data structure for the bank."
+        },
+        {
+            question: "What is the purpose of the “Note to Payee”?",
+            type: "single",
+            options: ["Adds explanations for the bank", "Provides visible details or instructions for the recipient", "Describes tax posting", "Summarizes all payment totals"],
+            correct: ["Provides visible details or instructions for the recipient"],
+            explanation: "The note to payee is the information passed to the recipient on the payment advice, explaining which invoices are being paid."
+        },
+        {
+            question: "What is configured under “Payment Methods per Country”?",
+            type: "single",
+            options: ["Tax rates per country", "Payment types valid for a specific country or region", "Exchange rates", "Vendor types"],
+            correct: ["Payment types valid for a specific country or region"],
+            explanation: "This configuration ensures that only legally acceptable and operationally correct payment methods (e.g., bank transfer, direct debit) are available for payments originating from a specific country."
+        },
+        {
+            question: "What is the purpose of the “required information in master record” setting for a payment method?",
+            type: "single",
+            options: ["To determine the document type to pay.", "To ensure that necessary data, such as bank details for address data, are included in the respective master data for the payment method.", "To specify the classification of the payment method, such as bank transfer, check, or vendor financing."],
+            correct: ["To ensure that necessary data, such as bank details for address data, are included in the respective master data for the payment method."],
+            explanation: "This is a prerequisite check; if a payment method requires bank details, this setting ensures that the vendor's master data contains the necessary banking information before payment is processed."
+        },
+        {
+            question: "Which parameters can be entered in the Payment Controls section for the automatic payment run?",
+            type: "single",
+            options: ["Additional journal and exchange rate type.", "Company code, next payment date, and payment method.", "Vendor and customer", "Posting date, documents entered up to and customer items due before."],
+            correct: ["Company code, next payment date, and payment method."],
+            explanation: "These are three essential fields used in the initial selection screen of the Automatic Payment Program to control the scope and timing of the payment run."
+        },
+        // CHAPITRE 6
+        {
+            question: "What are Work Items in a Flexible Workflow?",
+            type: "single",
+            options: ["Tasks assigned to agents", "Tasks assigned to team categories", "Tasks assigned to member functions", "Tasks assigned to teams"],
+            correct: ["Tasks assigned to agents"],
+            explanation: "A Work Item represents a task or decision that an agent (user) must perform, and it appears in the agent's inbox."
+        },
+        {
+            question: "What are Flexible Workflows used for?",
+            type: "single",
+            options: ["For automatic creation of vendor invoices", "For defining approval processes for vendor invoices", "For transporting vendor invoices to other systems", "For creating payment documents."],
+            correct: ["For defining approval processes for vendor invoices"],
+            explanation: "Flexible Workflow in S/4HANA is primarily used to set up highly customizable approval processes for documents like purchase requisitions, invoices, and journal entries."
+        },
+        {
+            question: "What is the main advantage of using the “Blocked Invoice Due Date Approaching” situation template?",
+            type: "single",
+            options: ["Automates payment of vendor invoices when they are blocked.", "Allows changing the due date of blocked invoices to avoid penalties.", "Sends an automatic report to vendors about their payment status.", "Alerts business users to the approaching due dates of vendor invoices blocked for payment."],
+            correct: ["Alerts business users to the approaching due dates of vendor invoices blocked for payment."],
+            explanation: "The situation management template actively notifies users of blocked invoices that are nearing their due date, enabling proactive resolution to avoid late payments."
+        },
+        {
+            question: "Which of the following statements is true about Situation Management?",
+            type: "single",
+            options: ["Situation management applies only to financial operations.", "Situation management provides alerts for non-critical issues only.", "Situation management helps improve user efficiency by drawing their attention to critical issues at the right time.", "Situation management follows a manual approach to problem solving."],
+            correct: ["Situation management helps improve user efficiency by drawing their attention to critical issues at the right time."],
+            explanation: "Situation Management proactively identifies exceptions and critical events, informing the relevant user to act immediately and improve operational efficiency."
+        },
+        {
+            question: "The Cash Discount at Risk situation template in SAP S/4HANA Cloud automatically unblocks vendor invoices to ensure cash discounts are not missed.",
+            type: "single",
+            options: ["True", "FALSE"],
+            correct: ["FALSE"],
+            explanation: "The template only *alerts* the user that the discount is at risk; it does not automatically unblock or process the invoice, requiring human intervention."
+        },
+        {
+            question: "Which business role must be assigned to employees to give them access to the “My Inbox” and “My Outbox” applications?",
+            type: "single",
+            options: ["Accounts Payable Accountant", "Manager.", "Configuration Expert.", "Employee."],
+            correct: ["Employee."],
+            explanation: "The 'Employee' role (or equivalent generic Fiori inbox role) is necessary to access and process workflow work items in My Inbox/My Outbox."
+        },
+        {
+            question: "When defining the steps of a workflow, a step can be made optional in the defined workflow.",
+            type: "single",
+            options: ["A. It's true.", "B. False"],
+            correct: ["A. It's true."],
+            explanation: "Flexible Workflow allows defining steps as optional, meaning they can be skipped based on certain conditions or user decisions, providing flexibility in the approval process."
+        },
+        {
+            question: "Which application allows the Configuration Expert to define and manage the vendor invoice workflow logic?",
+            type: "single",
+            options: ["A. Manage Situation Types", "B. Manage Vendor Invoices", "C. Manage Vendor Invoice Workflows", "D. My Inbox"],
+            correct: ["C. Manage Vendor Invoice Workflows"],
+            explanation: "The specific application dedicated to configuring the logic and steps for vendor invoice approval is 'Manage Vendor Invoice Workflows'."
+        },
+        {
+            question: "Which step property prevents the workflow initiator from becoming the approver of the same item?",
+            type: "single",
+            options: ["A. Optional Step", "B. Exclude restricted agents", "C. Step to be completed by: One of the recipients", "D. Redefine the task title"],
+            correct: ["B. Exclude restricted agents"],
+            explanation: "The 'Exclude restricted agents' setting ensures that the person who created or triggered the workflow cannot be automatically selected as the approver, enforcing separation of duties."
+        },
+        {
+            question: "Which of the following are examples of account assignment category used as a precondition? (2 answers)",
+            type: "multiple",
+            options: ["A. Cost Center", "B. Company Code", "C. Posting Date", "D. Payment Terms"],
+            correct: ["A. Cost Center", "B. Company Code"],
+            explanation: "Preconditions define the criteria for a workflow to start; common organizational and accounting objects like Cost Center and Company Code are frequently used as criteria."
+        },
+        // CHAPITRE 7
+        {
+            question: "What is the main purpose of Accounts Receivable management in SAP S/4HANA?",
+            type: "single",
+            options: ["To manage customer invoices and incoming payments", "To record vendor payables", "To control inventory levels", "To calculate depreciation"],
+            correct: ["To manage customer invoices and incoming payments"],
+            explanation: "Accounts Receivable (AR) is responsible for processing sales-related transactions, monitoring customer balances, and handling receipts from customers."
+        },
+        {
+            question: "What is a Business Partner (BP) in SAP S/4HANA?",
+            type: "single",
+            options: ["A cost center", "A general ledger account", "A unified master data record used across multiple business processes", "A bank account"],
+            correct: ["A unified master data record used across multiple business processes"],
+            explanation: "The Business Partner is the standard, harmonized master data object for representing people and organizations across all business functions in S/4HANA."
+        },
+        {
+            question: "The “Business Partner” category includes which of the following entities? (2 answers)",
+            type: "multiple",
+            options: ["Organization", "Vendor", "Person", "Customer"],
+            correct: ["Organization", "Person"],
+            explanation: "The BP concept defines two main categories of legal entity: 'Person' and 'Organization'."
+        },
+        {
+            question: "What are the fields available in a Business Partner master record? (2 answers)",
+            type: "multiple",
+            options: ["Posting period", "Chart of accounts", "Grouping and configuration used during creation", "Exchange rate parameters"],
+            correct: ["Grouping and configuration used during creation", "Exchange rate parameters"],
+            explanation: "BP Master data includes the grouping (number range and category definition) and, depending on the role (e.g., Customer/Vendor), exchange rate related parameters."
+        },
+        {
+            question: "What is a one-time customer (CPD) in SAP?",
+            type: "single",
+            options: ["A customer used for unique and low-value transactions", "A blocked customer", "A test record", "A credit customer"],
+            correct: ["A customer used for unique and low-value transactions"],
+            explanation: "CPD (Conto-Pro-Diversité) refers to a customer master record used for one-off transactions where creating a full master record is not cost-effective."
+        },
+        {
+            question: "What is the group ID that identifies one-time customers in SAP?",
+            type: "single",
+            options: ["TEST", "CPD (Conto-Pro-Diversité)", "TMP", "AR01"],
+            correct: ["CPD (Conto-Pro-Diversité)"],
+            explanation: "CPD is the standard account group ID used to categorize one-time customers/vendors in the system."
+        },
+        {
+            question: "Which application displays and analyzes customer master data?",
+            type: "single",
+            options: ["Manage Vendor Order Line Items", "Display Customer Master Data (Customer object page)", "Display General Ledger Balances", "Manage Payment Blocks"],
+            correct: ["Display Customer Master Data (Customer object page)"],
+            explanation: "The 'Customer object page' in Fiori provides a centralized, analytical view of all master data and transactions related to a specific customer BP."
+        },
+        {
+            question: "Why should the creation of basic bank accounts be reserved for authorized users?",
+            type: "single",
+            options: ["To save system memory", "Because bank data is sensitive and affects payments", "To improve performance", "To avoid duplicate customers"],
+            correct: ["Because bank data is sensitive and affects payments"],
+            explanation: "Bank account creation and maintenance are security-critical activities due to the direct financial impact and sensitivity of the data."
+        },
+        {
+            question: "All company codes selling to the same customer must assign the same reconciliation account to the company code details.",
+            type: "single",
+            options: ["True", "FALSE"],
+            correct: ["FALSE"],
+            explanation: "Each company code is an independent legal entity and may use a different Chart of Accounts and, consequently, a different reconciliation account, even for the same customer."
+        },
+        {
+            question: "When should the Reset Cleared Items function be used in Accounts Receivable management under SAP S/4HANA Cloud?",
+            type: "single",
+            options: ["When customer contact information is outdated", "When financial transactions have been processed incorrectly", "When the warehouse is out of stock", "When customer complaints are received"],
+            correct: ["When financial transactions have been processed incorrectly"],
+            explanation: "Resetting cleared items is a technical step used to reverse an incorrect clearing transaction, returning the items to 'open' status for correct processing."
+        },
+        {
+            question: "What does reversing a document generate in SAP S/4HANA Cloud?",
+            type: "single",
+            options: ["A copy of the original document", "A modified version of the original document", "An improved version of the original document", "An exact opposite of the original document"],
+            correct: ["An exact opposite of the original document"],
+            explanation: "Document reversal creates a new document with the opposite debit/credit entries, effectively nullifying the financial impact of the original posting while preserving both documents for audit."
+        },
+        {
+            question: "What is the main advantage of automatic clearing in Accounts Receivable management?",
+            type: "single",
+            options: ["It allows precise assignment of payments to specific open items.", "It can resolve remaining issues, grouped according to specific criteria.", "It allows controlling the clearing process", "It eliminates the need for incoming payment transactions"],
+            correct: ["It can resolve remaining issues, grouped according to specific criteria."],
+            explanation: "Automatic clearing matches open items (invoices, payments, credits) based on predefined criteria, reducing manual effort and handling minor differences according to tolerance groups."
+        },
+        {
+            question: "What is the main functionality of the “Display Item Change Journal” application?",
+            type: "single",
+            options: ["It erases all changes made to customer items", "It prevents any modification of customer items", "It reports all changes made to customer items.", "It allows changes to be made to customer items"],
+            correct: ["It reports all changes made to customer items."],
+            explanation: "This journal provides an audit trail, documenting and reporting every modification made to the details of customer line items."
+        },
+        {
+            question: "Which of the following actions results in the posting of a financial document? (2 answers)",
+            type: "multiple",
+            options: ["Billing document", "Goods Issue", "Sales Order", "Quote"],
+            correct: ["Billing document", "Goods Issue"],
+            explanation: "Both the Billing document (creating an invoice/receivable) and the Goods Issue (cost of goods sold, inventory change) are integrated logistic steps that trigger financial postings."
+        },
+        {
+            question: "What is the main purpose of the Manage Customer Line Items application?",
+            type: "single",
+            options: ["To manage customer claims", "To manage customer loyalty programs", "Manage the customer portfolio", "To manage customer financial transactions"],
+            correct: ["To manage customer financial transactions"],
+            explanation: "This application is the central tool for viewing, analyzing, and processing all financial transactions (open and cleared items) related to a customer."
+        },
+        {
+            question: "What are the three data levels in the customer master record?",
+            type: "single",
+            options: ["Company code, chart of accounts, controlling area", "General data, company code data, and sales area data", "Grand ledger, customers, and vendors", "Industry sector, profit center, and cost center"],
+            correct: ["General data, company code data, and sales area data"],
+            explanation: "Customer master data is structured into General Data (client-level), Company Code Data (FI-level), and Sales Area Data (SD-level)."
+        },
+        {
+            question: "What is the point of extending a customer to several company codes?",
+            type: "single",
+            options: ["Use the same customer for multiple legal entities", "To create duplicates", "To allow tax posting", "To block the credit limit"],
+            correct: ["Use the same customer for multiple legal entities"],
+            explanation: "Extending a customer allows different legal entities within the same company to transact with and post to the same customer BP record."
+        },
+        {
+            question: "Which tool allows for the mass maintenance of customer data?",
+            type: "single",
+            options: ["Manage Journal Entries", "Customer Master Data Mass Change application", "Display Changes to Business Partners", "Manage Purchase Orders"],
+            correct: ["Customer Master Data Mass Change application"],
+            explanation: "The 'Customer Master Data Mass Change' application is explicitly designed for making bulk updates efficiently across multiple customer records."
+        },
+        {
+            question: "What is the purpose of the “four-eyes principle”?",
+            type: "single",
+            options: ["To ensure that data changes are reviewed and approved by another user", "To restrict payment methods", "To create invoices in pairs", "To control batch processing"],
+            correct: ["To ensure that data changes are reviewed and approved by another user"],
+            explanation: "The four-eyes principle (or dual control) is a security measure requiring a second person to verify and approve sensitive master data changes, preventing fraud or errors."
+        },
+        {
+            question: "What are examples of documents that can be entered in AR? (3 answers)",
+            type: "multiple",
+            options: ["Customer Invoices", "Credit Memos", "Residual Items", "Cost Center Allocation"],
+            correct: ["Customer Invoices", "Credit Memos", "Residual Items"],
+            explanation: "AR handles sales-related transactions, including invoices, credit memos (returns/allowances), and residual items (for partial payments or write-offs)."
+        },
+        // CHAPITRE 8
+        {
+            question: "Which are examples of FI sub-ledger accounts? (Choose 2)",
+            type: "multiple",
+            options: ["To manage non-standard business transactions in FI", "To record normal vendor invoices", "To ensure accounting and reporting compliance", "To manage bank statements"],
+            correct: ["To manage non-standard business transactions in FI", "To ensure accounting and reporting compliance"],
+            explanation: "Special G/L transactions are used for non-standard, often advance, transactions and serve a specific reporting or compliance purpose, distinguished from regular AP/AR postings."
+        },
+        {
+            question: "Which modules are primarily impacted by special G/L transactions?",
+            type: "multiple",
+            options: ["Accounts Receivable (AR)", "Accounts Payable (AP)", "Materials Management", "Production Planning"],
+            correct: ["Accounts Receivable (AR)", "Accounts Payable (AP)"],
+            explanation: "Special G/L transactions usually involve subledger accounts for customers (AR) and vendors (AP), covering items like down payments and guarantees."
+        },
+        {
+            question: "What distinguishes special General Ledger transactions from standard transactions?",
+            type: "single",
+            options: ["They are recorded using alternative reconciliation accounts", "They use different fiscal year variants.", "They only affect cost centers.", "They are not posted in FI"],
+            correct: ["They are recorded using alternative reconciliation accounts"],
+            explanation: "The key distinction is that special G/L items do not use the standard AR/AP reconciliation accounts but dedicated special G/L accounts."
+        },
+        {
+            question: "Which document type represents a down payment request in SAP?",
+            type: "single",
+            options: ["Noted item (statistical document)", "Actual posting", "Credit memo", "Asset entry"],
+            correct: ["Noted item (statistical document)"],
+            explanation: "A down payment request is a statistical document (noted item) that serves as a reminder or trigger for the payment program but does not generate a true accounting entry."
+        },
+        {
+            question: "What is the main characteristic of a noted item? (2 ANSWERS)",
+            type: "multiple",
+            options: ["It will serve as a reference for future postings.", "It modifies reconciliation accounts", "It generates tax statements", "It does not update account balances."],
+            correct: ["It will serve as a reference for future postings.", "It does not update account balances."],
+            explanation: "Noted items are statistical entries used for tracking and reference; they do not impact the actual financial balances in the G/L."
+        },
+        {
+            question: "Which application allows you to post a received customer down payment?",
+            type: "single",
+            options: ["Manage Outgoing Payments", "Post Incoming Payments", "Manage Customer Items", "Display Account Balances"],
+            correct: ["Post Incoming Payments"],
+            explanation: "Since a down payment from a customer is money *received*, the 'Post Incoming Payments' application is used for the actual financial posting."
+        },
+        {
+            question: "Which document type is generally used for recording down payments?",
+            type: "single",
+            options: ["DR (Customer Down Payment)", "DZ", "LE", "SU"],
+            correct: ["DR (Customer Down Payment)"],
+            explanation: "DR is a common document type prefix for documents related to Customer Down Payments (Debitor/Receivable)."
+        },
+        {
+            question: "What are the functions of the billing plan in connection with down payment processing in SAP S/4HANA Cloud? (2 answers)",
+            type: "multiple",
+            options: ["It automatically posts invoices on scheduled dates.", "It records one or plus down payment agreements as a date.", "It assigns a down payment agreement directly to an item or all items in the order.", "It processes down payment requests according to scheduled dates."],
+            correct: ["It records one or plus down payment agreements as a date.", "It assigns a down payment agreement directly to an item or all items in the order."],
+            explanation: "The billing plan is used to schedule billing dates and to specify the down payment agreement terms (dates, amounts, and items)."
+        },
+        {
+            question: "What is the status of a down payment request in SD once it is cleared?",
+            type: "single",
+            options: ["Open", "Cleared", "Deleted", "Cancelled"],
+            correct: ["Cleared"],
+            explanation: "Once the actual down payment is posted against the request, the request item itself moves from 'Open' (noted) status to 'Cleared'."
+        },
+        {
+            question: "What are the required conditions before a down payment can be made? (three possible answers)",
+            type: "multiple",
+            options: ["A customer master record", "Creation of the asset base", "Down payment request", "Special G/L configuration in the system"],
+            correct: ["A customer master record", "Down payment request", "Special G/L configuration in the system"],
+            explanation: "A customer record is needed for the transaction, the request initiates the process, and the special G/L configuration is required to redirect the posting."
+        },
+        // CHAPITRE 9
+        {
+            question: "What is the objective of using minimum amounts in the dunning procedure?",
+            type: "single",
+            options: ["To ensure immediate recovery of large amounts due.", "To prevent small amounts due from triggering high dunning levels.", "To increase the number of dunning notices.", "To create dunning runs for every document."],
+            correct: ["To prevent small amounts due from triggering high dunning levels."],
+            explanation: "Minimum amounts ensure that the dunning process only targets debts that are significant enough to warrant the administrative cost and effort of sending a dunning notice."
+        },
+        {
+            question: "Is it possible to dun customers for a down payment?",
+            type: "single",
+            options: ["Only unpaid invoices can be subject to dunning.", "Overdue down payment requests and unpaid invoices can be subject to dunning."],
+            correct: ["Overdue down payment requests and unpaid invoices can be subject to dunning."],
+            explanation: "The dunning program can be configured to process both standard open receivables (invoices) and special G/L noted items (like overdue down payment requests)."
+        },
+        {
+            question: "What are the characteristics of dunning charges? (3 correct answers)",
+            type: "multiple",
+            options: ["You can define dunning charges for each company code.", "Dunning charges depend on the dunning level.", "You can use word processing functions to print these charges on the dunning notice.", "Dunning charges can be a fixed amount and, at the same time, a percentage of the dunning amount.", "You can define a minimum amount for dunning charges."],
+            correct: ["Dunning charges depend on the dunning level.", "You can use word processing functions to print these charges on the dunning notice.", "You can define a minimum amount for dunning charges."],
+            explanation: "Dunning charges can be defined per level, included in the correspondence via text, and subject to minimum amount rules, but they are not defined per company code (only one set of rules applies)."
+        },
+        {
+            question: "What determines the dunning level of an item?",
+            type: "single",
+            options: ["The invoice amount.", "The number of months passed.", "The number of days overdue based on the net due date.", "The number of payments received."],
+            correct: ["The number of days overdue based on the net due date."],
+            explanation: "The dunning level is calculated based on how many days an item is past its due date, using the overdue days defined for each level in the dunning procedure."
+        },
+        {
+            question: "Which dunning-related data do you maintain in the Business Partner master record? (3 correct answers)",
+            type: "multiple",
+            options: ["Due date interval", "Dunning Block", "Dunning Procedure", "Dunning Notice", "Dunning Level"],
+            correct: ["Dunning Block", "Dunning Procedure", "Dunning Level"],
+            explanation: "The BP master record stores the Procedure (ruleset), Block (to stop dunning), and the current Dunning Level reached by the customer."
+        },
+        {
+            question: "What happens if the dunning level does not reach the minimum amount of receivables due?",
+            type: "single",
+            options: ["Items are set to the highest dunning level.", "Items are not packed.", "Items are postponed to the lower dunning level."],
+            correct: ["Items are postponed to the lower dunning level."],
+            explanation: "If the minimum amount required for a dunning level is not met, the item is processed at the lower level or skipped to avoid unnecessary high-level dunning for small amounts."
+        },
+        {
+            question: "What is the maximum number of dunning levels possible?",
+            type: "single",
+            options: ["Ten", "Three", "Nine", "Five"],
+            correct: ["Nine"],
+            explanation: "The SAP system traditionally allows a maximum of 9 dunning levels to be defined in a procedure."
+        },
+        {
+            question: "For an outstanding item to be dunned, which of the following must NOT be true? (3 correct answers)",
+            type: "multiple",
+            options: ["The item is blocked for dunning.", "The payment is overdue considering the due date, payment terms, and grace days.", "The item has been paid in full.", "The item is within the grace period defined by the dunning procedure."],
+            correct: ["The item is blocked for dunning.", "The item has been paid in full.", "The item is within the grace period defined by the dunning procedure."],
+            explanation: "The dunning program skips items that are blocked, already cleared (paid), or not yet overdue (i.e., still within the grace period)."
+        },
+        {
+            question: "Where is the modified dunning letter template associated with the dunning procedure located?",
+            type: "single",
+            options: ["Adobe LiveCycle Designer", "Local Host", "Output Parameter Determination application"],
+            correct: ["Output Parameter Determination application"],
+            explanation: "In S/4HANA Cloud, the form determination for dunning letters is managed through the 'Output Parameter Determination' application."
+        },
+        {
+            question: "What does the Dunning Proposal step allow?",
+            type: "single",
+            options: ["To review and adjust data before generating dunning notices", "To block accounts", "To automatically post interest", "To delete overdue items"],
+            correct: ["To review and adjust data before generating dunning notices"],
+            explanation: "The proposal step is a crucial intermediate stage where the user can manually review, block, or adjust the dunning run results before the final notices are printed/sent."
+        },
+        // CHAPITRE 10/11/12
+        {
+            question: "What is the main purpose of Asset Accounting in SAP?",
+            type: "single",
+            options: ["To manage tax declarations", "To track and manage fixed assets throughout their lifecycle", "To record sales transactions", "To reconcile customer accounts"],
+            correct: ["To track and manage fixed assets throughout their lifecycle"],
+            explanation: "FI-AA is dedicated to managing, valuing, and tracking the complete lifecycle of tangible and intangible fixed assets, including their depreciation."
+        },
+        {
+            question: "Which type of asset requires capitalization through a project or order?",
+            type: "single",
+            options: ["Finished goods", "Intangible assets", "Assets under Construction (AuC)", "Investment property"],
+            correct: ["Assets under Construction (AuC)"],
+            explanation: "Assets Under Construction (AuC) typically accrue costs via WBS elements or internal orders before being settled/capitalized to the final fixed asset."
+        },
+        {
+            question: "What defines the relationship between depreciation areas and G/L accounts?",
+            type: "single",
+            options: ["Cost center mapping", "Account determination", "Posting key", "Depreciation key"],
+            correct: ["Account determination"],
+            explanation: "The Account Determination key links the asset class to the G/L accounts where acquisitions, depreciations, and retirements are posted for each depreciation area."
+        },
+        {
+            question: "The asset portfolio was not completely entered in previous years. The missing assets can be entered subsequently with which transaction?",
+            type: "single",
+            options: ["Post Write-up", "Post-Capitalization", "Post Acquisition", "Post-Scrapping"],
+            correct: ["Post-Capitalization"],
+            explanation: "Post-Capitalization is used to record acquisitions that occurred in prior years but were missed, allowing the system to retroactively calculate depreciation."
+        },
+        {
+            question: "What is the “useful life” of an asset?",
+            type: "single",
+            options: ["Period of insurance coverage", "Expected operational lifetime used for depreciation", "The period until revaluation", "Accounting year"],
+            correct: ["Expected operational lifetime used for depreciation"],
+            explanation: "The useful life is the estimated period over which the asset will be used or from which economic benefits will be consumed, driving depreciation calculations."
+        },
+        {
+            question: "What is the main benefit of asset subnumbers?",
+            type: "single",
+            options: ["To manage several components under one main asset", "To store tax information", "To create duplicate records", "To simplify numbering"],
+            correct: ["To manage several components under one main asset"],
+            explanation: "Subnumbers allow tracking individual components, additions, or partial retirements related to the same primary asset number."
+        },
+        {
+            question: "In which configuration step can you define that a maximum amount check is to be made for an asset class?",
+            type: "single",
+            options: ["Define asset class.", "Make Valuation View-Dependent Settings for Asset Class.", "Specify Amounts.", "Define Screen Layout for Asset Master Data."],
+            correct: ["Make Valuation View-Dependent Settings for Asset Class."],
+            explanation: "The maximum amount check (for low-value assets or maximum capitalization limits) is configured at the level of the asset class, specific to the valuation/depreciation area."
+        },
+        {
+            question: "Which event must be selected to validate a cost center?",
+            type: "single",
+            options: ["Fixed Assets: Time-independent data", "Fixed Assets: Time-dependent data", "Fixed assets: Time-independent valuation", "Fixed assets: Time-dependent valuation"],
+            correct: ["Fixed Assets: Time-dependent data"],
+            explanation: "Cost center assignments for assets can change over time (time-dependent), so the validation must be applied to this specific event type to ensure accuracy."
+        },
+        {
+            question: "Which statements regarding the asset class are correct? (3 answers)",
+            type: "multiple",
+            options: ["New Asset Classes can create and assign a new account determination.", "New account determinations can be assigned to the asset classes are possible, even if postings exist.", "Changes to the accounts are possible, even if postings exist.", "The default values for useful lives and depreciation keys can be adjusted.", "The same account determinations can be assigned to different asset classes."],
+            correct: ["New Asset Classes can create and assign a new account determination.", "The default values for useful lives and depreciation keys can be adjusted.", "The same account determinations can be assigned to different asset classes."],
+            explanation: "Asset classes link to account determination, allow default values for useful life, and multiple classes can share the same account determination logic."
+        },
+        {
+            question: "You want the depreciation key to be selected automatically depending on the country, overriding the default value from the asset class. Which event and rule type should you choose?",
+            type: "single",
+            options: ["Fixed assets: Time-independent data – substitution rule", "Fixed assets: Time-dependent valuation - validation", "Fixed assets: Time-independent valuation substitution rule", "Fixed assets: Time-dependent valuation - substitution rule"],
+            correct: ["Fixed assets: Time-dependent valuation - substitution rule"],
+            explanation: "Substitution rules (overriding existing values) are used on time-dependent valuation data (like depreciation keys) to set values based on specific criteria like country."
+        },
+        {
+            question: "Which of the following activities are part of the asset procurement process in materials management? (3 answers)",
+            type: "multiple",
+            options: ["Purchase order", "Goods receipt", "Inventory receipt", "Invoice receipt"],
+            correct: ["Purchase order", "Goods receipt", "Invoice receipt"],
+            explanation: "The standard MM procurement process for assets includes creating the PO, recording the Goods Receipt (GR), and processing the Vendor Invoice Receipt (IR)."
+        },
+        {
+            question: "In the procurement process, when using a valuated goods receipt, when is a fixed asset capitalized at purchase order value?",
+            type: "single",
+            options: ["Purchase order", "Goods receipt", "Invoice receipt", "Payment"],
+            correct: ["Goods receipt"],
+            explanation: "When a valuated GR is used, the asset acquisition posting is typically triggered upon the Goods Receipt, debiting the asset and crediting the GR/IR clearing account."
+        },
+        {
+            question: "Which field in the purchase order item must have the value Asset (A) so that you can enter an asset number in the account assignment?",
+            type: "single",
+            options: ["Product Type Group", "Material Group", "Account Assignment Category", "Valuation Class"],
+            correct: ["Account Assignment Category"],
+            explanation: "The Account Assignment Category dictates whether the purchase order line item is assigned to a Cost Center (K), Sales Order (C), or Fixed Asset (A)."
+        },
+        {
+            question: "What is the effect of the payment of the asset under cash discount deduction?",
+            type: "single",
+            options: ["No automatic change to the Acquisition and Production Costs (APC) of the asset.", "A reduction in the APC values of the asset.", "Increase in depreciation of the asset in the year of payment.", "A credit to the P&L account."],
+            correct: ["A reduction in the APC values of the asset."],
+            explanation: "Cash discounts reduce the acquisition cost (APC) of the asset, as the asset's true cost is the amount actually paid."
+        },
+        {
+            question: "What is the sequence of the down payment process?",
+            type: "single",
+            options: ["Purchase Order - Goods Receipt - Down Payment - Invoice Receipt – Payment", "Purchase Order - Invoice Receipt - Down Payment - Goods Receipt - Payment", "Purchase Order - Down Payment - Goods Receipt - Invoice Receipt – Payment"],
+            correct: ["Purchase Order - Down Payment - Goods Receipt - Invoice Receipt – Payment"],
+            explanation: "The typical sequence is: PO creation, Down Payment is requested/made, Goods are Received, Invoice is received (and down payment is cleared), and finally, the remaining balance is Paid."
+        },
+        {
+            question: "Which characteristics must the asset class possess so that down payments for investment projects WBS elements can be settled to the corresponding Asset under Construction? (2 correct answers)",
+            type: "multiple",
+            options: ["Depreciation Allowed", "Down Payment Allowed", "Investment Measure", "Maintenance"],
+            correct: ["Down Payment Allowed", "Investment Measure"],
+            explanation: "The asset class must be flagged to allow both 'Down Payment Allowed' (to handle the initial transaction) and 'Investment Measure' (to link to the WBS element/order settlement)."
+        },
+        {
+            question: "To enter assets with different valuation approaches, you can fill the following fields: (2 answers)",
+            type: "multiple",
+            options: ["Posting Key", "Ledger", "Depreciation Area", "Transaction Type"],
+            correct: ["Ledger", "Depreciation Area"],
+            explanation: "Different valuation approaches are handled by posting to different ledgers (e.g., IFRS vs. Local GAAP) and different depreciation areas within the asset master record."
+        },
+        {
+            question: "Which SAP modules are most directly integrated with Asset Accounting?",
+            type: "single",
+            options: ["MM, SD, PP", "MM (Materials Management), FI (Financial Accounting), CO (Controlling)", "HR, PP, PM", "QM, EWM, TM"],
+            correct: ["MM (Materials Management), FI (Financial Accounting), CO (Controlling)"],
+            explanation: "FI-AA is tightly integrated with MM for asset procurement, FI for all financial postings (via the Universal Journal), and CO for cost allocations."
+        },
+        {
+            question: "When you sell an asset, what determines the G/L accounts to be posted?",
+            type: "single",
+            options: ["Depreciation key", "Account determination linked to asset class", "Posting key", "Document type"],
+            correct: ["Account determination linked to asset class"],
+            explanation: "Similar to acquisition, the G/L accounts used for asset retirement (sale, scrap) are governed by the Account Determination key assigned to the asset's class."
+        },
+        {
+            question: "Which posting in FI–AA integration updates the acquisition cost?",
+            type: "single",
+            options: ["Tax posting", "Debit to asset and credit to clearing account", "Debit to expense", "Credit to depreciation account"],
+            correct: ["Debit to asset and credit to clearing account"],
+            explanation: "The standard acquisition posting debits the Asset Reconciliation Account and credits a clearing account (like GR/IR or Vendor), which establishes the Acquisition and Production Costs (APC)."
+        },
+        // CHAPITRE 14
+        {
+            question: "What is the objective of the Fiori application “Manage Banks”?",
+            type: "single",
+            options: ["To create fixed assets", "To maintain central bank reference data", "To post customer invoices", "To process payroll"],
+            correct: ["To maintain central bank reference data"],
+            explanation: "The 'Manage Banks' application is used to maintain the master data for all external banks (Bank Key, Bank Name, Address, etc.) in the central system."
+        },
+        {
+            question: "What is the category of banks you can manage with “Manage Banks”?",
+            type: "single",
+            options: ["Only vendor banks", "Only customer banks", "Internal banks and partner banks", "Only internal company accounts"],
+            correct: ["Internal banks and partner banks"],
+            explanation: "The application allows maintenance for both the company's own internal bank accounts and external partner banks (used by customers/vendors)."
+        },
+        {
+            question: "Which approach creates a separate set of General Ledger accounts for each internal bank?",
+            type: "single",
+            options: ["New reconciliation approach", "Functional domain approach", "Classic method", "Asset reconciliation approach"],
+            correct: ["Classic method"],
+            explanation: "In the Classic Method (or Old Reconciliation Approach), each bank account had its own G/L account for detailed reconciliation."
+        },
+        {
+            question: "On which accounts can you perform clearing operations?",
+            type: "single",
+            options: ["Only customers", "Only G/L", "Only vendors", "Customers, vendors, and general ledger"],
+            correct: ["Customers, vendors, and general ledger"],
+            explanation: "Clearing operations (matching open debits and credits) are performed in the subledgers (AR/AP) and in the general ledger (e.g., bank clearing accounts)."
+        },
+        {
+            question: "A company with 100 bank accounts using the classic approach might need approximately how many clearing accounts?",
+            type: "single",
+            options: ["10", "50", "800", "5"],
+            correct: ["800"],
+            explanation: "Under the classic method, you need one main G/L account per bank account plus additional clearing accounts (e.g., for incoming/outgoing payments), significantly increasing the G/L count."
+        },
+        {
+            question: "Which application allows you to manually create or view bank statements?",
+            type: "single",
+            options: ["Manage Internal Banks", "Manage Bank Statements", "Monitor Pending Items", "Cash Position"],
+            correct: ["Manage Bank Statements"],
+            explanation: "The 'Manage Bank Statements' Fiori app is used to input or view the details of bank statements, whether manually entered or electronically uploaded."
+        },
+        {
+            question: "Which option belongs to the “Manage Bank Statements” functionality?",
+            type: "single",
+            options: ["Create new instructions", "Delete or reverse statements", "Present opening and closing balances", "All of the above answers"],
+            correct: ["All of the above answers"],
+            explanation: "The application provides comprehensive control over bank statements, including their creation, viewing, and lifecycle management (reversing/deleting)."
+        },
+        {
+            question: "The cash flow analysis tool provides visibility into:",
+            type: "single",
+            options: ["Assets only", "Bank accounts only", "Cash position, liquidity forecast, actual cash flow", "General ledger balances only"],
+            correct: ["Cash position, liquidity forecast, actual cash flow"],
+            explanation: "The cash flow tools provide a holistic view of current bank balances (Cash Position), expected future inflows/outflows (Liquidity Forecast), and recorded transactions (Actual Cash Flow)."
+        },
+        {
+            question: "Which application is used to process unmatched items from bank statements?",
+            type: "single",
+            options: ["Retrospective analyzer", "Reprocess Bank Statements", "Manage Bank Statements", "Cash Flow Analyzer"],
+            correct: ["Reprocess Bank Statements"],
+            explanation: "When bank statement items cannot be automatically cleared by the system, they land in the 'Reprocess Bank Statements' application for manual intervention and posting."
+        },
+        {
+            question: "What is the main objective of SAP Bank Account Management?",
+            type: "single",
+            options: ["To manage payroll", "To manage bank master data and internal banks", "To establish financial statements", "To process customer payments"],
+            correct: ["To manage bank master data and internal banks"],
+            explanation: "BAM focuses on the administration of the company's internal and partner bank accounts, controlling account data, signatories, and limits."
+        }
+    ];
+}
+
+
+// =====================================================================================
+// FONCTIONS DE GESTION DE VUES ET DE DONNÉES
+// =====================================================================================
+
+function switchView(viewId) {
+    document.getElementById('quiz-view').classList.add('hidden');
+    document.getElementById('admin-view').classList.add('hidden');
+    
+    document.getElementById(viewId).classList.remove('hidden');
+
+    if (viewId === 'admin-view') {
+        renderAdminPanel();
+    }
+}
+
+// Chargement du QuizData et du progrès utilisateur
+function loadQuizData() {
+    // 1. Charger les questions
+    const storedData = localStorage.getItem('quizData');
+    if (storedData) {
+        try {
+            quizData = JSON.parse(storedData);
+        } catch (e) {
+            console.error("Erreur lors du chargement de localStorage (quizData). Utilisation des données par défaut.", e);
+            quizData = getInitialQuizData(); 
+        }
+    } else {
+        quizData = getInitialQuizData();
+    }
+    totalQuestions = quizData.length;
+
+    // 2. Charger la progression utilisateur
+    const storedProgress = localStorage.getItem('userProgress');
+    if (storedProgress) {
+        try {
+            userProgress = JSON.parse(storedProgress);
+        } catch (e) {
+            console.error("Erreur lors du chargement de localStorage (userProgress). Réinitialisation de la progression.", e);
+            userProgress = {};
+        }
+    } else {
+        userProgress = {};
+    }
+}
+
+// Sauvegarde de la progression utilisateur
+function saveUserProgress() {
+    localStorage.setItem('userProgress', JSON.stringify(userProgress));
+}
+
+// NOUVEAU: Fonction déclenchée par le bouton de réinitialisation pour afficher la confirmation
+function promptResetQuiz() {
+    // Réinitialise la modal pour le contenu de confirmation
+    const modalContentText = document.getElementById('modal-content-text');
+    modalContentText.innerHTML = `
+        <p class="text-lg font-semibold text-gray-800">Êtes-vous sûr de vouloir réinitialiser tout l'historique de vos réponses ?</p>
+        <p class="text-red-600 mt-2">Cette action est <span class="font-bold">irréversible</span> et votre progression actuelle sera perdue.</p>
+        <div id="modal-button-container" class="flex justify-end space-x-3 mt-6">
+            <button onclick="closeMessageModal()" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition font-medium">
+                Annuler
+            </button>
+            <button onclick="resetQuizProgress()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium">
+                Confirmer la Réinitialisation
+            </button>
+        </div>
+    `;
+    showMessageModal("Confirmation de Réinitialisation", modalContentText.innerHTML, false);
+}
+
+// NOUVEAU: Logique de réinitialisation après confirmation
+function resetQuizProgress() {
+    closeMessageModal(); // Ferme la modal de confirmation
+    
+    localStorage.removeItem('userProgress');
+    userProgress = {};
+    currentScore = 0;
+    
+    // Redessine le quiz pour appliquer l'état initial
+    renderQuiz(); 
+    
+    // Affiche une modal de succès
+    showMessageModal(
+        "Réinitialisation Effectuée", 
+        '<p class="text-green-600 font-semibold">L\'historique du quiz a été réinitialisé avec succès !</p>',
+        true // Afficher le bouton de fermeture par défaut
+    );
+}
+
+// =====================================================================================
+// LOGIQUE DU QUIZ
+// =====================================================================================
+
+function calculateScore() {
+    let score = 0;
+    quizData.forEach((q, qIndex) => {
+        const progress = userProgress[qIndex];
+        if (progress && progress.isCorrect) {
+            score++;
+        }
+    });
+    return score;
+}
+
+function updateScoreDisplay() {
+    currentScore = calculateScore();
+    const scoreEl = document.getElementById('score-display');
+    if (scoreEl) {
+        scoreEl.textContent = `Score: ${currentScore} / ${totalQuestions}`;
+    }
+}
+
+function renderChapterNav() {
+    const navContainer = document.getElementById('nav-links-container');
+    if (!navContainer) return;
+
+    navContainer.innerHTML = '';
+
+    chapterBreaks.forEach(chapter => {
+        const link = document.createElement('a');
+        link.href = `#${chapter.anchor}`;
+        link.textContent = chapter.title.split(': ')[0];
+        link.title = chapter.title;
+        link.className = 'nav-link bg-indigo-50 text-indigo-700 font-semibold text-center shadow-sm';
+        navContainer.appendChild(link);
+    });
+}
+
+function renderQuiz() {
+    const container = document.getElementById('quiz-container');
+    container.innerHTML = '';
+
+    loadQuizData(); 
+    updateScoreDisplay();
+    renderChapterNav();
+
+    let currentChapterIndex = 0;
+
+    quizData.forEach((q, qIndex) => {
+        const progress = userProgress[qIndex] || { answered: false, userSelections: [], isCorrect: false };
+        
+        // Ajouter le titre du chapitre si c'est le début d'un nouveau chapitre
+        if (currentChapterIndex < chapterBreaks.length && chapterBreaks[currentChapterIndex].start === qIndex) {
+            const chapter = chapterBreaks[currentChapterIndex];
+            const chapterTitleHtml = `
+                <h2 id="${chapter.anchor}" class="text-3xl font-extrabold text-indigo-700 mt-10 mb-4 pt-4 border-b-2 border-indigo-300">
+                    ${chapter.title}
+                </h2>
+            `;
+            container.innerHTML += chapterTitleHtml;
+            currentChapterIndex++;
+        }
+        
+        const questionHtml = `
+            <div id="q-${qIndex}" class="question-card p-4 md:p-6 bg-white rounded-xl border border-gray-200 ${progress.answered ? (progress.isCorrect ? 'bg-custom-green border-custom-green' : 'bg-custom-red border-custom-red') : ''}">
+                <p class="font-semibold text-gray-700 mb-4 text-lg">
+                    ${qIndex + 1}. ${q.question}
+                    ${q.type === 'multiple' ? '<span class="text-sm font-normal text-indigo-500 italic">(Plusieurs réponses possibles)</span>' : ''}
+                </p>
+                <div class="options-container space-y-3">
+                    ${q.options.map((option, oIndex) => {
+                        const isSelected = progress.userSelections.includes(option.trim());
+                        const isDisabled = progress.answered;
+                        const isCorrectOption = q.correct.includes(option.trim());
+                        
+                        let labelClasses = 'option-label flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors duration-150 bg-white';
+                        
+                        if (progress.answered) {
+                            if (isSelected) {
+                                labelClasses = isCorrectOption 
+                                    ? 'bg-custom-green border-custom-green flex items-center p-3 rounded-lg border' 
+                                    : 'bg-custom-red border-custom-red flex items-center p-3 rounded-lg border';
+                            } else if (isCorrectOption) {
+                                // Afficher la bonne réponse manquée
+                                labelClasses = 'bg-custom-green border-dashed border-2 border-green-400 flex items-center p-3 rounded-lg border';
+                            } else {
+                                labelClasses = 'bg-white flex items-center p-3 rounded-lg border border-gray-200';
+                            }
+                        }
+
+                        return `
+                            <label for="q${qIndex}o${oIndex}" class="${labelClasses}">
+                                <input 
+                                    type="${q.type === 'single' ? 'radio' : 'checkbox'}" 
+                                    id="q${qIndex}o${oIndex}" 
+                                    name="q${qIndex}" 
+                                    value="${option.trim()}" 
+                                    class="form-${q.type === 'single' ? 'radio' : 'checkbox'} text-indigo-600 focus:ring-indigo-500 h-4 w-4"
+                                    ${isSelected ? 'checked' : ''}
+                                    ${isDisabled ? 'disabled' : ''}
+                                >
+                                <span class="ml-3 text-gray-800">${option}</span>
+                            </label>
+                        `;
+                    }).join('')}
+                </div>
+                <div class="flex flex-wrap gap-3 mt-4">
+                    <button 
+                        onclick="checkAnswer(${qIndex})" 
+                        id="btn-${qIndex}" 
+                        class="px-6 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition duration-150 shadow-md disabled:opacity-50"
+                        ${progress.answered ? 'disabled' : ''}
+                    >
+                        Vérifier la réponse
+                    </button>
+                    <button 
+                        onclick="showExplanation(${qIndex})" 
+                        id="exp-btn-${qIndex}" 
+                        class="px-6 py-2 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition duration-150 shadow-md"
+                    >
+                        Explication
+                    </button>
+                </div>
+                <div id="feedback-${qIndex}" class="mt-3 text-sm font-medium ${progress.answered ? '' : 'hidden'}">
+                    ${progress.answered ? (progress.isCorrect ? '<span class="text-green-600">Correct !</span>' : generateFeedbackHtml(qIndex, q, progress.userSelections)) : ''}
+                </div>
+            </div>
+        `;
+        container.innerHTML += questionHtml;
+    });
+}
+
+function generateFeedbackHtml(qIndex, question, userSelections) {
+    if (userProgress[qIndex] && userProgress[qIndex].isCorrect) {
+        return '<span class="text-green-600">Correct !</span>';
+    }
+    
+    const correctAnswersHtml = question.correct.map(answer => 
+        `<span class="font-bold">${answer}</span>`
+    ).join(' <span class="mx-1">&bull;</span> ');
+
+    return `
+        <span class="text-red-600">Faux. Veuillez revoir la réponse.</span>
+        <div class="mt-2 p-2 bg-red-100 rounded-lg border border-red-300">
+            <span class="font-semibold text-gray-800">Réponse(s) correcte(s) :</span>
+            <p class="text-red-700">${correctAnswersHtml}</p>
+        </div>
+    `;
+}
+
+function checkAnswer(qIndex) {
+    const question = quizData[qIndex];
+    const questionEl = document.getElementById(`q-${qIndex}`);
+    const optionsContainer = questionEl.querySelector('.options-container');
+    const options = Array.from(optionsContainer.querySelectorAll(`input[name="q${qIndex}"]`));
+    const checkButton = document.getElementById(`btn-${qIndex}`);
+
+    if (checkButton.disabled) return;
+    
+    let userSelections = options
+        .filter(input => input.checked)
+        .map(input => input.value);
+    
+    // Vérification de la correction
+    const isCorrect = question.correct.length === userSelections.length &&
+                      question.correct.every(val => userSelections.includes(val));
+
+    // Mise à jour et sauvegarde de la progression
+    userProgress[qIndex] = {
+        answered: true,
+        userSelections: userSelections,
+        isCorrect: isCorrect
+    };
+    saveUserProgress();
+
+    // Redessiner uniquement la question pour appliquer les classes et le feedback
+    renderQuestion(qIndex);
+    updateScoreDisplay();
+}
+
+// Fonction pour rendre une seule question (utilisée après la vérification)
+function renderQuestion(qIndex) {
+    const question = quizData[qIndex];
+    const progress = userProgress[qIndex] || { answered: false, userSelections: [], isCorrect: false };
+    const questionEl = document.getElementById(`q-${qIndex}`);
+    const checkButton = document.getElementById(`btn-${qIndex}`);
+    const feedbackEl = document.getElementById(`feedback-${qIndex}`);
+    
+    // Appliquer les styles de carte
+    questionEl.classList.remove('bg-custom-green', 'border-custom-green', 'bg-custom-red', 'border-custom-red', 'bg-white');
+    questionEl.classList.add(progress.isCorrect ? 'bg-custom-green' : 'bg-custom-red');
+    questionEl.classList.add(progress.isCorrect ? 'border-custom-green' : 'border-custom-red');
+    
+    // Afficher le feedback
+    feedbackEl.innerHTML = generateFeedbackHtml(qIndex, question, progress.userSelections);
+    feedbackEl.classList.remove('hidden');
+
+    // Désactiver le bouton de vérification
+    checkButton.disabled = true;
+
+    // Mise à jour des options dans le DOM (pour les classes et désactivation)
+    const optionsContainer = questionEl.querySelector('.options-container');
+    const options = Array.from(optionsContainer.querySelectorAll(`input[name="q${qIndex}"]`));
+
+    options.forEach(input => {
+        const optionValue = input.value;
+        const isCorrectOption = question.correct.includes(optionValue);
+        const isSelected = input.checked;
+        const label = input.closest('label');
+
+        // Nettoyer les classes non persistantes
+        label.classList.remove('bg-custom-green', 'border-custom-green', 'bg-custom-red', 'border-custom-red', 'bg-gray-50', 'bg-white', 'border-dashed', 'border-2', 'border-green-400');
+        
+        input.disabled = true;
+        
+        if (isSelected) {
+            label.classList.add(isCorrectOption ? 'bg-custom-green' : 'bg-custom-red');
+            label.classList.add(isCorrectOption ? 'border-custom-green' : 'border-custom-red');
+        } else if (isCorrectOption) {
+            // Afficher la bonne réponse non sélectionnée si la réponse globale est fausse
+            if (!progress.isCorrect) {
+                label.classList.add('bg-custom-green', 'border-dashed', 'border-2', 'border-green-400');
+            }
+        }
+         if (!label.classList.contains('bg-custom-green') && !label.classList.contains('bg-custom-red')) {
+            label.classList.add('bg-white');
+         }
+    });
+
+}
+
+// =====================================================================================
+// LOGIQUE DE L'ADMINISTRATION
+// =====================================================================================
+
+function renderAdminPanel() {
+    const adminContent = document.getElementById('admin-content');
+    adminContent.innerHTML = `
+        <h3 class="text-2xl font-bold text-gray-700 mb-6 border-b pb-2">Liste des Questions</h3>
+        <ul id="question-list" class="space-y-2 max-h-[60vh] overflow-y-auto p-2 bg-gray-50 rounded-lg">
+            ${quizData.map((q, index) => `
+                <li class="p-3 bg-white rounded-lg border border-gray-200 flex justify-between items-center hover:bg-indigo-50 cursor-pointer transition-colors duration-150">
+                    <span class="text-sm font-medium text-gray-800 truncate">${index + 1}. ${q.question}</span>
+                    <button 
+                        class="text-xs px-3 py-1 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 font-semibold ml-4"
+                        onclick="editQuestionExplanation(${index})"
+                    >
+                        Éditer
+                    </button>
+                </li>
+            `).join('')}
+        </ul>
+        
+        <div id="explanation-editor" class="mt-8 hidden">
+            <!-- Le contenu de l'éditeur sera injecté ici lors de l'édition -->
+        </div>
+    `;
+    // Assure que l'éditeur est caché initialement
+    document.getElementById('explanation-editor').innerHTML = '';
+}
+
+function editQuestionExplanation(qIndex) {
+    currentlyEditingIndex = qIndex;
+    const question = quizData[qIndex];
+    
+    const editorHtml = `
+        <h3 class="text-xl font-bold text-gray-700 mb-4">Éditer l'Explication de la Question ${qIndex + 1}</h3>
+        <p id="editor-q-text" class="italic text-gray-600 mb-4 bg-gray-100 p-3 rounded-lg border border-gray-200">${question.question}</p>
+        
+        <label for="explanation-textarea" class="block text-sm font-medium text-gray-700 mb-2">Nouvelle Explication (Markdown accepté)</label>
+        <textarea id="explanation-textarea" rows="8" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">${question.explanation || ''}</textarea>
+        
+        <div class="flex flex-wrap gap-4 mt-4">
+            <button 
+                onclick="saveExplanation()" 
+                id="save-exp-btn" 
+                class="px-6 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition duration-150 shadow-md"
+            >
+                Sauvegarder
+            </button>
+            <button 
+                onclick="renderAdminPanel()" 
+                class="px-6 py-2 bg-gray-400 text-white font-medium rounded-lg hover:bg-gray-500 transition duration-150 shadow-md"
+            >
+                Annuler
+            </button>
+        </div>
+    `;
+
+    document.getElementById('explanation-editor').innerHTML = editorHtml;
+    document.getElementById('explanation-editor').classList.remove('hidden');
+    document.getElementById('question-list').classList.add('hidden'); 
+    document.getElementById('admin-view').scrollTop = 0; 
+}
+
+function saveExplanation() {
+    if (currentlyEditingIndex === -1) {
+        console.error("Aucune question sélectionnée pour la sauvegarde.");
+        return;
+    }
+
+    const newExplanation = document.getElementById('explanation-textarea').value.trim();
+    
+    quizData[currentlyEditingIndex].explanation = newExplanation;
+    
+    // Persistance des questions mises à jour 
+    localStorage.setItem('quizData', JSON.stringify(quizData));
+    
+    // Remplacement de window.alert() par une modal de succès
+    showMessageModal(
+        "Sauvegarde Effectuée",
+        `<p class="text-green-600 font-semibold">Explication de la Question ${currentlyEditingIndex + 1} sauvegardée avec succès !</p>`,
+        true
+    );
+    
+    // Retour à la liste des questions
+    currentlyEditingIndex = -1;
+    renderAdminPanel();
+    document.getElementById('question-list').classList.remove('hidden');
+}
+
+
+// =====================================================================================
+// LOGIQUE DE LA MODAL (UNIFIÉE POUR MESSAGES ET EXPLICATIONS)
+// =====================================================================================
+
+// NOUVEAU: Fonction pour afficher un message/explication dans la modal
+function showMessageModal(title, content, showCloseButton = true) {
+    const modal = document.getElementById('message-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalContentText = document.getElementById('modal-content-text');
+    const closeBtn = modal.querySelector('.close-btn');
+
+    modalTitle.textContent = title;
+    modalContentText.innerHTML = content;
+    
+    // Gère l'affichage du bouton de fermeture (utile pour les confirmations)
+    closeBtn.style.display = showCloseButton ? 'block' : 'none';
+
+    // S'assurer que le bouton de fermeture par défaut est retiré s'il y a des boutons personnalisés
+    if (modalContentText.querySelector('#modal-button-container')) {
+        closeBtn.style.display = 'none';
+    }
+
+    modal.style.display = 'block';
+}
+
+// NOUVEAU: Fonction pour fermer la modal
+function closeMessageModal() {
+    document.getElementById('message-modal').style.display = 'none';
+    // Nettoyer les boutons de confirmation après fermeture
+    const buttonContainer = document.getElementById('modal-content-text').querySelector('#modal-button-container');
+    if (buttonContainer) buttonContainer.remove();
+}
+
+// Ancienne fonction showExplanation, mise à jour pour utiliser showMessageModal
+function showExplanation(qIndex) {
+    const question = quizData[qIndex];
+    const title = `Explication de la Question ${qIndex + 1}`;
+    const content = `
+        <p class="font-semibold text-lg text-gray-800 mb-2">${question.question}</p>
+        <div class="bg-gray-100 p-3 rounded-lg border border-gray-200">
+            <h5 class="font-bold text-indigo-600 mb-1">Détails:</h5>
+            <p>${question.explanation ? question.explanation.replace(/\n/g, '<br>') : 'Aucune explication n\'est encore disponible pour cette question.'}</p>
+        </div>
+    `;
+    showMessageModal(title, content);
+}
+
+
+// =====================================================================================
+// INITIALISATION
+// =====================================================================================
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Lie la fonction de fermeture de la modal au clic sur le bouton de fermeture
+    document.getElementById('message-modal').querySelector('.close-btn').onclick = closeMessageModal;
+
+    // Lie la fonction de fermeture de la modal au clic en dehors de la modal
+    window.onclick = function(event) {
+        const modal = document.getElementById('message-modal');
+        if (event.target == modal) {
+            closeMessageModal();
+        }
+    }
+    
+    loadQuizData();
+    renderQuiz(); 
+    switchView('quiz-view');
+});
+</script>
+
+</body>
+</html>
