@@ -124,6 +124,14 @@
                     <span class="font-bold">↻</span> Réinitialiser le Quiz
                 </button>
 
+                <!-- implimentation qcm -->
+                <button>
+                     <a href="implimentation.html" target="_blank"
+                     class="px-4 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition duration-150 shadow-md text-sm inline-block text-center">
+                        Implémentation QCM
+                        </a>
+                </button>
+
                 <!-- Bouton Administration -->
                 <button onclick="switchView('admin-view')"
                     class="px-4 py-2 bg-gray-700 text-white font-medium rounded-lg hover:bg-gray-800 transition duration-150 shadow-md text-sm">
@@ -199,18 +207,18 @@
         let currentlyEditingIndex = -1;
 
         const chapterBreaks = [
-            { start: 0, title: "CHAPITRE 0: Bases S/4HANA", anchor: "chapitre-0" },
-            { start: 10, title: "CHAPITRE 1: G/L & R2R", anchor: "chapitre-1" },
-            { start: 29, title: "CHAPITRE 2: États Financiers", anchor: "chapitre-2" },
-            { start: 39, title: "CHAPITRE 3: Procure-to-Pay (P2P)", anchor: "chapitre-3" },
-            { start: 58, title: "CHAPITRE 4: Acomptes Fournisseurs (AP)", anchor: "chapitre-4" },
-            { start: 66, title: "CHAPITRE 5: Programme de Paiement", anchor: "chapitre-5" },
-            { start: 76, title: "CHAPITRE 6: Workflow & Situations", anchor: "chapitre-6" },
-            { start: 86, title: "CHAPITRE 7: Comptes Clients (AR)", anchor: "chapitre-7" },
-            { start: 108, title: "CHAPITRE 8: Transactions Spéciales G/L AR", anchor: "chapitre-8" },
-            { start: 117, title: "CHAPITRE 9: Relance (Dunning)", anchor: "chapitre-9" },
-            { start: 126, title: "CHAPITRE 10/11/12: Comptabilité des Actifs (AA)", anchor: "chapitre-10" },
-            { start: 146, title: "CHAPITRE 14: Gestion Bancaire", anchor: "chapitre-14" },
+            { start: 0, title: "Bases S/4HANA", anchor: "chapitre-0" },
+            { start: 10, title: "G/L & R2R", anchor: "chapitre-1" },
+            { start: 29, title: "États Financiers", anchor: "chapitre-2" },
+            { start: 39, title: "Compte Fournisseurs (AP)", anchor: "chapitre-3" },
+            { start: 58, title: "Acomptes Fournisseurs ", anchor: "chapitre-4" },
+            { start: 66, title: "Programme de Paiement", anchor: "chapitre-5" },
+            { start: 76, title: "Workflow & Situations", anchor: "chapitre-6" },
+            { start: 86, title: "Comptes Clients (AR)", anchor: "chapitre-7" },
+            { start: 108, title: "Transactions Spéciales G/L AR", anchor: "chapitre-8" },
+            { start: 117, title: "Relance (Dunning)", anchor: "chapitre-9" },
+            { start: 126, title: "10/11/12 Comptabilité des Actifs (AA)", anchor: "chapitre-10" },
+            { start: 146, title: "Gestion Bancaire", anchor: "chapitre-14" },
         ];
 
         // Fonction pour obtenir les données initiales (Hardcoded)
