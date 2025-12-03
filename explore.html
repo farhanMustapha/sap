@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QCM SAP - Partie Explore</title>
+    <meta name="description" content="QCM interactif sur SAP avec suivi du score et sauvegarde automatique">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="background-gradient"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="title">
+                <span class="title-icon">📚</span>
+                QCM SAP - Partie Explore
+            </h1>
+            <div class="score-container">
+                <div class="score-label">Score</div>
+                <div class="score-value" id="scoreDisplay">0/69</div>
+            </div>
+        </header>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+            <div class="progress-text" id="progressText">Question 1 sur 69</div>
+        </div>
+
+        <!-- Question Card -->
+        <div class="question-card" id="questionCard">
+            <div class="question-number" id="questionNumber">Question 1</div>
+            <div class="question-chapter" id="questionChapter"></div>
+            <h2 class="question-text" id="questionText"></h2>
+            <div class="question-info" id="questionInfo"></div>
+
+            <div class="answers-container" id="answersContainer">
+                <!-- Answers will be dynamically inserted here -->
+            </div>
+
+            <div class="feedback-message" id="feedbackMessage"></div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="navigation">
+            <button class="btn btn-secondary" id="prevBtn" disabled>
+                <span class="btn-icon">←</span>
+                Précédent
+            </button>
+
+            <button class="btn btn-primary" id="nextBtn">
+                Suivant
+                <span class="btn-icon">→</span>
+            </button>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="actions">
+            <button class="btn btn-reset" id="resetBtn">
+                <span class="btn-icon">🔄</span>
+                Réinitialiser
+            </button>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-label">Répondues:</span>
+                    <span class="stat-value" id="answeredCount">0/69</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Correctes:</span>
+                    <span class="stat-value" id="correctCount">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Modal -->
+        <div class="modal" id="resultsModal">
+            <div class="modal-content">
+                <h2 class="modal-title">🎉 QCM Terminé !</h2>
+                <div class="modal-score">
+                    <div class="modal-score-label">Votre score final</div>
+                    <div class="modal-score-value" id="finalScore">0/69</div>
+                    <div class="modal-percentage" id="percentage">0%</div>
+                </div>
+                <div class="modal-message" id="modalMessage"></div>
+                <div class="modal-actions">
+                    <button class="btn btn-primary" id="reviewBtn">Revoir les réponses</button>
+                    <button class="btn btn-reset" id="restartBtn">Recommencer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
