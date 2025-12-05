@@ -1175,6 +1175,258 @@
                     },
                 ]
             },
+            {
+        id: 't11',
+        title: 'Chapitre 11: MIGRATION DE DONNÉES',
+        questions: [
+            {
+                text: 'Which SAP Fiori app is used to access the SAP S/4HANA Migration Cockpit?',
+                options: ['Manage Migration Projects', 'Migrate Your Data', 'Data Migration Status', 'Manage Extensions'],
+                correctIndex: 1,
+                explanation: "L'application actuelle et standard pour accéder au cockpit de migration dans l'édition Public Cloud est 'Migrate Your Data'. L'ancienne application s'appelait 'Manage Migration Projects'."
+            },
+            {
+                text: 'How is data transferred between an existing SAP system and the target SAP S/4HANA Cloud Public Edition system?',
+                options: ['OData APIs', 'Remote Function Call (RFC)', 'SOAP APIs'],
+                correctIndex: 1,
+                explanation: "Pour le transfert direct depuis un système SAP existant, la technologie sous-jacente utilisée pour connecter les systèmes est le 'Remote Function Call' (RFC)."
+            },
+            {
+                text: 'Which two procedures are available for filling staging tables in the Migration Cockpit? (2 correct answers)',
+                options: ['Local SAP S/4HANA Database Schema', 'Remote SAP HANA Database Schema', 'SAP Datasphere Integration', 'Core Data Services'],
+                correctIndex: [0, 1],
+                explanation: "Les tables de staging peuvent être remplies soit via le schéma de base de données local (intégré au système S/4HANA), soit via un schéma de base de données SAP HANA distant (sur SAP BTP)."
+            },
+            {
+                text: 'You migrated data using a remote SAP HANA database. What prerequisite setup is required?',
+                options: ['Communication Arrangement', 'SAP HANA Cloud subscription', 'Business Partner replication', 'Migration Advisor'],
+                correctIndex: 1,
+                explanation: "Pour utiliser l'option 'Remote SAP HANA Database Schema', vous devez disposer d'une souscription valide à SAP HANA Cloud pour héberger cette base de données intermédiaire."
+            },
+            {
+                text: 'You tried to migrate data for a business object, but the migration failed. What are some reasons the migration could have failed? (2 correct answers)',
+                options: ['You didn’t simulate the migration before migrating the data.', 'A predecessor object wasn’t migrated.', 'You don’t have the required business role to migrate the data.', 'You assigned more than one migration object to the project.'],
+                correctIndex: [0, 1],
+                explanation: "Les échecs sont souvent dus à des dépendances non respectées (ex: migrer des commandes avant les clients) ou à l'absence de simulation préalable qui aurait détecté les erreurs de données."
+            },
+            {
+                text: 'What is the maximum file size accepted by the Migration Cockpit for a migration template?',
+                options: ['50 MB', '100 MB', '200 MB', '500 MB'],
+                correctIndex: 1,
+                explanation: "La limite standard de taille de fichier pour les modèles XML de migration est de 100 Mo. Pour des volumes plus importants, on utilise généralement des tables de staging."
+            },
+            {
+                text: 'Which framework supports you to receive a notification when a migration object has completed the Migration step of the guided migration process?',
+                options: ['Responsibility Management Framework', 'In-App Notification Framework', 'Situation Handling Framework', 'Extensibility Framework'],
+                correctIndex: 2,
+                explanation: "Le 'Situation Handling Framework' est utilisé pour envoyer des notifications proactives aux utilisateurs, par exemple lorsqu'un job de migration est terminé ou nécessite une attention."
+            },
+            {
+                text: 'Which functionality enables you to capture information including source values, target values after mapping, and target IDs that could be used to audit your migrated data?',
+                options: ['SAP HANA Cloud Service', 'Migration Object Modeler', 'SAP Data Services', 'Extended Statistics'],
+                correctIndex: 3,
+                explanation: "La fonctionnalité 'Extended Statistics' (ou les logs d'audit détaillés dans le cockpit) permet de conserver une trace des valeurs sources, du mapping et des IDs générés pour des raisons d'audit."
+            },
+            {
+                text: 'You migrated data from a legacy DB to the target SAP S/4HANA Cloud using a remote HANA DB. Which data migration procedure did you use? (2 correct answers)',
+                options: ['Local SAP S/4HANA Database Schema', 'Remote SAP HANA Database Schema', 'Direct connection to an SAP system', 'Migration using staging tables'],
+                correctIndex: [1, 3],
+                explanation: "Dans ce scénario, vous utilisez la méthode des tables de staging ('Migration using staging tables') et spécifiquement l'option de base de données distante ('Remote SAP HANA Database Schema')."
+            },
+            {
+                text: 'Which tasks are included in the guided migration procedure? (3 correct answers)',
+                options: ['Create migration project', 'Simulate migration', 'Configure OData services', 'Close project'],
+                correctIndex: [0, 1, 3],
+                explanation: "Le processus global inclut la création du projet, la simulation de la migration (étape critique de validation) et la clôture du projet une fois terminé."
+            },
+            {
+                text: 'What framework does the Data Migration Status app use to notify users?',
+                options: ['Responsibility Management', 'Situation Handling', 'Workflow Rules', 'API Triggers'],
+                correctIndex: 1,
+                explanation: "Tout comme pour le cockpit de migration, l'application 'Data Migration Status' s'appuie sur le 'Situation Handling' pour les notifications."
+            },
+            {
+                text: 'You need to add an additional field to a migration object template. What are your options? (2 correct answers)',
+                options: ['Developer extensibility for any migration object', 'A custom field using the extensibility framework', 'Submit a case via SAP for Me', 'Migration Object Modeler for supported objects'],
+                correctIndex: [1, 3],
+                explanation: "Vous pouvez ajouter des champs via l'application 'Custom Fields' (Extensibility Framework) ou modifier la structure de l'objet de migration via le 'Migration Object Modeler'."
+            },
+            {
+                text: 'What types of permission do you need to migrate data for a migration object? (2 correct answers)',
+                options: ['Permission to access the Migrate Your Data app', 'Permission to migrate data for the specific object', 'Permission to migrate all data types in the customizing tenant', 'Permission to migrate all data types in the dev tenant'],
+                correctIndex: [0, 1],
+                explanation: "L'utilisateur doit avoir accès à l'application globale 'Migrate Your Data' ET avoir les autorisations spécifiques pour l'objet métier concerné (ex: créer des Fournisseurs)."
+            },
+            {
+                text: 'Which SAP Fiori app provides a summary of the status of all migration objects?',
+                options: ['Manage Migration Projects', 'Data Migration Status', 'Monitor Jobs', 'Extended Statistics'],
+                correctIndex: 1,
+                explanation: "L'application 'Data Migration Status' est conçue pour donner une vue d'ensemble (dashboard) de l'avancement et du statut de tous les objets de migration."
+            },
+            {
+                text: 'Which options are available for mapping values in the guided migration process? (2 correct answers)',
+                options: ['Value mapping', 'Fixed value mapping', 'Currency conversion', 'Translation mapping'],
+                correctIndex: [0, 1],
+                explanation: "Les options principales de mapping sont le 'Value mapping' (correspondance source-cible) et le 'Fixed value mapping' (assigner une constante par défaut)."
+            },
+            {
+                text: 'Which app do you use to enhance migration objects when migrating with staging tables?',
+                options: ['Model Your Migration Objects – Migration Object Modeler', 'Implementation Activities', 'Manage Migration Projects', 'Extensibility Cockpit'],
+                correctIndex: 0,
+                explanation: "Le 'Migration Object Modeler' (LTMOM) est l'outil technique utilisé pour adapter et étendre les objets de migration standards."
+            },
+            {
+                text: 'Which business role is required to use the Migration Object Modeler for staging table migrations?',
+                options: ['SAP_BR_ADMINISTRATOR', 'SAP_BR_BPC_EXPERT', 'SAP_BR_CONFIG_EXPERT', 'SAP_BR_DEVELOPER'],
+                correctIndex: 2,
+                explanation: "Le rôle 'SAP_BR_CONFIG_EXPERT' (Expert en configuration) est généralement requis pour accéder aux outils de modélisation de la migration."
+            },
+            {
+                text: 'Which app is used to enhance migration objects when migrating via Direct Transfer from SAP systems?',
+                options: ['Implementation Activities', 'Migration Object Modeler', 'Manage Migration Projects', 'Data Migration Status'],
+                correctIndex: 1,
+                explanation: "Que ce soit pour les tables de staging ou le transfert direct, l'outil pour améliorer ou modifier les objets est toujours le 'Migration Object Modeler'."
+            },
+            {
+                text: 'Which framework supports you to receive a notification when a migration object has completed the Migration step of the guided migration process?',
+                options: ['Responsibility Management Framework', 'In-App Notification Framework', 'Situation Handling Framework', 'Extensibility Framework'],
+                correctIndex: 2,
+                explanation: "Répétition de la question sur le framework de notification : c'est toujours le 'Situation Handling Framework'."
+            },
+            {
+                text: 'Which SAP service offers expert-led workshops to design or review a customer’s data migration concept?',
+                options: ['SAP Community', 'SAP Value Assurance – Data Migration Design Support', 'SAP Signavio'],
+                correctIndex: 1,
+                explanation: "Les services 'SAP Value Assurance' proposent des supports spécifiques comme le 'Data Migration Design Support' pour aider à concevoir la stratégie de migration."
+            }
+        ]
+    },
+    {
+        id: 't12',
+        title: 'Chapitre 12: Tester les processus métier configurés - FI',
+        questions: [
+            {
+                text: 'In which SAP Activate phase are Implementation tests typically executed?',
+                options: ['Realize', 'Discover', 'Deploy', 'Prepare'],
+                correctIndex: 0,
+                explanation: "Les tests d'implémentation (unitaires, string) se déroulent principalement durant la phase 'Realize' (Réalisation), pendant la configuration."
+            },
+            {
+                text: 'Which types of tests are considered informal and executed organically during configuration? (2 correct answers)',
+                options: ['Unit tests', 'String tests', 'End-to-end process tests', 'Regression tests'],
+                correctIndex: [0, 1],
+                explanation: "Les tests unitaires (une fonction) et les tests de chaîne ('String tests' - quelques étapes liées) sont souvent informels et faits par le consultant pendant qu'il configure."
+            },
+            {
+                text: 'Which group of users typically executes User Acceptance Tests (UAT)?',
+                options: ['Partner LoB configuration experts', 'Customer LoB experts', 'SAP consultants', 'Tricentis administrators'],
+                correctIndex: 1,
+                explanation: "L'UAT (Recette Utilisateur) doit être exécuté par les experts métier du client ('Customer LoB experts') pour valider que la solution répond à leurs besoins."
+            },
+            {
+                text: 'In which app are manual test cases created for UAT?',
+                options: ['Test Preparation', 'Test Plan', 'Test Execution', 'Manage Upgrade Tests'],
+                correctIndex: 0,
+                explanation: "L'application 'Test Preparation' permet de créer et définir les cas de test manuels."
+            },
+            {
+                text: 'What does a test plan enable you to do in SAP Cloud ALM? (2 correct answers)',
+                options: ['Group multiple test cases together', 'Assign test cases to specific testers', 'Automate regression tests', 'Transport test cases between tenants'],
+                correctIndex: [0, 1],
+                explanation: "Un plan de test sert à regrouper plusieurs cas de test et à les assigner aux testeurs pour une campagne de test spécifique."
+            },
+            {
+                text: 'How do you capture a value, error message, or label that is static on the screen when recording new actions?',
+                options: ['Capture button', 'Read button', 'Check button', 'Copy button'],
+                correctIndex: 2,
+                explanation: "Dans l'outil d'automatisation, le bouton 'Check' est utilisé pour vérifier la présence d'un message statique ou d'une étiquette (Label) à l'écran."
+            },
+            {
+                text: 'Which button should be used to capture a non-error value on the screen?',
+                options: ['Capture button', 'Read button', 'Check button', 'Copy button'],
+                correctIndex: 1,
+                explanation: "Le bouton 'Read' est utilisé pour lire et capturer une valeur dynamique (non-erreur) affichée à l'écran lors du test."
+            },
+            {
+                text: 'Where can you customize the scope of a post-upgrade test?',
+                options: ['Test Your Processes app', 'Manage Your Test Processes app', 'Analyze Automated Test Results app', 'Manage Upgrade Tests app'],
+                correctIndex: 3,
+                explanation: "L'application 'Manage Upgrade Tests' permet de définir quels processus doivent être testés après une mise à jour (Upgrade)."
+            },
+            {
+                text: 'If a test plan isn’t displaying in the Test Execution app, what could be the issue?',
+                options: ['Not assigned to a test user', 'Missing start/end dates', 'Status is “In Testing”', 'The test plan status is In Preparation.'],
+                correctIndex: 3,
+                explanation: "Si le statut du plan de test est encore 'In Preparation', il n'est pas visible pour l'exécution. Il doit être passé au statut adéquat (ex: 'In Testing')."
+            },
+            {
+                text: 'What type of test user is used in the Test Automation Tool for integration scenarios? (Choose the correct answer)',
+                options: ['Business User', 'Communication User', 'Conditional Authentication User'],
+                correctIndex: 1,
+                explanation: "Les scénarios d'intégration nécessitent un 'Communication User' (utilisateur technique) pour gérer les échanges de données entre systèmes."
+            },
+            {
+                text: 'Which app contains the preconfigured test automates?',
+                options: ['Manage Your Test Processes app', 'Test Your Processes app', 'Analyze Automated Test Results app', 'Test Preparation app'],
+                correctIndex: 0,
+                explanation: "L'application 'Manage Your Test Processes' contient la bibliothèque de processus de test standards et préconfigurés par SAP."
+            },
+            {
+                text: 'Which type of test is executed in the Run phase to verify upgrades?',
+                options: ['Implementation tests', 'End-to-end tests', 'User acceptance tests', 'Regression tests'],
+                correctIndex: 3,
+                explanation: "En phase 'Run' (Exploitation), on exécute des tests de régression pour s'assurer que les mises à jour n'ont pas cassé les fonctionnalités existantes."
+            },
+            {
+                text: '13-Where can you change the default test user for a process step?',
+                options: ['Test Your Processes app', 'Manage Your Test Processes app', 'Analyze Automated Test Results app', 'Manage Upgrade Tests app'],
+                correctIndex: 1,
+                explanation: "Dans 'Test Your Processes', vous pouvez adapter les données de test (Test Data Container) et changer l'utilisateur assigné aux étapes."
+            },
+            {
+                text: 'What type of tests are displayed in the Analyze Automated Test Results app? (2 correct answers)',
+                options: ['Tricentis tests', 'Customer-specific tests', 'Manual tests', 'Post-upgrade tests'],
+                correctIndex: [1, 3],
+                explanation: "Cette application affiche les résultats des tests automatisés, qu'ils soient spécifiques au client ('Customer-specific') ou liés aux upgrades ('Post-upgrade')."
+            },
+            {
+                text: 'Which functionality ensures test automates have always available data to run?',
+                options: ['Test Variants', 'Test Data Containers', 'Extended Statistics', 'Migration Object Modeler'],
+                correctIndex: 1,
+                explanation: "Les 'Test Data Containers' (TDC) centralisent et fournissent les données nécessaires pour que les tests automatisés puissent s'exécuter de manière fiable."
+            },
+            {
+                text: '16-Where do you provide consent for SAP to run post-upgrade tests?',
+                options: ['Manage Upgrade Tests app', 'Test Your Processes app', 'Manage Your Test Processes app', 'Test Preparation app'],
+                correctIndex: 1,
+                explanation: "Le consentement pour l'exécution automatique des tests post-upgrade se donne dans l'application 'Manage Upgrade Tests'."
+            },
+            {
+                text: 'Which app provides dashboards and screenshots of failed automated steps?',
+                options: ['Test Preparation app', 'Manage Upgrade Tests app', 'Analyze Automated Test Results app', 'Manage Your Test Processes app'],
+                correctIndex: 2,
+                explanation: "L'application 'Analyze Automated Test Results' fournit les détails d'exécution, y compris les captures d'écran en cas d'échec pour faciliter l'analyse."
+            },
+            {
+                text: 'Which SAP service refreshes production data into the test system?',
+                options: ['Data Migration Service', 'Test Data Refresh Service', 'SAP HANA Smart Data Access', 'Extended Statistics'],
+                correctIndex: 1,
+                explanation: "Le 'Test Data Refresh Service' permet de rafraîchir le système de qualité (Q) avec des données récentes issues de la production (P)."
+            },
+            {
+                text: 'What is the primary use case of Tricentis Test Automation for SAP with SAP Cloud ALM?',
+                options: ['Automating regression tests in S/4HANA Cloud', 'Automating cross-system integration tests', 'Managing manual UAT tests', 'Migrating custom data'],
+                correctIndex: 1,
+                explanation: "Tricentis est principalement positionné pour automatiser les tests complexes de bout en bout (End-to-End) qui traversent plusieurs systèmes (Cross-system)."
+            },
+            {
+                text: 'Where do you set-up Tricentis Test Automation?',
+                options: ['SAP S/4HANA Cloud Public Edition', 'SAP Cloud Identity', 'SAP Cloud ALM'],
+                correctIndex: 2,
+                explanation: "La configuration et l'intégration de l'outil Tricentis se font au niveau de la plateforme SAP Cloud ALM."
+            }
+        ]
+    }
         ];
 
         let currentChapterId = null;
