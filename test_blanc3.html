@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Blanc 3 : C_S4CFI_2504</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f4f6; }
+        .question-card { transition: all 0.3s ease; }
+        .question-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .correct-answer { background-color: #d1fae5 !important; border-color: #10b981 !important; color: #065f46; }
+        .wrong-answer { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b; }
+        .feedback-box { display: none; margin-top: 1rem; padding: 0.75rem; border-radius: 0.5rem; }
+        .score-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-indigo-900 text-white p-4 sticky top-0 z-50 shadow-md">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div>
+                <h1 class="text-lg md:text-xl font-bold">Test Blanc 3 : C_S4CFI_2504</h1>
+                <p class="text-xs text-indigo-200">SAP S/4HANA Cloud Public Edition - Finance</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="calculateScore()" class="bg-green-500 hover:bg-green-600 text-white text-xs md:text-sm px-3 py-2 rounded shadow transition hidden md:block">
+                    <i class="fas fa-chart-line mr-1"></i> Score
+                </button>
+                <button onclick="resetQuiz()" class="bg-red-500 hover:bg-red-600 text-white text-xs md:text-sm px-3 py-2 rounded shadow transition">
+                    <i class="fas fa-trash-alt mr-1"></i> Reset
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto p-4 pb-20" id="quiz-container">
+        <!-- Introduction -->
+        <div class="bg-white p-6 rounded-lg shadow-sm mb-6 border-l-4 border-indigo-500">
+            <h2 class="text-lg font-semibold mb-2">Instructions</h2>
+            <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+                <li>Ce test contient <strong>47 questions</strong>.</li>
+                <li>Vos réponses sont <strong>sauvegardées automatiquement</strong>.</li>
+                <li>Cliquez sur <strong>"Vérifier"</strong> pour une correction immédiate ou sur <strong>"Calculer le Score"</strong> à la fin.</li>
+                <li>Les questions à choix multiples sont indiquées (ex: <em>2 correct answers</em>).</li>
+            </ul>
+        </div>
+
+        <!-- Questions List -->
+        <div id="questions-list" class="space-y-6"></div>
+        
+        <!-- Bottom Actions -->
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <button onclick="calculateScore()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transform transition hover:scale-105">
+                <i class="fas fa-check-circle mr-2"></i> Terminer et voir mon Score
+            </button>
+            <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="text-indigo-600 hover:underline">
+                <i class="fas fa-arrow-up"></i> Haut du formulaire
+            </button>
+        </div>
+    </main>
+
+    <!-- Score Modal -->
+    <div id="score-modal" class="score-modal">
+        <div class="bg-white rounded-xl shadow-2xl p-8 max-w-md w-full mx-4 text-center transform transition-all scale-100">
+            <div class="mb-4">
+                <i class="fas fa-trophy text-5xl text-yellow-400"></i>
+            </div>
+            <h2 class="text-2xl font-bold mb-2">Résultat du Test</h2>
+            <div class="text-4xl font-bold text-indigo-600 mb-2" id="score-percentage">0%</div>
+            <p class="text-gray-600 mb-6" id="score-details">0 / 47 réponses correctes</p>
+            <p class="text-sm text-gray-500 mb-6 bg-gray-100 p-3 rounded">Note : Le score est basé sur le principe "Tout ou Rien" (toutes les options d'une question doivent être correctes).</p>
+            <button onclick="closeScoreModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-full transition">
+                Fermer
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-400 text-center py-6 text-xs mt-10">
+        <p>Simulation d'examen SAP C_S4CFI_2504 - Généré par IA</p>
+    </footer>
+
+    <script>
+        // --- DATA: Questions & Answers ---
+        // Answers are 0-indexed (A=0, B=1, C=2, D=3, E=4, F=5)
+        const quizData = [
+            {
+                q: "1-What are the restrictions when posting general journal entries to special periods? (2 correct answers)",
+                options: [
+                    "A. You must use the document type YE (year-end)",
+                    "B. You must manually enter the specific special period you are posting to",
+                    "C. You must only post to balance sheet accounts",
+                    "D. You must specify a posting date in the last period of the fiscal year"
+                ],
+                correct: [1, 3] // B & D
+            },
+            {
+                q: "2-You have a bank account in foreign currency. After the foreign currency valuation run, how does the system evaluate the balance of this account?",
+                options: [
+                    "A. In local currency, with the exchange rate valid on the last day of the period",
+                    "B. In local currency, with the exchange rate valid for each transaction",
+                    "C. In foreign currency, converted to local currency on a statistical ledger",
+                    "D. In foreign currency, with no need for conversion"
+                ],
+                correct: [0] // A - Valued at key date rate
+            },
+            {
+                q: "3-What is populated in the Starter System after activating business process content in SAP Central Business Configuration? (2 correct answers)",
+                options: [
+                    "A. Users",
+                    "B. Master data",
+                    "C. Business roles",
+                    "D. Configuration values"
+                ],
+                correct: [1, 3] // B & D (Starter system contains Master Data & Config for Fit-to-Standard)
+            },
+            {
+                q: "4-Which process in the integrated procure-to-pay process generates a balance sheet-relevant financial accounting document? (2 correct answers)",
+                options: [
+                    "A. Invoice verification",
+                    "B. Material requirement planning",
+                    "C. Goods receipt",
+                    "D. Purchase order creation"
+                ],
+                correct: [0, 2] // A & C
+            },
+            {
+                q: "5-Which fields can you define on the chart of accounts level of a G/L account? (2 correct answers)",
+                options: [
+                    "A. Account group",
+                    "B. Account currency",
+                    "C. Functional area",
+                    "D. G/L account type"
+                ],
+                correct: [0, 3] // A & D (Account Group and Account Type are CoA level)
+            },
+            {
+                q: "6-Which embedded support offerings can you make use of in the SAP Fiori Launchpad? (3 correct answers)",
+                options: [
+                    "A. Video tutorials from the SAP Help Portal",
+                    "B. Digital assistance from generative AI (SAP Joule)",
+                    "C. Assessment questions from the SAP Learning Hub",
+                    "D. Recorded webinars from the SAP Learning Website",
+                    "E. Recorded system simulations from the Learning Center"
+                ],
+                correct: [0, 1, 4] // A, B, E (Tutorials, Joule/Help, Simulations)
+            },
+            {
+                q: "7-What is the role of the valuation method in the foreign currency valuation of accounts payable? (3 correct answers)",
+                options: [
+                    "A. Define the posting and reversal date for the valuation posting",
+                    "B. Define the document type for the valuation posting",
+                    "C. Define the valuation procedure",
+                    "D. Define the exchange rate type",
+                    "E. Determine the G/L accounts for the valuation posting"
+                ],
+                correct: [1, 2, 3] // B, C, D
+            },
+            {
+                q: "8-To create a semantic tag, which element do you need to assign to it?",
+                options: [
+                    "A. FSV node",
+                    "B. G/L account",
+                    "C. Tag group",
+                    "D. Number range"
+                ],
+                correct: [0] // A - Semantic tags are typically assigned to FSV nodes (or G/L accounts, but Node is primary hierarchy)
+            },
+            {
+                q: "9-Which asset accounting-relevant postings are made periodically, typically at the end of the month? (2 correct answers)",
+                options: [
+                    "A. Post transfer",
+                    "B. Settlement of the WBS element",
+                    "C. Depreciation posting",
+                    "D. Post asset acquisition via clearing account"
+                ],
+                correct: [1, 2] // B & C
+            },
+            {
+                q: "10-Which type of ledger is always active by default in SAP S/4HANA Cloud Public Edition?",
+                options: [
+                    "A. Ledger 2L (IFRS)",
+                    "B. Ledger 3L (US GAAP)",
+                    "C. Ledger 4G (Group Valuation)",
+                    "D. Ledger 0L (Leading Ledger)"
+                ],
+                correct: [3] // D
+            },
+            {
+                q: "11-What does the journal entry type in general journal document posting control? (2 correct answers)",
+                options: [
+                    "A. Which fields in the document header are mandatory fields.",
+                    "B. The document number assigned.",
+                    "C. Which fields in the line items are mandatory fields.",
+                    "D. The number of possible line items in the FI document."
+                ],
+                correct: [0, 1] // A & B (Controls Header fields & Number Range)
+            },
+            {
+                q: "12-What should be demonstrated in SAP Signavio Process Navigator during Fit-to-Standard workshops? (3 correct answers)",
+                options: [
+                    "A. Business Driven Configuration Questionnaire",
+                    "B. Tutorial (if available)",
+                    "C. Set-up instructions",
+                    "D. Where to download Test Script",
+                    "E. Process Flow diagram"
+                ],
+                correct: [2, 3, 4] // C, D, E (Standard artifacts in Process Navigator)
+            },
+            {
+                q: "13-Which systems need to be provisioned via SAP for Me? (2 correct answers)",
+                options: [
+                    "A. SAP Cloud Identity Authentication",
+                    "B. SAP Central Business Configuration",
+                    "C. SAP S/4HANA Cloud Development system, development tenant",
+                    "D. SAP S/4HANA Cloud Production System"
+                ],
+                correct: [2, 3] // C & D
+            },
+            {
+                q: "14-What is the result of an automatic payment run? (3 correct answers)",
+                options: [
+                    "A. Payment plan",
+                    "B. Payment blocks",
+                    "C. Payment log",
+                    "D. Payment documents",
+                    "E. Payment media"
+                ],
+                correct: [2, 3, 4] // C, D, E
+            },
+            {
+                q: "15-Which dimension do you use to produce external financial statements based on cost-of-sales accounting?",
+                options: [
+                    "A. Functional area",
+                    "B. Segment",
+                    "C. Market segment",
+                    "D. Profit center"
+                ],
+                correct: [0] // A
+            },
+            {
+                q: "16-What does a deployment plan in SAP Cloud ALM contain? (2 correct answers)",
+                options: [
+                    "A. Timeboxes",
+                    "B. System Group",
+                    "C. Scopes",
+                    "D. Releases"
+                ],
+                correct: [0, 3] // A & D (Releases and Timeboxes/Sprints)
+            },
+            {
+                q: "17-What settings do document types control? (3 correct answers)",
+                options: [
+                    "A. Document number range",
+                    "B. Reversal document type",
+                    "C. Company code allowed",
+                    "D. Negative postings allowed",
+                    "E. Posting keys for debit and credit"
+                ],
+                correct: [0, 1, 3] // A, B, D
+            },
+            {
+                q: "18-On what level can you restrict postings using the posting period variant? (2 correct answers)",
+                options: [
+                    "A. Fixed asset number",
+                    "B. Supplier account",
+                    "C. Customer reconciliation account",
+                    "D. G/L account"
+                ],
+                correct: [1, 3] // B & D (Account Intervals for specific account types)
+            },
+            {
+                q: "19-The VAT tax rate is changing... What options do you have to maintain the new tax rate? (2 answers)",
+                options: [
+                    "A. Change the tax rate for the existing affected VAT tax codes.",
+                    "B. Use the time-dependent tax calculation for affected tax codes.",
+                    "C. Create new VAT tax codes to work in parallel with the old codes.",
+                    "D. Create new VAT tax codes with the new rate and delete the old ones."
+                ],
+                correct: [1, 2] // B & C
+            },
+            {
+                q: "20-You use the app Manage Journal Entries to display changes to journal entries. Which changes can be seen/logged? (2 correct answers)",
+                options: [
+                    "A. Date the change",
+                    "B. Amount that was changed",
+                    "C. User who made the change",
+                    "D. G/L account that was changed"
+                ],
+                correct: [0, 2] // A & C (Audit trail: Who and When. Amounts/Accounts are rarely changeable)
+            },
+            {
+                q: "21-What are some important activities the partner LoB configuration experts need to complete in the Realize phase? (2 correct answers)",
+                options: [
+                    "A. Setting up manual test cases in SAP Cloud ALM.",
+                    "B. Gathering perceived change impact feedback.",
+                    "C. Entering configuration values in SAP Central Business Configuration.",
+                    "D. Scheduling meetings with customer experts to gather BDCQ responses."
+                ],
+                correct: [0, 2] // A & C
+            },
+            {
+                q: "23-At which levels must negative postings for document reversals be allowed in order to perform them? (2 answers)",
+                options: [
+                    "A. Ledger group",
+                    "B. Company code",
+                    "C. Reversal reason",
+                    "D. Accounting principle"
+                ],
+                correct: [1, 2] // B & C
+            },
+            {
+                q: "24-Which of the following statements best describes the utilization of one-time suppliers in SAP S/4HANA? (2 answers)",
+                options: [
+                    "A. One-time suppliers can only be used for high-value business transactions.",
+                    "B. The standard account group for one-time suppliers is marked as 'CPD', which does not contain a flag 'One-time account'...",
+                    "C. Address or bank data is usually not included in the master record of a one-time supplier.",
+                    "D. When the system recognizes a supplier as belonging to the CPD group, it prompts the user to complete the data missing in the master record"
+                ],
+                correct: [2, 3] // C & D (Logic: Data entered at doc level, Prompted by system)
+            },
+            {
+                q: "25-Which parameters are mandatory for the payment run? (4 correct answers)",
+                options: [
+                    "A. Posting Date",
+                    "B. Run Date",
+                    "C. Company Code",
+                    "D. Payment Amount",
+                    "E. Tax-ID",
+                    "F. Payment Method"
+                ],
+                correct: [0, 1, 2, 5] // A, B, C, F
+            },
+            {
+                q: "26-You're posting a supplier invoice... Which statements are correct? (2 answers)",
+                options: [
+                    "A. Some data is transferred from the vendor master record for the posting.",
+                    "B. The tax amount must always be entered manually.",
+                    "C. No tax code needs to be entered because the system automatically determines the tax...",
+                    "D. The invoice is processed under the transaction type Invoice."
+                ],
+                correct: [0, 3] // A & D
+            },
+            {
+                q: "27-Once that payment terms are set in the supplier master data... they will be automatically defaulted... and cannot be modified later.",
+                options: [
+                    "A. True",
+                    "B. False"
+                ],
+                correct: [1] // B - False (Can be modified)
+            },
+            {
+                q: "28-Which activities can you complete in the Maintain Business Roles SAP Fiori app? (2 correct answers)",
+                options: [
+                    "A. Maintain technical catalogs",
+                    "B. Assign business catalogs to a business role",
+                    "C. Maintain restrictions",
+                    "D. Assign PFCG profiles to a business role"
+                ],
+                correct: [1, 2] // B & C
+            },
+            {
+                q: "29-You need to produce additional financial statements according to local GAAP requirements. Which of the following can help?",
+                options: [
+                    "A. Functional area",
+                    "B. Journal entry type",
+                    "C. Ledger group",
+                    "D. Profit center group"
+                ],
+                correct: [2] // C
+            },
+            {
+                q: "30-How can you migrate data to SAP S/4HANA Cloud Public Edition? (2 correct answers)",
+                options: [
+                    "A. With a separate SAP HANA database",
+                    "B. With the zero-downtime service",
+                    "C. With Core Data Services",
+                    "D. With XML or CSV templates"
+                ],
+                correct: [0, 3] // A & D (Staging Tables in HANA DB & Files)
+            },
+            {
+                q: "31-In which of the following systems do you access your assigned process tasks from the SAP Activate Roadmap...?",
+                options: [
+                    "A. SAP Cloud ALM for Operations",
+                    "B. SAP Central Business Configuration",
+                    "C. SAP Cloud ALM for Service",
+                    "D. SAP Cloud ALM for Implementation"
+                ],
+                correct: [3] // D
+            },
+            {
+                q: "32-What tools enable non-developers to create low/no-code extensions? (2 correct answers)",
+                options: [
+                    "A. SAP Cloud SDK",
+                    "B. SAP Build",
+                    "C. SAP Business Application Studio",
+                    "D. SAP Fiori extensibility apps"
+                ],
+                correct: [1, 3] // B & D
+            },
+            {
+                q: "33-After integration requirements have been finalized, what is used to analyze, design, and document the integration strategy?",
+                options: [
+                    "A. Integration and API list",
+                    "B. SAP Cloud ALM Requirements app",
+                    "C. Integration Solution Advisory Methodology (ISAM)",
+                    "D. SAP Business Accelerator Hub"
+                ],
+                correct: [2] // C
+            },
+            {
+                q: "34-An SAP Fiori app isn't displaying... even though the business role... is correctly assigned. How would you troubleshoot?",
+                options: [
+                    "A. Check the space and page(s) assigned to the role.",
+                    "B. Check the business catalogues assigned to the role.",
+                    "C. Check the Role Maintenance app.",
+                    "D. Check the restrictions for the role.",
+                    "E. Check the business role template."
+                ],
+                correct: [0] // A (Visualization issue)
+            },
+            {
+                q: "35-In which application can you see the available business context capacity remaining for extension items?",
+                options: [
+                    "A. Extensibility Cockpit app",
+                    "B. Extensibility Explorer app",
+                    "C. Extensibility Inventory app",
+                    "D. Custom Reusable Elements app"
+                ],
+                correct: [0] // A
+            },
+            {
+                q: "36-Which tasks are mandatory before you can migrate data for a specific object? (2 correct answers)",
+                options: [
+                    "A. Permission to migrate the data has been assigned",
+                    "B. All previous migration projects are in the 'Finished' status",
+                    "C. You select the same migration method previously used for other objects",
+                    "D. Predecessor objects have been migrated"
+                ],
+                correct: [0, 3] // A & D
+            },
+            {
+                q: "37-In SAP CBC, which activities can you perform during Product-Specific Configuration? (3 correct answers)",
+                options: [
+                    "A. Create new scope items.",
+                    "B. Add blocking reasons for billing.",
+                    "C. Modify building blocks.",
+                    "D. Add new sales organizations.",
+                    "E. Change approval thresholds."
+                ],
+                correct: [1, 3, 4] // B, D, E (Configuration/Fine tuning)
+            },
+            {
+                q: "38-In SAP Advanced Financial Closing, consistency check error... What could cause this? (2 correct answers)",
+                options: [
+                    "A. Missing user assignments for tasks",
+                    "B. Missing factory calendar assignment for tasks",
+                    "C. Missing task assignments in folders",
+                    "D. Missing organizational unit assignments in folders"
+                ],
+                correct: [0, 1] // A & B
+            },
+            {
+                q: "39-Where are the manual test cases created for customer User Acceptance Testing?",
+                options: [
+                    "A. Test Automation Tool",
+                    "B. SAP Cloud ALM",
+                    "C. SAP Solution Manager",
+                    "D. SAP Signavio Process Navigator"
+                ],
+                correct: [1] // B
+            },
+            {
+                q: "40-Which of the following systems are used to implement SAP S/4HANA Cloud Public Edition for a customer? (3 correct answers)",
+                options: [
+                    "A. Trial system",
+                    "B. Starter system",
+                    "C. Test system",
+                    "D. Sandbox system",
+                    "E. Development system"
+                ],
+                correct: [1, 2, 4] // B, C, E (Starter, Test, Dev)
+            },
+            {
+                q: "41-Where is the initial list of known integrations documented?",
+                options: [
+                    "A. In SAP Cloud ALM",
+                    "B. In the Digital Discovery Assessment",
+                    "C. In the Business Driven Configuration",
+                    "D. In the Fit-to-Standard Workshops"
+                ],
+                correct: [1] // B
+            },
+            {
+                q: "42-What must you create when you build an integration scenario using the SAP Fiori Communication Management apps? (2 correct answers)",
+                options: [
+                    "A. Communication system",
+                    "B. Communication arrangement",
+                    "C. Communication API",
+                    "D. Communication interface"
+                ],
+                correct: [0, 1] // A & B
+            },
+            {
+                q: "43-When must you configure the Enhanced Bank Accounts option when configuring the automatic payment program?",
+                options: [
+                    "A. You want to specify a subaccount per house bank, payment method, and currency.",
+                    "B. To define a ranking of multiple bank accounts for the same house bank.",
+                    "C. The payment method is enabled for payment processing using the bank reconciliation account.",
+                    "D. The bank subaccount is linked to a bank reconciliation account."
+                ],
+                correct: [0] // A
+            },
+            {
+                q: "44-To what element must you assign a collections specialist in collections management?",
+                options: [
+                    "A. Collection profile",
+                    "B. Collection group",
+                    "C. Collection segment",
+                    "D. Collection strategy"
+                ],
+                correct: [1] // B
+            },
+            {
+                q: "45-Which activities can you complete in the Maintain Business Roles SAP Fiori app? (Duplicate, 2 answers)",
+                options: [
+                    "A. Maintain technical catalogs",
+                    "B. Assign business catalogs to a business role",
+                    "C. Maintain restrictions",
+                    "D. Assign PFCG profiles to a business role"
+                ],
+                correct: [1, 2] // B & C
+            },
+            {
+                q: "46-What activities are applied to the entire system and cannot be changed after confirmation in SAP CBC? (2 correct answers)",
+                options: [
+                    "A. Scoping",
+                    "B. Fiscal year variant",
+                    "C. Configuration activities",
+                    "D. Group currency"
+                ],
+                correct: [1, 3] // B & D
+            },
+            {
+                q: "47-Which parameters can you configure on the dunning level? (2 correct answers)",
+                options: [
+                    "A. Days in arrears",
+                    "B. Line-item grace period",
+                    "C. Payment deadline",
+                    "D. Interest indicator"
+                ],
+                correct: [0, 3] // A & D
+            }
+        ];
+
+        // --- APP LOGIC ---
+
+        const storageKey = 's4_c2504_t3_state'; // New Key for Test 3
+        let userState = {};
+
+        function loadState() {
+            const saved = localStorage.getItem(storageKey);
+            if (saved) {
+                userState = JSON.parse(saved);
+            } else {
+                userState = {};
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem(storageKey, JSON.stringify(userState));
+        }
+
+        function toggleSelection(qIndex, optionIndex, isMulti) {
+            if (!userState[qIndex]) userState[qIndex] = [];
+
+            if (isMulti) {
+                const idx = userState[qIndex].indexOf(optionIndex);
+                if (idx > -1) {
+                    userState[qIndex].splice(idx, 1);
+                } else {
+                    userState[qIndex].push(optionIndex);
+                }
+            } else {
+                userState[qIndex] = [optionIndex];
+            }
+            saveState();
+        }
+
+        function checkAnswer(qIndex) {
+            const questionData = quizData[qIndex];
+            const userAnswers = userState[qIndex] || [];
+            const correctAnswers = questionData.correct;
+            
+            const sortedUser = [...userAnswers].sort();
+            const sortedCorrect = [...correctAnswers].sort();
+            const isCorrect = JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect);
+            
+            const feedbackBox = document.getElementById(`feedback-${qIndex}`);
+            const resultText = document.getElementById(`result-text-${qIndex}`);
+
+            feedbackBox.style.display = 'block';
+            
+            const optionsContainer = document.getElementById(`options-container-${qIndex}`);
+            const inputs = optionsContainer.querySelectorAll('div');
+
+            inputs.forEach((div, idx) => {
+                div.classList.remove('bg-green-100', 'bg-red-100', 'border-green-500', 'border-red-500', 'border-l-4');
+                const isSelected = userAnswers.includes(idx);
+                const isActuallyCorrect = correctAnswers.includes(idx);
+
+                // Reset icons
+                const labelSpan = div.querySelector('label span');
+                // Remove existing icons if any
+                const existingIcons = labelSpan.querySelectorAll('i');
+                existingIcons.forEach(i => i.remove());
+
+                if (isActuallyCorrect) {
+                    div.classList.add('bg-green-100', 'border-l-4', 'border-green-500');
+                    labelSpan.innerHTML += ` <i class="fas fa-check text-green-600 ml-2"></i>`;
+                } else if (isSelected && !isActuallyCorrect) {
+                    div.classList.add('bg-red-100', 'border-l-4', 'border-red-500');
+                    labelSpan.innerHTML += ` <i class="fas fa-times text-red-600 ml-2"></i>`;
+                }
+            });
+
+            if (isCorrect) {
+                feedbackBox.className = "feedback-box bg-green-50 border border-green-200 text-green-800";
+                resultText.innerHTML = "<strong>Correct !</strong> Excellente réponse.";
+            } else {
+                feedbackBox.className = "feedback-box bg-red-50 border border-red-200 text-red-800";
+                resultText.innerHTML = "<strong>Incorrect.</strong> Regardez les options surlignées en vert.";
+            }
+        }
+
+        function calculateScore() {
+            let correctCount = 0;
+            let total = quizData.length;
+
+            quizData.forEach((item, index) => {
+                const userAnswers = userState[index] || [];
+                const correctAnswers = item.correct;
+                
+                const sortedUser = [...userAnswers].sort();
+                const sortedCorrect = [...correctAnswers].sort();
+
+                if (JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect)) {
+                    correctCount++;
+                }
+            });
+
+            const percentage = Math.round((correctCount / total) * 100);
+            
+            document.getElementById('score-percentage').innerText = `${percentage}%`;
+            document.getElementById('score-details').innerText = `${correctCount} / ${total} réponses correctes`;
+            document.getElementById('score-modal').style.display = 'flex';
+        }
+
+        function closeScoreModal() {
+            document.getElementById('score-modal').style.display = 'none';
+        }
+
+        function resetQuiz() {
+            if(confirm("Voulez-vous vraiment effacer tout votre progrès pour le Test 3 ?")) {
+                localStorage.removeItem(storageKey);
+                location.reload();
+            }
+        }
+
+        function renderQuiz() {
+            const container = document.getElementById('questions-list');
+            container.innerHTML = '';
+
+            quizData.forEach((item, index) => {
+                const isMulti = item.correct.length > 1;
+                const inputType = isMulti ? 'checkbox' : 'radio';
+                const inputName = `q${index}`;
+                const savedAnswers = userState[index] || [];
+
+                const card = document.createElement('div');
+                card.className = "question-card bg-white rounded-lg shadow p-6 border border-gray-200";
+
+                let html = `
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <span class="inline-block bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded font-semibold mb-2">Question ${index + 1}</span>
+                            ${isMulti ? '<span class="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded font-semibold mb-2 ml-2">Choix Multiples</span>' : ''}
+                            <h3 class="text-lg font-medium text-gray-900">${item.q}</h3>
+                        </div>
+                    </div>
+                    <div id="options-container-${index}" class="space-y-3">
+                `;
+
+                item.options.forEach((opt, optIndex) => {
+                    const isChecked = savedAnswers.includes(optIndex) ? 'checked' : '';
+                    html += `
+                        <div class="flex items-center p-3 rounded border border-gray-100 hover:bg-gray-50 cursor-pointer transition" onclick="document.getElementById('opt-${index}-${optIndex}').click()">
+                            <input type="${inputType}" 
+                                   name="${inputName}" 
+                                   id="opt-${index}-${optIndex}" 
+                                   value="${optIndex}" 
+                                   ${isChecked}
+                                   class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 ${inputType === 'radio' ? '' : 'rounded'}"
+                                   onclick="event.stopPropagation(); toggleSelection(${index}, ${optIndex}, ${isMulti})"
+                            >
+                            <label for="opt-${index}-${optIndex}" class="ml-3 block text-gray-700 w-full cursor-pointer select-none">
+                                <span>${opt}</span>
+                            </label>
+                        </div>
+                    `;
+                });
+
+                html += `
+                    </div>
+                    <div class="mt-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                        <button id="btn-check-${index}" onclick="checkAnswer(${index})" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded shadow transition w-full sm:w-auto text-sm">
+                            Vérifier
+                        </button>
+                        <div id="feedback-${index}" class="feedback-box w-full">
+                            <p id="result-text-${index}"></p>
+                        </div>
+                    </div>
+                `;
+
+                card.innerHTML = html;
+                container.appendChild(card);
+            });
+        }
+
+        // Init
+        loadState();
+        renderQuiz();
+
+    </script>
+</body>
+</html>
