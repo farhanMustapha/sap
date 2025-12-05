@@ -774,7 +774,7 @@
                     {
                         text: 'What are some examples of Team Categories in Responsibility Management? (two answers)',
                         options: ['• Operational Purchaser', '• Procurement', '• Distribution'],
-                        correctIndex: [0, 1], // The question has 2 options for 2 answers. The content suggests the roles or functions, checking against available options.
+                        correctIndex: [ 1,2], // The question has 2 options for 2 answers. The content suggests the roles or functions, checking against available options.
                         explanation: "Les 'Team Categories' sont des regroupements logiques de personnes. 'Operational Purchaser' est un rôle (Member Function) et 'Procurement' est un type de catégorie d'équipe."
                     },
                     {
@@ -784,19 +784,19 @@
                         explanation: "Les 'work items' sont des tâches qui sont affectées à des agents spécifiques ('agents') pour leur traitement dans le flux de travail."
                     },
                     {
-                        text: 'For which of the following can an analytical query be used as the data source input?',
+                        text: 'For which of the following can an analytical query be used as the data source input? (3 reponses)',
                         options: ['• Generic drilldown reports', '• Multidimensional reports', '• Review booklets', '• Analysis Path Framework-based apps', '• SAP Analytical Cloud Stories'],
-                        correctIndex: [0, 1, 3, 4], // This question has 5 options and asks for the correct ones. The PDF seems to indicate multiple correct answers.
+                        correctIndex: [ 1, 2, 4], // This question has 5 options and asks for the correct ones. The PDF seems to indicate multiple correct answers.
                         explanation: "Les requêtes analytiques (Analytical Queries) sont la base des rapports multidimensionnels, des rapports de ventilation génériques (drilldown), des applications APF et des histoires SAC."
                     },
                     {
-                        text: 'What is required to support automated situation resolution?',
+                        text: '9-What is required to support automated situation resolution? (2 Answers)',
                         options: ['• Integration with SAP Business Technology Platform', '• SAP Build Process Automation service', '• Robotic Process Automation service', '• Intelligent Situation Automation service'],
-                        correctIndex: 3,
+                        correctIndex: [0,3],
                         explanation: "Le service 'Intelligent Situation Automation' est spécifiquement conçu pour l'automatisation de la résolution des situations (via des règles et l'IA)."
                     },
                     {
-                        text: 'What is the purpose of the "To-Dos" section in My Home?',
+                        text: '10-What is the purpose of the "To-Dos" section in My Home?',
                         options: ['• Display favorite apps', '• Aggregate tasks and situations', '• Show frequently used apps', '• Provide release news'],
                         correctIndex: 1,
                         explanation: "La section 'To-Dos' (À Faire) dans 'My Home' (Ma Page d'Accueil) regroupe les tâches en attente et les notifications de situations ('situations')."
@@ -862,61 +862,61 @@
                 title: 'Chapitre 8: Personnalisation des Autorisations dans SAP S/4HANA Cloud - FI',
                 questions: [
                     {
-                        text: 'You are limiting access for certain users to enter data in specific fields of an application. Which of the following business role access categories would you choose?',
+                        text: '1-You are limiting access for certain users to enter data in specific fields of an application. Which of the following business role access categories would you choose?',
                         options: ['• Read, Value Help: Restricted', '• Write, Read, Value Help: Restricted', '• Read, Value Help: Unrestricted', 'Write, Read, Value Help: Unrestricted'],
                         correctIndex: 1,
                         explanation: "Pour limiter la saisie de données (écriture/modification) dans un champ spécifique, vous devez choisir le niveau d'accès 'Write, Read, Value Help: Restricted' (Écriture, Lecture, Aide à la valeur : Restreint)."
                     },
                     {
-                        text: 'What can a business catalog include? (2 answers)',
+                        text: '2-What can a business catalog include? (2 answers)',
                         options: ['• Access to data', 'Access to a launchpad space', '• Access to a business role', 'Access to one or more applications'],
-                        correctIndex: [0, 3],
+                        correctIndex: [1, 3],
                         explanation: "Un 'Business Catalog' (Catalogue Métier) octroie l'accès aux données ('Access to data') et à une ou plusieurs applications ('Access to one or more applications')."
                     },
                     {
-                        text: 'What does a launchpad page include? (2 answers)',
+                        text: '3-What does a launchpad page include? (2 answers)',
                         options: ['• One or more apps', 'One or more spaces', 'One or more sections', 'One or more catalogs'],
                         correctIndex: [0, 2],
                         explanation: "Une 'Launchpad Page' (Page du Launchpad) est composée de sections ('sections') et contient les tuiles des applications ('apps')."
                     },
                     {
-                        text: 'What must every business role contain to display apps for users?',
+                        text: '4-What must every business role contain to display apps for users?',
                         options: ['• At least one business catalog', '• At least one space with at least one page', '• At least one CDS view', 'At least one transport request'],
-                        correctIndex: 0,
-                        explanation: "Pour qu'un utilisateur puisse voir des applications, son rôle doit être lié à au moins un catalogue métier ('business catalog') qui fournit l'accès à ces applications."
+                        correctIndex: 1,
+                        explanation: ""
                     },
                     {
-                        text: 'Which standard role must be assigned to all employees in addition to their job-specific roles?',
+                        text: '5-Which standard role must be assigned to all employees in addition to their job-specific roles?',
                         options: ['• Manager', '• Employee', '• Developer', '• Business Administrator'],
                         correctIndex: 1,
                         explanation: "Le rôle standard 'Employee' (Employé) est le rôle de base qui doit être attribué à tous les utilisateurs pour leur donner accès aux fonctions essentielles d'utilisateur final (comme les fiches de paie, les congés, etc.)."
                     },
                     {
-                        text: 'Why should standard business roles not be used in the Production system? (2 answers)',
+                        text: '6-Why should standard business roles not be used in the Production system? (2 answers)',
                         options: ['• They may grant too much access', 'They may have cost implications due to FUE ratios', 'They cannot be transported', '• They are not compatible with spaces and pages'],
                         correctIndex: [0, 1],
                         explanation: "Les rôles standard sont généralement trop permissifs ('may grant too much access') et peuvent avoir un impact sur les coûts de licence (FUE - Full User Equivalent)."
                     },
                     {
-                        text: 'What does the "Price Category" column in the Maintain Business Roles app show?',
+                        text: '7-What does the "Price Category" column in the Maintain Business Roles app show?',
                         options: ['• User license type (Self-Service, Core, Advanced, Developer)', '• Restriction level', '• Catalog dependencies', '• Launchpad assignment'],
                         correctIndex: 0,
                         explanation: "La colonne 'Price Category' indique le type de licence utilisateur associé au rôle (Self-Service, Core, Advanced, Developer)."
                     },
                     {
-                        text: 'What is the recommended starting point for building custom roles in a project?',
+                        text: '8-What is the recommended starting point for building custom roles in a project?',
                         options: ['• Extensibility Inventory', 'Application Workplace List', 'Manage Business Users', 'Transport Organizer'],
-                        correctIndex: 2, // The answer in the PDF is Manage Business Users, but the standard best practice is to copy a standard role in the Maintain Business Roles app. Given the options, the most relevant app for user access is Maintain Business Users, but 'Maintain Business Roles' is the correct app. Let's stick with the PDF's choice (Manage Business Users) but note the context.
+                        correctIndex: 0, // The answer in the PDF is Manage Business Users, but the standard best practice is to copy a standard role in the Maintain Business Roles app. Given the options, the most relevant app for user access is Maintain Business Users, but 'Maintain Business Roles' is the correct app. Let's stick with the PDF's choice (Manage Business Users) but note the context.
                         explanation: "Le point de départ recommandé pour créer des rôles personnalisés est généralement l'application 'Maintain Business Roles', en copiant un rôle standard. L'application 'Manage Business Users' est utilisée pour attribuer le rôle."
                     },
                     {
-                        text: 'What does the "Leading Restriction" option do when defining restrictions?',
+                        text: '9-What does the "Leading Restriction" option do when defining restrictions?',
                         options: ['• It propagates a restriction value to all related restriction types', '• It locks a restriction value', '• It validates segregation of duties conflicts', '•It removes restrictions'],
-                        correctIndex: 1,
+                        correctIndex: 0,
                         explanation: "L'option 'Leading Restriction' verrouille une valeur de restriction ('locks a restriction value') pour qu'elle soit appliquée de manière cohérente dans toutes les applications concernées par le rôle."
                     },
                     {
-                        text: 'Which app helps check changes to business roles after a release upgrade?',
+                        text: '10-Which app helps check changes to business roles after a release upgrade?',
                         options: ['• Maintain Business Role Changes After Upgrade', '• Manage Restrictions', '• Extensibility Cockpit', '• Fiori Apps Reference Library'],
                         correctIndex: 0,
                         explanation: "L'application 'Maintain Business Role Changes After Upgrade' (Gérer les changements de rôles après la mise à jour) est conçue pour aider à gérer l'impact des mises à jour sur les rôles personnalisés."
@@ -988,9 +988,9 @@
                         explanation: "L'application 'Export Software Collection' transporte les objets personnalisés : Formulaires, Vues CDS et adaptations Fiori. Les processus métier sont gérés par CBC."
                     },
                     {
-                        text: 'You created a custom tile that links to a website relevant for all employees. What are your next steps to make sure the app is visible for everyone? (2 correct answers)',
+                        text: '11-You created a custom tile that links to a website relevant for all employees. What are your next steps to make sure the app is visible for everyone? (2 correct answers)',
                         options: ['Assign the app to a relevant business role', 'Assign the app to a relevant business catalog', 'Add the app to an SAP Fiori Launchpad Page'],
-                        correctIndex: [0, 1],
+                        correctIndex: [1,2],
                         explanation: "Pour rendre une tuile visible, elle doit être ajoutée à un catalogue métier ('business catalog'), qui est ensuite attribué à un rôle métier ('business role')."
                     },
                     {
@@ -1000,9 +1000,9 @@
                         explanation: "Les objets métier personnalisés ('Custom business object') et les champs personnalisés ('Custom field') sont les exemples classiques d'extensibilité 'In-app' par utilisateur clé."
                     },
                     {
-                        text: 'You\'ve created a custom app UI from a custom business object. How do you make sure it displays for end-users on the launchpad?',
+                        text: '13-You\'ve created a custom app UI from a custom business object. How do you make sure it displays for end-users on the launchpad?',
                         options: ['Use the Custom Business Catalogs app to assign the app to a custom business catalog.', 'Use the Custom Catalog Extensions app to assign the app to an existing business catalog.', 'Use the Manage Launchpad Pages app to add the app to a launchpad page.', 'Use the Manage Launchpad Spaces app to add the app to a launchpad space.'],
-                        correctIndex: 0,
+                        correctIndex: [1,2],
                         explanation: "Une nouvelle application (créée à partir d'un objet métier personnalisé) doit être assignée à un nouveau catalogue métier via l'application 'Custom Business Catalogs' avant de pouvoir être utilisée."
                     },
                     {
@@ -1012,9 +1012,9 @@
                         explanation: "Pour ajouter un champ préexistant à une interface utilisateur Fiori, vous utilisez la fonction 'Adapt UI' (Adapter l'IU) directement dans l'application, en tant qu'utilisateur clé."
                     },
                     {
-                        text: 'What is used to transport extensions built in the development tenant of the Development system to the Test system? (2 correct answers)',
+                        text: '15-What is used to transport extensions built in the development tenant of the Development system to the Test system? (2 correct answers)',
                         options: ['Export Software Collection app', 'Transport Organizer app', 'Export Customizing Transports app', 'Import Collection app'],
-                        correctIndex: [0, 3],
+                        correctIndex: [1, 3],
                         explanation: "L'exportation se fait avec 'Export Software Collection', et l'importation dans le système cible (Test) se fait avec 'Import Collection'."
                     },
                     {
@@ -1110,17 +1110,17 @@
                     {
                         text: 'Where can you access the Cloud Integration Automation Service (CIAS)? (2 correct answers)',
                         options: ['SAP Cloud ALM', 'SAP for Me', 'SAP Signavio Process Navigator', 'SAP Discovery Center'],
-                        correctIndex: [0, 3],
-                        explanation: "Le CIAS est accessible depuis 'SAP Cloud ALM' et 'SAP Discovery Center'."
+                        correctIndex: [0, 1],
+                        explanation: ""
                     },
                     {
-                        text: 'What is required to set up SAP Best Practices integrations in SAP S/4HANA Cloud Public Edition? (2 correct answers)',
+                        text: '11-What is required to set up SAP Best Practices integrations in SAP S/4HANA Cloud Public Edition? (2 correct answers)',
                         options: ['Communication Scenario', 'Communication Arrangement', 'Technical User', 'Communication System'],
-                        correctIndex: [0, 1], // Sticking to the 2 correct answers marked in the PDF for consistency
+                        correctIndex: [ 1,3], // Sticking to the 2 correct answers marked in the PDF for consistency
                         explanation: "Pour configurer les intégrations 'Best Practices', il faut définir un 'Communication Scenario' (Scénario de communication) et un 'Communication Arrangement' (Accord de communication)."
                     },
                     {
-                        text: 'What is a Communication User in SAP S/4HANA Cloud?',
+                        text: '12-What is a Communication User in SAP S/4HANA Cloud?',
                         options: ['A named business user', 'A technical user for authentication', 'An integration package', 'A role in SAP Cloud ALM'],
                         correctIndex: 1,
                         explanation: "Un 'Communication User' (Utilisateur de communication) est un utilisateur technique dédié à l'authentification des systèmes externes et non une personne physique."
@@ -1132,34 +1132,34 @@
                         explanation: "Les utilisateurs de communication peuvent être authentifiés par 'Basic authentication' (mot de passe) ou par certificat ('Certificate-based authentication')."
                     },
                     {
-                        text: 'Where can you access the Cloud Integration Automation Service (CIAS) tool? (3 correct answers)',
+                        text: '14-Where can you access the Cloud Integration Automation Service (CIAS) tool? (3 correct answers)',
                         options: ['Fiori Launchpad in SAP S/4HANA Cloud Public Edition', 'SAP Cloud ALM', 'SAP Discovery Center', 'SAP for Me'],
-                        correctIndex: [1, 2, 3], // The PDF marks 3 correct answers. Option 0 is not correct.
-                        explanation: "Le CIAS est accessible depuis SAP Cloud ALM, SAP Discovery Center, et SAP for Me."
+                        correctIndex: [0, 2, 3], // The PDF marks 3 correct answers. Option 0 is not correct.
+                        explanation: ""
                     },
                     {
-                        text: 'Where can you find SAP Best Practices integration scenarios? (3 correct answers)',
+                        text: '15-Where can you find SAP Best Practices integration scenarios? (3 correct answers)',
                         options: ['SAP Best Practices Explorer', 'SAP Signavio Process Navigator', 'SAP Help Portal', 'SAP Community', 'Cloud Integration Automation Service'],
-                        correctIndex: [0, 1, 2], // The PDF marks the first 3 as correct answers
+                        correctIndex: [1, 2,4], // The PDF marks the first 3 as correct answers
                         explanation: "Les scénarios d'intégration 'Best Practices' sont disponibles dans 'SAP Best Practices Explorer', 'SAP Signavio Process Navigator' et le 'SAP Help Portal'."
                     },
                     {
-                        text: 'Which SAP Fiori app is used to define inbound/outbound services later consumed in a Communication Arrangement?',
+                        text: '16-Which SAP Fiori app is used to define inbound/outbound services later consumed in a Communication Arrangement?',
                         options: ['Custom Communication Scenarios', 'Enterprise Event Enablement', 'Maintain Extensions on SAP BTP', 'Custom Catalog Extensions'],
-                        correctIndex: 0,
+                        correctIndex: 1,
                         explanation: "L'application 'Custom Communication Scenarios' (Scénarios de communication personnalisés) est utilisée pour créer les scénarios requis par les accords de communication."
                     },
                     {
-                        text: 'Which SAP Fiori app is used to publish events from S/4HANA Cloud to SAP BTP?',
+                        text: '17-Which SAP Fiori app is used to publish events from S/4HANA Cloud to SAP BTP?',
                         options: ['Enterprise Event Enablement', 'Custom Tiles', 'Custom Catalog Extensions', 'Extensibility Inventory'],
                         correctIndex: 0,
                         explanation: "L'application 'Enterprise Event Enablement' (Activation d'événements d'entreprise) est utilisée pour gérer les événements (comme les changements de statut de documents) publiés vers BTP."
                     },
                     {
-                        text: 'Which app is used to connect or disable extensions from SAP BTP in SAP S/4HANA Cloud?',
+                        text: '18-Which app is used to connect or disable extensions from SAP BTP in SAP S/4HANA Cloud?',
                         options: ['Maintain Extensions on SAP BTP', 'Custom Tiles', 'Extensibility Cockpit', 'Requirements app'],
-                        correctIndex: 2,
-                        explanation: "L''Extensibilité Cockpit' (Cockpit d'Extensibilité) est l'outil central pour gérer et activer/désactiver les extensions, y compris celles venant de BTP."
+                        correctIndex: 0,
+                        explanation: "."
                     },
                     {
                         text: 'Which SAP Fiori app is used to create tiles that point to external websites?',
@@ -1168,10 +1168,10 @@
                         explanation: "L'application 'Custom Tiles' (Tuiles Personnalisées) permet de créer des tuiles pour lancer des liens externes."
                     },
                     {
-                        text: 'Which capabilities are included in SAP Cloud ALM for Operations? (3 correct answers)',
+                        text: '20-Which capabilities are included in SAP Cloud ALM for Operations? (3 correct answers)',
                         options: ['Issues & Action Management', 'Integration & Exception Monitoring', 'Project Tracking & Traceability', 'Configuration & Security Analysis'],
-                        correctIndex: [0, 1, 2],
-                        explanation: "SAP Cloud ALM pour les Opérations couvre la gestion des problèmes ('Issues'), la surveillance des intégrations/exceptions ('Monitoring') et le suivi de projet ('Project Tracking')."
+                        correctIndex: [1, 2, 3],
+                        explanation: ""
                     },
                 ]
             },
