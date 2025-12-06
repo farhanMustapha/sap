@@ -3,669 +3,384 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QCM SAP S/4HANA Cloud</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <title>QCM SAP S/4HANA Cloud (Vanilla JS)</title>
+    <!-- Tailwind CSS pour le style -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
-        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; color: #1f2937; scroll-behavior: smooth; }
+        
+        /* Utilitaires simples */
+        .hidden { display: none !important; }
+        .fade-in { animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .glass-header { 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(8px); 
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        /* Styles d'états pour les options */
+        .option-card { transition: all 0.2s; }
+        .option-selected { border-color: #3b82f6; background-color: #eff6ff; color: #1e3a8a; }
+        .option-correct { border-color: #22c55e !important; background-color: #f0fdf4 !important; color: #14532d !important; }
+        .option-incorrect { border-color: #ef4444 !important; background-color: #fef2f2 !important; color: #7f1d1d !important; opacity: 0.8; }
+        .card-verified-correct { border-color: #86efac; box-shadow: 0 0 0 1px #86efac; }
+        .card-verified-incorrect { border-color: #fca5a5; box-shadow: 0 0 0 1px #fca5a5; }
+        .disabled { pointer-events: none; opacity: 0.7; }
     </style>
 </head>
 <body>
-    <div id="root"></div>
 
-    <script type="text/babel">
-        const { useState, useEffect, useMemo } = React;
-        const { Play, RotateCcw, CheckCircle, XCircle, History, ChevronRight, ChevronLeft, Save, AlertCircle, Award, BarChart3 } = lucide;
+    <!-- Header Fixe -->
+    <div id="header" class="fixed top-0 left-0 right-0 z-30 glass-header px-4 py-3 shadow-sm">
+        <div class="max-w-5xl mx-auto flex justify-between items-center">
+            <div>
+                <h1 class="font-bold text-blue-700 text-lg">QCM SAP S/4HANA</h1>
+                <div class="text-xs text-gray-500 mt-0.5">
+                    <!-- Score en temps réel -->
+                    <span id="score-display" class="font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded transition-all">Score : 0 / 80</span>
+                    <span class="ml-1 hidden sm:inline">• Implementation & Explore</span>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="app.resetQuiz()" class="p-2 text-gray-500 hover:bg-red-50 hover:text-red-500 rounded-lg transition" title="Réinitialiser (Recommencer à 0)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 12"/><path d="M3 3v9h9"/></svg>
+                </button>
+            </div>
+        </div>
+    </div>
 
-        // --- DATA EXTRACTED FROM PDF ---
-        // Based on "Evaluation Finale 1- Correction Implementation & Explore.pdf"
-        // Marks found in OCR: "X", "☑", "✔"
+    <!-- Conteneur Principal -->
+    <div class="max-w-5xl mx-auto pt-24 pb-12 px-4">
+        
+        <!-- Vue : Quiz -->
+        <div id="view-quiz" class="fade-in space-y-6">
+            <!-- Les questions seront injectées ici par JS -->
+            <div id="questions-container" class="space-y-8"></div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- DONNÉES (80 Questions) ---
         const questionsData = [
-            {
-                id: 1,
-                text: "Which of the following is a benefit of cloud computing?",
-                options: ["High upfront investment in hardware", "Rapid elasticity and scalability", "Limited access for remote users"],
-                correctIndices: [1],
-                explanation: "Cloud computing offers rapid elasticity and scalability."
-            },
-            {
-                id: 2,
-                text: "If an organization requires software with predefined business processes for employees to submit expense reports, what type of cloud service would you recommend?",
-                options: ["SaaS", "PaaS", "IaaS"],
-                correctIndices: [0],
-                explanation: "SaaS (Software as a Service) provides ready-to-use software."
-            },
-            {
-                id: 3,
-                text: "If a developer needs to build an application hosted in the cloud, what type of cloud service would you recommend?",
-                options: ["SaaS", "PaaS", "IaaS"],
-                correctIndices: [1],
-                explanation: "PaaS (Platform as a Service) is for building applications."
-            },
-            {
-                id: 4,
-                text: "In the cloud model, which of the following are responsibilities of the service provider? (There are three correct answers)",
-                options: ["Software backups", "Maintenance of physical servers", "Data center security", "Maintaining customizations after upgrades"],
-                correctIndices: [0, 1, 2],
-                explanation: "The provider handles infrastructure, security, and backups."
-            },
-            {
-                id: 5,
-                text: "What type of database is SAP HANA? (There are two correct answers)",
-                options: ["Row-oriented", "Column-oriented", "Disk-based", "In-memory"],
-                correctIndices: [1, 3],
-                explanation: "SAP HANA is an In-memory, Column-oriented database."
-            },
-            {
-                id: 6,
-                text: "Which layer of SAP S/4HANA provides a universal language to read and process data across different applications?",
-                options: ["SAP HANA", "SAP Fiori", "SAP Business Suite", "Core Data Services"],
-                correctIndices: [3],
-                explanation: "CDS (Core Data Services) provides the universal data definition layer."
-            },
-            {
-                id: 9,
-                text: "An organization has their finance line of business (LoB) running in SAP S/4HANA Cloud Public Edition, while the rest of the LoBs are running in SAP S/4HANA Cloud Private Edition. Which two-tier ERP scenario is this an example of?",
-                options: ["Headquarters-Subsidiary", "Central Services", "Supply Chain", "Ecosystem"],
-                correctIndices: [0], 
-                explanation: "This describes a hybrid/two-tier scenario."
-            },
-            {
-                id: 13,
-                text: "What are some pre-configured content packages that can be chosen on the Detailed Discovery for new implementations with SAP S/4HANA Cloud Private Edition? (Choose two)",
-                options: ["Enterprise Management Layer", "Model Company for Multinational Corporations", "Swift Implementation - Finance Only Package", "Agile Implementation - Medium Package"],
-                correctIndices: [0, 1], // Based on checkmark in text
-                explanation: "Enterprise Management Layer and Model Company are key packages."
-            },
-            {
-                id: 16,
-                text: "What could be included in a solution process? (3 correct answers)",
-                options: ["Task tutorial", "Solution scenario", "Process flow diagram", "Test script", "Form templates"],
-                correctIndices: [0, 2, 3], // Based on ☑ marks
-                explanation: "Solution processes typically include diagrams, tutorials, and test scripts."
-            },
-            {
-                id: 20,
-                text: "Which lines of business are included in Finance-led administrative ERP? (3 correct answers)",
-                options: ["Supply Chain", "Finance", "Manufacturing", "Sourcing and Procurement", "Sales"],
-                correctIndices: [1, 3, 4], // Based on ☑ marks in PDF
-                explanation: "Finance, Sales, and Sourcing & Procurement are often core to admin ERP."
-            },
-            {
-                id: 27,
-                text: "How many people can be assigned the role of the IT Contact?",
-                options: ["1", "2", "3", "Unlimited"],
-                correctIndices: [0], // Marked with ☑1
-                explanation: "Only 1 IT Contact is assigned initially."
-            },
-            {
-                id: 28,
-                text: "Which systems need to be provisioned via SAP for Me? (There are two correct answers)",
-                options: ["SAP Cloud Identity Authentication", "SAP Central Business Configuration", "SAP S/4HANA Cloud Development system, development tenant", "SAP S/4HANA Cloud Production System"],
-                correctIndices: [1, 3], // Based on marks
-                explanation: "CBC and Production Systems are provisioned via SAP for Me."
-            },
-            {
-                id: 30,
-                text: "Which embedded support offerings can you make use of in the SAP Fiori Launchpad? (3 correct answers)",
-                options: ["Video tutorials from the SAP Help Portal", "Digital assistance from generative AI (SAP Joule)", "Assessment questions from the SAP Learning Hub", "Recorded webinars from the SAP Learning Website"],
-                correctIndices: [0, 1, 2], // Inferred mostly, PDF mark on Video Tutorials
-                explanation: "SAP Fiori Launchpad includes help topics, tutorials, and increasingly AI assistants."
-            },
-            {
-                id: 32,
-                text: "What does a deployment plan in SAP Cloud ALM contain? (Two correct answers)",
-                options: ["Timeboxes", "System Group", "Scopes", "Releases"],
-                correctIndices: [0, 3], // Based on marks
-                explanation: "It manages timelines (timeboxes) and releases."
-            },
-            {
-                id: 33,
-                text: "What are some important activities the partner LoB configuration experts need to complete in the Prepare phase? (Two correct answers)",
-                options: ["Providing test user and starter system login", "Gathering L2 BDCQ responses", "Gathering L3 BDCQ responses", "Identifying customer LoB experts to participate in Fit-to-Standard workshops"],
-                correctIndices: [1, 3], // Marks on Identifying + L2 is standard
-                explanation: "Identifying experts and gathering initial questionnaires (L2) happens in Prepare."
-            },
-            {
-                id: 36,
-                text: "Which type of ledger is always active by default in SAP S/4HANA Cloud Public Edition?",
-                options: ["Ledger 2L (IFRS)", "Ledger 3L (US GAAP)", "Ledger 4G (Group Valuation)", "Ledger 0L (Leading Ledger)"],
-                correctIndices: [3], // Marked check
-                explanation: "Ledger 0L is the leading ledger."
-            },
-            {
-                id: 45,
-                text: "What can a business catalog include? (Two correct answers)",
-                options: ["Access to data", "Access to a launchpad space", "Access to a business role", "Access to one or more applications"],
-                correctIndices: [0, 3], // Marked access to data
-                explanation: "Catalogs group apps and data access restrictions."
-            },
-            {
-                id: 49,
-                text: "You've created a custom app UI from a custom business object. How do you make sure it displays for end-users on the launchpad? (Two correct answers)",
-                options: ["Use the Custom Business Catalogs app", "Use the Custom Catalog Extensions app to assign the app to an existing business catalog", "Use the Manage Launchpad Pages app", "Use the Manage Launchpad Spaces app"],
-                correctIndices: [0, 1], // Marked Custom Catalog Extensions
-                explanation: "You need to assign it to a catalog (either custom or extending existing)."
-            },
-            {
-                id: 54,
-                text: "Where can you access the Cloud Integration Automation Service (CIAS)? (Two correct answers)",
-                options: ["SAP Cloud ALM", "SAP for Me", "SAP Signavio Process Navigator", "SAP Discovery Center"],
-                correctIndices: [0, 1], // Marked SAP for Me & ALM implies maintenance
-                explanation: "CIAS is accessible via maintenance tools like SAP for Me."
-            },
-            {
-                id: 56,
-                text: "Which SAP S/4HANA Cloud tenant is the main project for business process configuration and key user extensibility?",
-                options: ["Development Tenant", "Customizing Tenant", "Starter System", "Production System"],
-                correctIndices: [1], // Marked with X in PDF
-                explanation: "Configuration happens in the Customizing Tenant."
-            },
-            {
-                id: 57,
-                text: "In which system is the content upgrade released first?",
-                options: ["SAP Central Business Configuration", "SAP S/4HANA Cloud Test System", "SAP S/4HANA Cloud Development System, customizing tenant", "SAP S/4HANA Cloud Development System, development tenant"],
-                correctIndices: [0], // Marked X in PDF on CBC
-                explanation: "Upgrades often hit the central configuration or test environments early."
-            },
-            {
-                id: 58,
-                text: "Which SAP S/4HANA Cloud system is preconfigured with all SAP Best Practice business processes active and existing master data?",
-                options: ["Development System", "Starter System", "Production System", "Test System"],
-                correctIndices: [1], // Marked X in PDF
-                explanation: "The Starter System comes pre-loaded with best practices and demo data."
-            },
-            {
-                id: 59,
-                text: "In which months are upgrades released for SAP S/4HANA Cloud Public Edition?",
-                options: ["February", "May", "August"],
-                correctIndices: [0, 2], // Marked X on Feb and Aug
-                explanation: "Public Cloud has a specific release cycle (often Feb/Aug in this context)."
-            },
-            {
-                id: 60,
-                text: "What needs to match with the Login Name in the Identity Authentication Service system?",
-                options: ["Worker ID", "First Name", "User Name", "Worker Type"],
-                correctIndices: [2], // Marked X on User Name
-                explanation: "The User Name is the link between the S/4 system and IAS."
-            },
-            {
-                id: 61,
-                text: "What includes one or more business catalogs that grant access to data and/or applications?",
-                options: ["Business User", "Business Role", "Launchpad Space", "Launchpad Page"],
-                correctIndices: [1], // Marked X on Business Role
-                explanation: "A Business Role is a collection of Catalogs."
-            },
-            {
-                id: 62,
-                text: "What does the partner project manager align the scope in SAP Cloud ALM with?",
-                options: ["The bill of materials", "The Starter System", "The Digital Discovery Assessment", "The Process Navigator"],
-                correctIndices: [2], // Marked X on Digital Discovery Assessment
-                explanation: "Scope is aligned with the DDA."
-            },
-            {
-                id: 63,
-                text: "What are some important activities the partner LoB configuration experts need to complete in the Explore phase?",
-                options: ["Preparing a presentation deck", "Documenting formal UAT sign-off", "Documenting customization requirements in SAP Cloud ALM", "Demonstrating where to find business process documentation"],
-                correctIndices: [2, 3], // Marked X on Documenting... and Demonstrating...
-                explanation: "Explore phase involves showing standard processes and capturing requirements."
-            },
-            {
-                id: 64,
-                text: "What does a launchpad page include?",
-                options: ["One or more apps", "One or more spaces", "One or more sections", "One or more catalogs"],
-                correctIndices: [0, 2], // Marked X on Apps and Sections
-                explanation: "A Page contains Sections, which contain Apps."
-            },
-            {
-                id: 65,
-                text: "Where can you find sample code for a Business Add-In (BAdI)?",
-                options: ["Custom Fields app", "Custom Business Objects app", "Extensibility Inventory", "Custom Logic app"],
-                correctIndices: [3], // Marked X on Custom Logic
-                explanation: "Custom Logic app handles BAdIs and often provides snippets."
-            },
-            {
-                id: 66,
-                text: "Where is the master library of all key user in-app extensions that have been made in an SAP S/4HANA Cloud system?",
-                options: ["Extensibility Cockpit app", "Extensibility Explorer app", "Extensibility Inventory app", "Export Customizing Requests app"],
-                correctIndices: [2], // Marked X
-                explanation: "Extensibility Inventory shows what exists."
-            },
-            {
-                id: 67,
-                text: "Where do you change the recipients of a form template?",
-                options: ["In the Maintain Form Templates app", "In the Manage Texts app", "In the Output Parameter Determination app", "In the Monitor Form Transmissions app"],
-                correctIndices: [2], // Marked X
-                explanation: "Output Parameter Determination (OPD/BRF+) handles recipients."
-            },
-            {
-                id: 68,
-                text: "What can be transported with the Export Software Collection app? (Three correct answers)",
-                options: ["A custom form template", "A business configuration value", "A customer-specific CDS view", "A new organizational entity", "An adapted Fiori UI"],
-                correctIndices: [0, 2, 4], // Marked X on Form, CDS, UI
-                explanation: "Key user extensions (Forms, CDS, UI) move via Software Collection."
-            },
-            {
-                id: 69,
-                text: "Which of the following are examples of in-app key user extensibility? (Two correct answers)",
-                options: ["An industry cloud app", "A custom business object", "A custom field", "A custom mobile app"],
-                correctIndices: [1, 2], // Marked X on CBO and Custom Field
-                explanation: "Custom Fields and Custom Business Objects are key user tools."
-            },
-            {
-                id: 70,
-                text: "Which tools would a developer use to build a custom mobile application in JavaScript? (Two correct answers)",
-                options: ["SAP Build Apps", "SAP Business Application Studio", "SAP Build Work Zone", "SAP Software Developer Kits"],
-                correctIndices: [1, 3], // Marked X on BAS and SDKs
-                explanation: "For code-based JS mobile apps, BAS and SDKs are used."
-            },
-            {
-                id: 71,
-                text: "Which tool do you use to add a field that already exists to an SAP Fiori app?",
-                options: ["Custom Logic app", "Adapt UI within an app", "Custom Fields app", "Custom Tiles app"],
-                correctIndices: [1], // Marked X on Adapt UI
-                explanation: "Adapt UI (Runtime Adaptation) allows showing hidden existing fields."
-            },
-            {
-                id: 72,
-                text: "You created a custom tile that links to a website relevant for all employees. What are your next steps to make sure the app is visible for everyone? (Two correct answers)",
-                options: ["Assign the app to a relevant business role", "Assign the app to a relevant business catalog", "Add the app to an SAP Fiori Launchpad Page", "Add the app to an SAP Fiori Launchpad Space"],
-                correctIndices: [1, 2], // Marked X on Catalog and Page
-                explanation: "Tile -> Catalog -> Role -> User. Also needs to be on a Page to be seen easily."
-            },
-            {
-                id: 73,
-                text: "Which SAP Fiori app do you use to define inbound/outbound services that can be later used in a Communication Arrangement?",
-                options: ["Maintain Extensions on SAP BTP", "Custom Communication Scenarios", "Enterprise Event Enablement", "Custom Catalog Extensions"],
-                correctIndices: [1], // Marked X
-                explanation: "Custom Communication Scenarios define the services."
-            },
-            {
-                id: 74,
-                text: "Where can you find SAP Best Practices integration content? (Three correct answers)",
-                options: ["SAP Best Practices Explorer", "SAP Signavio Process Navigator", "SAP Community", "SAP Help Portal", "Cloud Integration Automation Service"],
-                correctIndices: [1, 3, 4], // Marked X on Signavio, Help, CIAS
-                explanation: "Process Navigator (replaces BP Explorer), Help Portal, and CIAS have this info."
-            },
-            {
-                id: 75,
-                text: "Which capability of the SAP Integration Suite would you use to identify the most efficient integration interface for B2B scenarios?",
-                options: ["Cloud Integration", "Migration Assessment", "API Management", "Integration Advisor"],
-                correctIndices: [3], // Marked X
-                explanation: "Integration Advisor uses AI to suggest mappings for B2B."
-            },
-            {
-                id: 76,
-                text: "You tried to migrate data for a business object, but the migration failed. What are some reasons the migration could have failed? (Two correct answers)",
-                options: ["You didn't simulate the migration before migrating the data.", "A predecessor object wasn't migrated.", "You don't have the required business role to migrate the data.", "You assigned more than one migration object to the project."],
-                correctIndices: [1, 2], // Marked X on Predecessor and Role
-                explanation: "Dependencies (predecessors) and Permissions (roles) are common blockers."
-            },
-            {
-                id: 77,
-                text: "You need to add an additional field to a migration object template. What are your options? (Two correct answers)",
-                options: ["Developer extensibility for any migration object", "A custom field using the extensibility framework", "Submit a case through SAP for Me", "Migration Object Modeler for supported objects"],
-                correctIndices: [1, 3], // Marked X on Custom Field and LTMOM
-                explanation: "Use Custom Fields (Key User) or LTMOM (Modeler) to extend migration objects."
-            },
-            {
-                id: 78,
-                text: "Which functionality enables you to capture information including source values, target values after mapping, and target IDs that could be used to audit your migrated data?",
-                options: ["SAP HANA Cloud Service", "Migration Object Modeler", "SAP Data Services", "Extended Statistics"],
-                correctIndices: [3], // Marked X
-                explanation: "Extended Statistics in the migration cockpit provides audit trails."
-            },
-            {
-                id: 79,
-                text: "What types of permission do you need to migrate data for a migration object? (Two correct answers)",
-                options: ["Permission to migrate all data types in the customizing tenant", "Permission to access the Migrate Your Data app.", "Permission to migrate all data types in the development tenant", "Permission to migrate data for the specific object."],
-                correctIndices: [1, 3], // Marked X
-                explanation: "You need app access AND object-specific access."
-            },
-            {
-                id: 80,
-                text: "Which framework supports you to receive a notification when a migration object has completed the Migration step of the guided migration process?",
-                options: ["Responsibility Management Framework", "In-App Notification Framework", "Situation Handling Framework", "Extensibility Framework"],
-                correctIndices: [2], // Marked X
-                explanation: "Situation Handling alerts users to business events like job completion."
-            }
+            { id: 1, text: "Which of the following is a benefit of cloud computing?", options: ["High upfront investment in hardware", "Rapid elasticity and scalability", "Limited access for remote users"], correctIndices: [1], explanation: "Cloud computing offers rapid elasticity and scalability." },
+            { id: 2, text: "If an organization requires software with predefined business processes for employees to submit expense reports, what type of cloud service would you recommend?", options: ["SaaS", "PaaS", "IaaS"], correctIndices: [0], explanation: "SaaS (Software as a Service) provides ready-to-use software." },
+            { id: 3, text: "If a developer needs to build an application hosted in the cloud, what type of cloud service would you recommend?", options: ["SaaS", "PaaS", "IaaS"], correctIndices: [1], explanation: "PaaS (Platform as a Service) is for building applications." },
+            { id: 4, text: "In the cloud model, which of the following are responsibilities of the service provider? (3 correct answers)", options: ["Software backups", "Maintenance of physical servers", "Data center security", "Maintaining customizations after upgrades"], correctIndices: [0, 1, 2], explanation: "The provider handles infrastructure, security, and backups." },
+            { id: 5, text: "What type of database is SAP HANA? (2 correct answers)", options: ["Row-oriented", "Column-oriented", "Disk-based", "In-memory"], correctIndices: [1, 3], explanation: "SAP HANA is an In-memory, Column-oriented database." },
+            { id: 6, text: "Which layer of SAP S/4HANA provides a universal language to read and process data across different applications?", options: ["SAP HANA", "SAP Fiori", "SAP Business Suite", "Core Data Services"], correctIndices: [3], explanation: "CDS (Core Data Services) provides the universal data definition layer." },
+            { id: 7, text: "Which phase of SAP Activate involves the Fit-to-Standard workshops?", options: ["Discover", "Prepare", "Explore", "Realize"], correctIndices: [2], explanation: "Fit-to-Standard workshops take place in the Explore phase." },
+            { id: 8, text: "In SAP S/4HANA Cloud Public Edition, who is responsible for the upgrade of the software?", options: ["The Customer", "The Partner", "SAP", "The Infrastructure Provider"], correctIndices: [2], explanation: "In Public Cloud, SAP manages and performs all upgrades." },
+            { id: 9, text: "An organization has their finance line of business (LoB) running in SAP S/4HANA Cloud Public Edition, while the rest of the LoBs are running in SAP S/4HANA Cloud Private Edition. Which two-tier ERP scenario is this?", options: ["Headquarters-Subsidiary", "Central Services", "Supply Chain", "Ecosystem"], correctIndices: [0], explanation: "This describes a hybrid/two-tier scenario." },
+            { id: 10, text: "What is the primary tool used to configure business processes in SAP S/4HANA Cloud Public Edition?", options: ["SPRO (IMG)", "SAP Central Business Configuration (CBC)", "SAP Solution Manager", "SAP Cloud ALM"], correctIndices: [1], explanation: "CBC is the mandatory tool for scoping and organizational structure." },
+            { id: 11, text: "Which SAP tool is recommended for managing the implementation project of SAP S/4HANA Cloud?", options: ["SAP Solution Manager", "SAP Cloud ALM", "Jira", "Excel"], correctIndices: [1], explanation: "SAP Cloud ALM is the cloud-native ALM tool for S/4HANA Cloud." },
+            { id: 12, text: "During the Realize phase, what is a key activity regarding data?", options: ["Data Aging", "Data Archiving", "Data Migration and Loading", "Data Deletion"], correctIndices: [2], explanation: "Data Migration happens primarily in Realize (and Deploy)." },
+            { id: 13, text: "What are some pre-configured content packages on the Detailed Discovery for SAP S/4HANA Cloud Private Edition? (Choose two)", options: ["Enterprise Management Layer", "Model Company for Multinational Corporations", "Swift Implementation - Finance Only Package", "Agile Implementation - Medium Package"], correctIndices: [0, 1], explanation: "Enterprise Management Layer and Model Company are key packages." },
+            { id: 14, text: "Which testing tool is delivered standard with SAP S/4HANA Cloud Public Edition?", options: ["SAP Quality Center", "Test Automation Tool", "HP ALM", "Tricentis Tosca (External)"], correctIndices: [1], explanation: "The Test Automation Tool is embedded." },
+            { id: 15, text: "Which user ID is used to log in to the Starter System initially?", options: ["S-User", "Initial Admin User provided in the provisioning email", "Any employee ID", "Partner P-User"], correctIndices: [1], explanation: "The IT Contact receives the Initial Admin User." },
+            { id: 16, text: "What could be included in a solution process? (3 correct answers)", options: ["Task tutorial", "Solution scenario", "Process flow diagram", "Test script", "Form templates"], correctIndices: [0, 2, 3], explanation: "Solution processes typically include diagrams, tutorials, and test scripts." },
+            { id: 17, text: "What is the purpose of the SAP Best Practices Explorer (now Process Navigator)?", options: ["To buy licenses", "To view solution processes and scope items", "To configure the system", "To monitor system performance"], correctIndices: [1], explanation: "It lists all available Scope Items (e.g., J01, BD9)." },
+            { id: 18, text: "Which component handles authentication for SAP S/4HANA Cloud users?", options: ["SAP GUI", "Identity Authentication Service (IAS)", "Active Directory (Directly)", "SAP Cloud Connector"], correctIndices: [1], explanation: "IAS is the central identity provider." },
+            { id: 19, text: "In the 3-System Landscape (3SL), what are the three systems?", options: ["Dev, Quality, Prod", "Sandbox, Dev, Prod", "Development, Test, Production", "Starter, Quality, Production"], correctIndices: [2], explanation: "The standard 3SL is Development, Test, and Production." },
+            { id: 20, text: "Which lines of business are included in Finance-led administrative ERP? (3 correct answers)", options: ["Supply Chain", "Finance", "Manufacturing", "Sourcing and Procurement", "Sales"], correctIndices: [1, 3, 4], explanation: "Finance, Sales, and Sourcing & Procurement are often core to admin ERP." },
+            { id: 21, text: "Which methodology is used for SAP S/4HANA Cloud implementations?", options: ["ASAP", "Waterfall", "SAP Activate", "Agile only"], correctIndices: [2], explanation: "SAP Activate is the standard methodology." },
+            { id: 22, text: "What happens during the 'Run' phase of SAP Activate?", options: ["Go-live support", "Continuous improvement and operations", "Fit-to-Standard", "Initial scoping"], correctIndices: [1], explanation: "Run phase is for ongoing operations and optimization." },
+            { id: 23, text: "Which app allows Key Users to create custom fields?", options: ["Custom Fields", "ADT (ABAP Development Tools)", "SE11", "Manage Tables"], correctIndices: [0], explanation: "The 'Custom Fields' Fiori app is for In-App Extensibility." },
+            { id: 24, text: "How often does SAP S/4HANA Cloud Public Edition typically receive major upgrades?", options: ["Every month", "Twice a year (Feb & Aug)", "Once a year", "Every quarter"], correctIndices: [1], explanation: "Since 2024, it is roughly twice a year (e.g. 2402, 2408)." },
+            { id: 25, text: "What is the purpose of a 'Scope Item'?", options: ["To define a user role", "To represent a pre-delivered business process", "To create a custom report", "To configure the printer"], correctIndices: [1], explanation: "Scope items (like BD9) represent standard processes." },
+            { id: 26, text: "Where do you define the Organizational Structure (Company Code, Plant, etc.)?", options: ["In the Fiori Launchpad 'Manage Orgs'", "In SAP Central Business Configuration (CBC)", "In the SAP Backend GUI", "In SuccessFactors"], correctIndices: [1], explanation: "Org structure is defined in CBC." },
+            { id: 27, text: "How many people can be assigned the role of the IT Contact?", options: ["1", "2", "3", "Unlimited"], correctIndices: [0], explanation: "Only 1 IT Contact is assigned initially." },
+            { id: 28, text: "Which systems need to be provisioned via SAP for Me? (2 correct answers)", options: ["SAP Cloud Identity Authentication", "SAP Central Business Configuration", "SAP S/4HANA Cloud Dev System", "SAP S/4HANA Cloud Prod System"], correctIndices: [1, 3], explanation: "CBC and Production Systems are provisioned via SAP for Me." },
+            { id: 29, text: "What is the 'Starter System' used for?", options: ["Production use", "Fit-to-Standard workshops", "Data Migration tests only", "Custom code development"], correctIndices: [1], explanation: "It contains demo data for workshops in Explore phase." },
+            { id: 30, text: "Which embedded support offerings are in SAP Fiori Launchpad? (3 correct answers)", options: ["Video tutorials", "Digital assistance (Joule)", "Assessment questions", "Recorded webinars"], correctIndices: [0, 1, 2], explanation: "Help topics, tutorials, and AI assistants." },
+            { id: 31, text: "How do you access the SAP Fiori Launchpad?", options: ["Via SAP Logon Pad", "Via a Web Browser URL", "Via Command Line", "Via VPN only"], correctIndices: [1], explanation: "It is a web-based interface." },
+            { id: 32, text: "What does a deployment plan in SAP Cloud ALM contain? (Two correct answers)", options: ["Timeboxes", "System Group", "Scopes", "Releases"], correctIndices: [0, 3], explanation: "It manages timelines (timeboxes) and releases." },
+            { id: 33, text: "Important activities for partner LoB experts in Prepare phase? (Two correct answers)", options: ["Provide test user", "Gather L2 BDCQ responses", "Gather L3 BDCQ responses", "Identify customer experts for workshops"], correctIndices: [1, 3], explanation: "Identifying experts and gathering initial questionnaires (L2)." },
+            { id: 34, text: "What is BDCQ?", options: ["Business Data Configuration Query", "Business Driven Configuration Questionnaire", "Basic Data Check Quality", "Best Digital Cloud Quality"], correctIndices: [1], explanation: "Used to capture configuration requirements." },
+            { id: 35, text: "Which environment allows for 'Developer Extensibility' (ABAP Cloud)?", options: ["Customizing Tenant", "Development Tenant", "Test Tenant", "Starter System"], correctIndices: [1], explanation: "The Development Tenant allows ADT access." },
+            { id: 36, text: "Which type of ledger is always active by default in SAP S/4HANA Cloud Public Edition?", options: ["Ledger 2L (IFRS)", "Ledger 3L (US GAAP)", "Ledger 4G", "Ledger 0L (Leading Ledger)"], correctIndices: [3], explanation: "Ledger 0L is the leading ledger." },
+            { id: 37, text: "What is the main purpose of the 'Realize' phase?", options: ["Scoping", "Configuration and Testing", "Contract signing", "Support"], correctIndices: [1], explanation: "Building and testing the system." },
+            { id: 38, text: "Which tool is used for Data Migration?", options: ["LSMW", "SAP S/4HANA Migration Cockpit", "SAP Data Services", "SQL Injection"], correctIndices: [1], explanation: "Migration Cockpit is the standard tool." },
+            { id: 39, text: "In Migration Cockpit, what is a 'Staging Table'?", options: ["A table in production", "A temporary table to fill legacy data before processing", "A configuration table", "A reporting table"], correctIndices: [1], explanation: "Data is loaded into staging tables then migrated." },
+            { id: 40, text: "What is 'Side-by-Side Extensibility'?", options: ["Extending via SAP BTP", "Extending inside the S/4HANA core", "Modifying SAP source code", "Changing the GUI theme"], correctIndices: [0], explanation: "Decoupled extensions running on SAP BTP." },
+            { id: 41, text: "What defines which apps a user sees on the Launchpad?", options: ["Business Role assigned to the user", "The user's computer", "The time of day", "The internet speed"], correctIndices: [0], explanation: "Business Roles (containing Catalogs) control access." },
+            { id: 42, text: "What does 'Fit-to-Standard' mean?", options: ["Changing the standard code to fit the business", "Adopting the standard process and minimizing gaps", "Ignoring the standard", "Writing a new ERP"], correctIndices: [1], explanation: "Adopting standard best practices." },
+            { id: 43, text: "Which Quality Gate occurs at the end of the Explore phase?", options: ["Q-Gate Realize", "Q-Gate Explore", "Q-Gate Deploy", "Q-Gate Run"], correctIndices: [1], explanation: "Ensures scope and requirements are finalized." },
+            { id: 44, text: "Who creates the Project Plan in SAP Cloud ALM?", options: ["The Project Manager", "The Developer", "The End User", "The Auditor"], correctIndices: [0], explanation: "Project Manager responsibilities." },
+            { id: 45, text: "What can a business catalog include? (Two correct answers)", options: ["Access to data", "Access to a launchpad space", "Access to a business role", "Access to one or more applications"], correctIndices: [0, 3], explanation: "Catalogs group apps and data access restrictions." },
+            { id: 46, text: "What is a 'Business User' in S/4HANA Cloud?", options: ["A technical user", "A person who uses the system for daily tasks", "A batch job", "An API"], correctIndices: [1], explanation: "Linked to an employee/worker." },
+            { id: 47, text: "Which app is used to monitor message integration errors?", options: ["Message Dashboard / AIF", "Role Maintenance", "Maintain Business Partner", "Balance Sheet"], correctIndices: [0], explanation: "Application Interface Framework (AIF) / Message Dashboard." },
+            { id: 48, text: "Can you modify SAP source code in Public Cloud?", options: ["Yes, unrestricted", "No, strictly forbidden", "Yes, with a special key", "Only on weekends"], correctIndices: [1], explanation: "Clean Core principle forbids core modification." },
+            { id: 49, text: "You've created a custom app UI from a custom business object. How do you make sure it displays for end-users? (Two correct answers)", options: ["Use Custom Business Catalogs app", "Use Custom Catalog Extensions to assign to existing catalog", "Use Manage Launchpad Pages", "Use Manage Launchpad Spaces"], correctIndices: [0, 1], explanation: "Assign to a catalog (custom or extension)." },
+            { id: 50, text: "What is 'SAP Joule'?", options: ["A new database", "The AI Copilot for SAP", "A legacy system", "A programming language"], correctIndices: [1], explanation: "Joule is the Generative AI assistant." },
+            { id: 51, text: "Which API type is considered stable and recommended?", options: ["Private APIs", "Whitelisted / Public APIs", "Deprecated APIs", "Internal Tables"], correctIndices: [1], explanation: "Only Public/Whitelisted APIs should be used." },
+            { id: 52, text: "What does 'CAS' stand for in the context of Activate?", options: ["Cloud Application Services", "Central Admin System", "Customer Active Support", "Core Application Setup"], correctIndices: [0], explanation: "Services provided by SAP." },
+            { id: 53, text: "In which system do you perform the 'Cutover' activities?", options: ["Starter", "Development", "Production", "Trial"], correctIndices: [2], explanation: "Cutover happens in Production before Go-Live." },
+            { id: 54, text: "Where can you access the Cloud Integration Automation Service (CIAS)? (Two correct answers)", options: ["SAP Cloud ALM", "SAP for Me", "SAP Signavio Process Navigator", "SAP Discovery Center"], correctIndices: [0, 1], explanation: "CIAS is accessible via maintenance tools like SAP for Me." },
+            { id: 55, text: "What is the role of the 'Communication Arrangement'?", options: ["To chat with support", "To enable a communication scenario at runtime", "To write emails", "To configure the printer"], correctIndices: [1], explanation: "It configures the technical details of an integration." },
+            { id: 56, text: "Which SAP S/4HANA Cloud tenant is the main project for business process configuration?", options: ["Development Tenant", "Customizing Tenant", "Starter System", "Production System"], correctIndices: [1], explanation: "Configuration happens in the Customizing Tenant." },
+            { id: 57, text: "In which system is the content upgrade released first?", options: ["SAP CBC", "SAP S/4HANA Test System", "SAP S/4HANA Dev Customizing", "SAP S/4HANA Dev Development"], correctIndices: [0], explanation: "Upgrades often hit the central configuration or test environments early." },
+            { id: 58, text: "Which system is preconfigured with all SAP Best Practice business processes active?", options: ["Development System", "Starter System", "Production System", "Test System"], correctIndices: [1], explanation: "The Starter System comes pre-loaded." },
+            { id: 59, text: "In which months are upgrades released for SAP S/4HANA Cloud Public Edition?", options: ["February", "May", "August"], correctIndices: [0, 2], explanation: "Public Cloud has a specific release cycle (often Feb/Aug)." },
+            { id: 60, text: "What needs to match with the Login Name in the Identity Authentication Service system?", options: ["Worker ID", "First Name", "User Name", "Worker Type"], correctIndices: [2], explanation: "The User Name is the link between the S/4 system and IAS." },
+            { id: 61, text: "What includes one or more business catalogs that grant access to data and/or applications?", options: ["Business User", "Business Role", "Launchpad Space", "Launchpad Page"], correctIndices: [1], explanation: "A Business Role is a collection of Catalogs." },
+            { id: 62, text: "What does the partner project manager align the scope in SAP Cloud ALM with?", options: ["The bill of materials", "The Starter System", "The Digital Discovery Assessment", "The Process Navigator"], correctIndices: [2], explanation: "Scope is aligned with the DDA." },
+            { id: 63, text: "Important activities for partner LoB configuration experts in Explore phase?", options: ["Prepare deck", "UAT sign-off", "Document customization requirements in ALM", "Demonstrate business processes"], correctIndices: [2, 3], explanation: "Show processes and capture requirements." },
+            { id: 64, text: "What does a launchpad page include?", options: ["One or more apps", "One or more spaces", "One or more sections", "One or more catalogs"], correctIndices: [0, 2], explanation: "A Page contains Sections, which contain Apps." },
+            { id: 65, text: "Where can you find sample code for a Business Add-In (BAdI)?", options: ["Custom Fields app", "Custom Business Objects app", "Extensibility Inventory", "Custom Logic app"], correctIndices: [3], explanation: "Custom Logic app handles BAdIs." },
+            { id: 66, text: "Where is the master library of all key user in-app extensions?", options: ["Extensibility Cockpit", "Extensibility Explorer", "Extensibility Inventory", "Export Customizing Requests"], correctIndices: [2], explanation: "Extensibility Inventory shows what exists." },
+            { id: 67, text: "Where do you change the recipients of a form template?", options: ["Maintain Form Templates", "Manage Texts", "Output Parameter Determination", "Monitor Form Transmissions"], correctIndices: [2], explanation: "OPD/BRF+ handles recipients." },
+            { id: 68, text: "What can be transported with the Export Software Collection app? (3 correct answers)", options: ["Custom form template", "Business config value", "Customer-specific CDS view", "New organizational entity", "Adapted Fiori UI"], correctIndices: [0, 2, 4], explanation: "Key user extensions move via Software Collection." },
+            { id: 69, text: "Examples of in-app key user extensibility? (2 correct answers)", options: ["Industry cloud app", "Custom business object", "Custom field", "Custom mobile app"], correctIndices: [1, 2], explanation: "Custom Fields and Custom Business Objects." },
+            { id: 70, text: "Tools to build a custom mobile application in JavaScript? (2 correct answers)", options: ["SAP Build Apps", "SAP Business Application Studio", "SAP Build Work Zone", "SAP Software Developer Kits"], correctIndices: [1, 3], explanation: "BAS and SDKs." },
+            { id: 71, text: "Which tool do you use to add a field that already exists to an SAP Fiori app?", options: ["Custom Logic", "Adapt UI within an app", "Custom Fields", "Custom Tiles"], correctIndices: [1], explanation: "Adapt UI (Runtime Adaptation)." },
+            { id: 72, text: "Steps to make a custom tile visible for everyone? (2 correct answers)", options: ["Assign to business role", "Assign to business catalog", "Add to Launchpad Page", "Add to Launchpad Space"], correctIndices: [1, 2], explanation: "Catalog and Page assignment." },
+            { id: 73, text: "App to define inbound/outbound services for Communication Arrangement?", options: ["Extensions on BTP", "Custom Communication Scenarios", "Enterprise Event Enablement", "Custom Catalog Extensions"], correctIndices: [1], explanation: "Custom Communication Scenarios." },
+            { id: 74, text: "Where to find SAP Best Practices integration content? (3 correct answers)", options: ["BP Explorer", "SAP Signavio Process Navigator", "SAP Community", "SAP Help Portal", "Cloud Integration Automation Service"], correctIndices: [1, 3, 4], explanation: "Navigator, Help, CIAS." },
+            { id: 75, text: "Capability to identify most efficient integration interface for B2B?", options: ["Cloud Integration", "Migration Assessment", "API Management", "Integration Advisor"], correctIndices: [3], explanation: "Integration Advisor." },
+            { id: 76, text: "Reasons migration failed? (2 correct answers)", options: ["No simulation", "Predecessor object not migrated", "No required business role", "Too many objects"], correctIndices: [1, 2], explanation: "Dependencies and Permissions." },
+            { id: 77, text: "Options to add field to migration object? (2 correct answers)", options: ["Developer extensibility", "Custom field using extensibility framework", "Case to SAP", "Migration Object Modeler"], correctIndices: [1, 3], explanation: "Custom Fields or LTMOM." },
+            { id: 78, text: "Functionality to audit migrated data (source, target, IDs)?", options: ["HANA Cloud Service", "Migration Object Modeler", "Data Services", "Extended Statistics"], correctIndices: [3], explanation: "Extended Statistics." },
+            { id: 79, text: "Permission needed to migrate data? (2 correct answers)", options: ["Migrate all data types in customizing", "Access Migrate Your Data app", "Migrate all data types in dev", "Permission for specific object"], correctIndices: [1, 3], explanation: "App access AND object access." },
+            { id: 80, text: "Framework for notification when migration completes?", options: ["Responsibility Management", "In-App Notification", "Situation Handling", "Extensibility"], correctIndices: [2], explanation: "Situation Handling." }
         ];
 
-        // --- COMPONENTS ---
+        // --- APPLICATION LOGIC (Vanilla JS) ---
 
-        const App = () => {
-            const [gameState, setGameState] = useState('welcome'); // welcome, playing, results
-            const [currentQIndex, setCurrentQIndex] = useState(0);
-            const [selectedAnswers, setSelectedAnswers] = useState({}); // { qId: [indices] }
-            const [history, setHistory] = useState([]);
-            const [showHistory, setShowHistory] = useState(false);
+        const app = {
+            answers: {},
+            verified: {}, // Stocke l'état vérifié { qId: true }
+            
+            // Clé unique pour le stockage de session
+            SESSION_KEY: 'sap_quiz_current_session',
 
-            // Load History on Mount
-            useEffect(() => {
-                const savedHistory = localStorage.getItem('sap_quiz_history');
-                if (savedHistory) {
+            init() {
+                // Charger la session active (PERSISTANCE)
+                const savedSession = localStorage.getItem(this.SESSION_KEY);
+                if (savedSession) {
                     try {
-                        setHistory(JSON.parse(savedHistory));
+                        const session = JSON.parse(savedSession);
+                        this.answers = session.answers || {};
+                        this.verified = session.verified || {};
                     } catch (e) {
-                        console.error("Failed to parse history", e);
+                        console.error("Erreur chargement session:", e);
                     }
                 }
-            }, []);
 
-            // Save History when updated
-            const saveToHistory = (score, total) => {
-                const newEntry = {
-                    date: new Date().toLocaleDateString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
-                    score: score,
-                    total: total
+                // Rendu initial
+                this.renderQuizList();
+                this.updateHeader();
+                
+                // Si on a des réponses, on restore la position de scroll si possible (optionnel)
+                // Pour l'instant on reste en haut
+            },
+
+            saveState() {
+                // Sauvegarde l'état actuel dans le localStorage
+                const session = {
+                    answers: this.answers,
+                    verified: this.verified
                 };
-                const newHistory = [newEntry, ...history].slice(0, 10); // Keep last 10
-                setHistory(newHistory);
-                localStorage.setItem('sap_quiz_history', JSON.stringify(newHistory));
-            };
+                localStorage.setItem(this.SESSION_KEY, JSON.stringify(session));
+            },
 
-            const startQuiz = () => {
-                setGameState('playing');
-                setCurrentQIndex(0);
-                setSelectedAnswers({});
-                setShowHistory(false);
-            };
+            renderQuizList() {
+                const container = document.getElementById('questions-container');
+                container.innerHTML = questionsData.map((q, index) => this.createQuestionCard(q, index)).join('');
+            },
 
-            const handleOptionClick = (qId, optionIndex, isMulti) => {
-                setSelectedAnswers(prev => {
-                    const currentSelected = prev[qId] || [];
-                    if (isMulti) {
-                        if (currentSelected.includes(optionIndex)) {
-                            return { ...prev, [qId]: currentSelected.filter(i => i !== optionIndex) };
+            createQuestionCard(q, index) {
+                const isMulti = q.correctIndices.length > 1;
+                const isVerified = this.verified[q.id];
+                const userSelection = this.answers[q.id] || [];
+                
+                // Déterminer les classes de la carte
+                let cardClasses = "bg-white rounded-2xl shadow-sm border border-gray-200 relative overflow-hidden transition-all";
+                let indicator = "";
+
+                if (isVerified) {
+                    const sortedUser = [...userSelection].sort();
+                    const sortedCorrect = [...q.correctIndices].sort();
+                    const isCorrect = JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect);
+                    
+                    if (isCorrect) {
+                        cardClasses += " card-verified-correct";
+                        indicator = `<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-green-500"></div>`;
+                    } else {
+                        cardClasses += " card-verified-incorrect";
+                        indicator = `<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-red-500"></div>`;
+                    }
+                } else {
+                    cardClasses += " hover:border-blue-300 hover:shadow-md";
+                }
+
+                // Générer les options
+                const optionsHtml = q.options.map((opt, optIdx) => {
+                    const isSelected = userSelection.includes(optIdx);
+                    const isActuallyCorrect = q.correctIndices.includes(optIdx);
+                    
+                    let optClass = "p-3.5 rounded-lg border-2 flex items-start gap-3 transition-all select-none ";
+                    let iconHtml = "";
+
+                    if (isVerified) {
+                        optClass += "disabled "; // Désactiver le clic
+                        if (isActuallyCorrect) {
+                            optClass += "option-correct ";
+                            iconHtml = `<svg class="w-5 h-5 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>`;
+                        } else if (isSelected && !isActuallyCorrect) {
+                            optClass += "option-incorrect ";
+                            iconHtml = `<svg class="w-5 h-5 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
                         } else {
-                            return { ...prev, [qId]: [...currentSelected, optionIndex] };
+                            optClass += "border-gray-100 text-gray-400 opacity-50 ";
+                            iconHtml = `<div class="w-5 h-5 rounded-full border border-gray-300"></div>`;
                         }
                     } else {
-                        return { ...prev, [qId]: [optionIndex] };
+                        optClass += "cursor-pointer ";
+                        if (isSelected) {
+                            optClass += "option-selected shadow-sm ";
+                            iconHtml = `<svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>`;
+                        } else {
+                            optClass += "border-gray-100 hover:border-gray-300 hover:bg-gray-50 text-gray-700 ";
+                            iconHtml = `<div class="w-5 h-5 rounded-full border border-gray-300 bg-white"></div>`;
+                        }
                     }
-                });
-            };
 
-            const calculateScore = () => {
-                let score = 0;
-                questionsData.forEach(q => {
-                    const userSelected = selectedAnswers[q.id] || [];
-                    // Check if arrays match exactly (sort to be sure)
-                    const sortedUser = [...userSelected].sort();
-                    const sortedCorrect = [...q.correctIndices].sort();
+                    return `
+                        <div onclick="app.selectOption(${q.id}, ${optIdx}, ${isMulti})" class="${optClass}">
+                            <div class="mt-0.5 flex-shrink-0">${iconHtml}</div>
+                            <span class="text-sm md:text-base">${opt}</span>
+                        </div>
+                    `;
+                }).join('');
+
+                // Zone de Feedback / Bouton
+                let footerHtml = "";
+                if (!isVerified) {
+                    const hasSelection = userSelection.length > 0;
+                    const btnClass = hasSelection 
+                        ? "bg-gray-900 text-white hover:bg-black shadow-md cursor-pointer transform active:scale-95" 
+                        : "bg-gray-100 text-gray-400 cursor-not-allowed";
                     
-                    if (JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect)) {
-                        score++;
+                    footerHtml = `
+                        <button onclick="${hasSelection ? `app.verifyQuestion(${q.id})` : ''}" class="flex items-center gap-2 px-5 py-2 rounded-lg font-medium text-sm transition-all ${btnClass}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            Vérifier
+                        </button>
+                    `;
+                } else {
+                    footerHtml = `
+                        <div class="w-full bg-blue-50 text-blue-900 p-4 rounded-lg text-sm flex gap-3 fade-in">
+                            <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+                            <div>
+                                <span class="font-bold block mb-1">Explication :</span>
+                                ${q.explanation}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div id="q-${q.id}" class="${cardClasses}">
+                        ${indicator}
+                        <div class="p-6">
+                            <div class="flex items-center gap-2 mb-4 pl-2">
+                                <span class="text-sm font-bold text-gray-400 uppercase tracking-wider">Q${index + 1}</span>
+                                ${isMulti ? '<span class="bg-indigo-50 text-indigo-600 text-[10px] px-2 py-0.5 rounded border border-indigo-100 font-bold uppercase tracking-wide">'+q.correctIndices.length+' Choix</span>' : ''}
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold text-gray-800 mb-6 pl-2 leading-relaxed">${q.text}</h3>
+
+                            <div class="space-y-3 mb-6 pl-2">
+                                ${optionsHtml}
+                            </div>
+
+                            <div class="pl-2 border-t pt-4 border-gray-50 flex items-center justify-between">
+                                ${footerHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            },
+
+            selectOption(qId, optIdx, isMulti) {
+                if (this.verified[qId]) return;
+
+                const currentSelected = this.answers[qId] || [];
+                let newSelected;
+
+                if (isMulti) {
+                    if (currentSelected.includes(optIdx)) {
+                        newSelected = currentSelected.filter(i => i !== optIdx);
+                    } else {
+                        newSelected = [...currentSelected, optIdx];
+                    }
+                } else {
+                    newSelected = [optIdx];
+                }
+
+                this.answers[qId] = newSelected;
+                this.saveState(); // SAUVEGARDE
+                this.refreshCard(qId);
+            },
+
+            verifyQuestion(qId) {
+                this.verified[qId] = true;
+                this.saveState(); // SAUVEGARDE
+                this.refreshCard(qId);
+                this.updateHeader(); // Met à jour le score
+            },
+
+            refreshCard(qId) {
+                const qIndex = questionsData.findIndex(q => q.id === qId);
+                const qData = questionsData[qIndex];
+                const newHtml = this.createQuestionCard(qData, qIndex);
+                
+                const oldCard = document.getElementById(`q-${qId}`);
+                if (oldCard) {
+                    oldCard.outerHTML = newHtml;
+                }
+            },
+
+            calculateScore() {
+                let score = 0;
+                // On calcule le score UNIQUEMENT sur les questions VÉRIFIÉES
+                Object.keys(this.verified).forEach(qIdStr => {
+                    const qId = parseInt(qIdStr);
+                    const q = questionsData.find(item => item.id === qId);
+                    if (q) {
+                        const userSelected = this.answers[qId] || [];
+                        const sortedUser = [...userSelected].sort();
+                        const sortedCorrect = [...q.correctIndices].sort();
+                        if (JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect)) {
+                            score++;
+                        }
                     }
                 });
                 return score;
-            };
+            },
 
-            const finishQuiz = () => {
-                const score = calculateScore();
-                saveToHistory(score, questionsData.length);
-                setGameState('results');
-            };
+            updateHeader() {
+                const currentScore = this.calculateScore();
+                document.getElementById('score-display').innerText = `Score : ${currentScore} / ${questionsData.length}`;
+            },
 
-            // --- RENDERERS ---
-
-            if (showHistory) {
-                return (
-                    <div className="min-h-screen p-6 max-w-2xl mx-auto fade-in">
-                        <button onClick={() => setShowHistory(false)} className="mb-6 flex items-center text-blue-600 hover:underline">
-                            <ChevronLeft className="w-4 h-4 mr-1" /> Retour
-                        </button>
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                                <History className="w-6 h-6 text-purple-600"/> Historique
-                            </h2>
-                            {history.length === 0 ? (
-                                <p className="text-gray-500 italic">Aucune tentative enregistrée.</p>
-                            ) : (
-                                <div className="space-y-3">
-                                    {history.map((entry, idx) => (
-                                        <div key={idx} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100">
-                                            <span className="text-gray-600 font-medium">{entry.date}</span>
-                                            <span className={`font-bold px-3 py-1 rounded-full text-sm ${
-                                                (entry.score / entry.total) > 0.7 ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
-                                            }`}>
-                                                {entry.score} / {entry.total}
-                                            </span>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                );
-            }
-
-            if (gameState === 'welcome') {
-                return (
-                    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-indigo-100 text-center">
-                        <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full fade-in">
-                            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <Award className="w-8 h-8 text-blue-600" />
-                            </div>
-                            <h1 className="text-3xl font-bold text-gray-900 mb-2">QCM SAP S/4HANA</h1>
-                            <p className="text-gray-500 mb-8">Testez vos connaissances sur l'implémentation SAP Cloud et Explore Phase.</p>
-                            
-                            <div className="space-y-3">
-                                <button onClick={startQuiz} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all flex items-center justify-center gap-2 shadow-md">
-                                    <Play className="w-5 h-5" /> Commencer le Quiz
-                                </button>
-                                <button onClick={() => setShowHistory(true)} className="w-full bg-white hover:bg-gray-50 text-gray-700 font-medium py-3 px-6 rounded-lg border border-gray-200 transition-all flex items-center justify-center gap-2">
-                                    <History className="w-5 h-5" /> Voir l'historique
-                                </button>
-                            </div>
-                            <div className="mt-6 text-xs text-gray-400">
-                                {questionsData.length} questions disponibles
-                            </div>
-                        </div>
-                    </div>
-                );
-            }
-
-            if (gameState === 'playing') {
-                const question = questionsData[currentQIndex];
-                const isMulti = question.correctIndices.length > 1;
-                const currentSelected = selectedAnswers[question.id] || [];
-
-                return (
-                    <div className="min-h-screen p-4 md:p-8 max-w-3xl mx-auto flex flex-col">
-                        {/* Header */}
-                        <div className="flex justify-between items-center mb-6 bg-white p-4 rounded-xl shadow-sm">
-                            <div className="flex flex-col">
-                                <span className="text-xs font-bold text-blue-600 tracking-wider uppercase">Question {currentQIndex + 1} / {questionsData.length}</span>
-                                <div className="w-32 h-2 bg-gray-100 rounded-full mt-1">
-                                    <div className="h-full bg-blue-600 rounded-full transition-all duration-300" style={{ width: `${((currentQIndex + 1) / questionsData.length) * 100}%` }}></div>
-                                </div>
-                            </div>
-                            <button onClick={() => setGameState('welcome')} className="text-gray-400 hover:text-red-500 transition-colors">
-                                <XCircle className="w-6 h-6" />
-                            </button>
-                        </div>
-
-                        {/* Question Card */}
-                        <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex-grow fade-in">
-                            <div className="p-6 md:p-8">
-                                <div className="mb-6">
-                                    {isMulti && (
-                                        <span className="inline-block bg-indigo-50 text-indigo-700 text-xs px-2 py-1 rounded mb-2 font-medium border border-indigo-100">
-                                            Choix multiples ({question.correctIndices.length} réponses)
-                                        </span>
-                                    )}
-                                    <h2 className="text-xl md:text-2xl font-semibold text-gray-800 leading-snug">
-                                        {question.text}
-                                    </h2>
-                                </div>
-
-                                <div className="space-y-3">
-                                    {question.options.map((option, idx) => {
-                                        const isSelected = currentSelected.includes(idx);
-                                        return (
-                                            <div 
-                                                key={idx}
-                                                onClick={() => handleOptionClick(question.id, idx, isMulti)}
-                                                className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex items-start gap-3 group
-                                                    ${isSelected 
-                                                        ? 'border-blue-500 bg-blue-50 text-blue-900' 
-                                                        : 'border-gray-100 hover:border-gray-300 hover:bg-gray-50 text-gray-700'
-                                                    }`}
-                                            >
-                                                <div className={`mt-0.5 w-5 h-5 rounded flex-shrink-0 flex items-center justify-center border transition-colors
-                                                    ${isMulti ? 'rounded' : 'rounded-full'}
-                                                    ${isSelected ? 'bg-blue-500 border-blue-500' : 'bg-white border-gray-300 group-hover:border-gray-400'}
-                                                `}>
-                                                    {isSelected && <CheckCircle className="w-3.5 h-3.5 text-white" />}
-                                                </div>
-                                                <span className="text-base">{option}</span>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Navigation */}
-                        <div className="flex justify-between items-center mt-6">
-                            <button 
-                                onClick={() => setCurrentQIndex(Math.max(0, currentQIndex - 1))}
-                                disabled={currentQIndex === 0}
-                                className={`flex items-center gap-1 px-4 py-2 rounded-lg font-medium transition-colors ${currentQIndex === 0 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600 hover:bg-white hover:shadow-sm'}`}
-                            >
-                                <ChevronLeft className="w-5 h-5" /> Précédent
-                            </button>
-
-                            {currentQIndex < questionsData.length - 1 ? (
-                                <button 
-                                    onClick={() => setCurrentQIndex(currentQIndex + 1)}
-                                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold shadow-md flex items-center gap-2 transition-transform active:scale-95"
-                                >
-                                    Suivant <ChevronRight className="w-5 h-5" />
-                                </button>
-                            ) : (
-                                <button 
-                                    onClick={finishQuiz}
-                                    className="bg-green-600 hover:bg-green-700 text-white px-6 py-2.5 rounded-lg font-semibold shadow-md flex items-center gap-2 transition-transform active:scale-95"
-                                >
-                                    Terminer <Save className="w-4 h-4" />
-                                </button>
-                            )}
-                        </div>
-                    </div>
-                );
-            }
-
-            if (gameState === 'results') {
-                const score = calculateScore();
-                const total = questionsData.length;
-                const percentage = Math.round((score / total) * 100);
-
-                return (
-                    <div className="min-h-screen p-4 md:p-8 bg-gray-50">
-                        <div className="max-w-4xl mx-auto">
-                            {/* Score Card */}
-                            <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 text-center fade-in">
-                                <h2 className="text-2xl font-bold text-gray-800 mb-2">Résultats du Quiz</h2>
-                                <div className="text-gray-500 mb-6">Vous avez terminé l'évaluation</div>
-                                
-                                <div className="flex justify-center items-center mb-6">
-                                    <div className={`w-32 h-32 rounded-full flex items-center justify-center border-8 text-4xl font-bold
-                                        ${percentage >= 70 ? 'border-green-100 text-green-600 bg-green-50' : 'border-orange-100 text-orange-600 bg-orange-50'}
-                                    `}>
-                                        {score}/{total}
-                                    </div>
-                                </div>
-                                
-                                <p className="text-lg text-gray-700 mb-8">
-                                    {percentage >= 70 ? "Excellent travail ! Vous maîtrisez bien les concepts." : "Continuez à réviser, vous progressez !"}
-                                </p>
-
-                                <div className="flex justify-center gap-4">
-                                    <button onClick={startQuiz} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium flex items-center gap-2">
-                                        <RotateCcw className="w-4 h-4" /> Recommencer
-                                    </button>
-                                    <button onClick={() => setGameState('welcome')} className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-medium">
-                                        Menu Principal
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* Detailed Correction */}
-                            <div className="space-y-6">
-                                <h3 className="text-xl font-bold text-gray-800 px-2">Correction Détaillée</h3>
-                                {questionsData.map((q, idx) => {
-                                    const userSelected = selectedAnswers[q.id] || [];
-                                    const sortedUser = [...userSelected].sort();
-                                    const sortedCorrect = [...q.correctIndices].sort();
-                                    const isCorrect = JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect);
-                                    
-                                    // Don't show correct answers if user wants to focus on errors? 
-                                    // For now, showing all to review.
-                                    
-                                    return (
-                                        <div key={idx} className={`bg-white rounded-xl shadow-sm border-l-4 p-6 ${isCorrect ? 'border-green-500' : 'border-red-500'}`}>
-                                            <div className="flex items-start gap-3">
-                                                <div className={`mt-1 flex-shrink-0 ${isCorrect ? 'text-green-500' : 'text-red-500'}`}>
-                                                    {isCorrect ? <CheckCircle className="w-6 h-6" /> : <AlertCircle className="w-6 h-6" />}
-                                                </div>
-                                                <div className="flex-grow">
-                                                    <h4 className="text-lg font-medium text-gray-900 mb-3">
-                                                        <span className="text-gray-400 text-sm mr-2">Q{idx+1}</span>
-                                                        {q.text}
-                                                    </h4>
-                                                    
-                                                    <div className="space-y-2 mb-4">
-                                                        {q.options.map((opt, optIdx) => {
-                                                            const isUserSelected = userSelected.includes(optIdx);
-                                                            const isActuallyCorrect = q.correctIndices.includes(optIdx);
-                                                            
-                                                            let optClass = "p-2 rounded border text-sm flex justify-between items-center ";
-                                                            if (isActuallyCorrect) {
-                                                                optClass += "bg-green-50 border-green-200 text-green-800 font-medium";
-                                                            } else if (isUserSelected && !isActuallyCorrect) {
-                                                                optClass += "bg-red-50 border-red-200 text-red-800";
-                                                            } else {
-                                                                optClass += "bg-gray-50 border-transparent text-gray-500";
-                                                            }
-
-                                                            return (
-                                                                <div key={optIdx} className={optClass}>
-                                                                    <span>{opt}</span>
-                                                                    {isActuallyCorrect && <CheckCircle className="w-4 h-4 ml-2 flex-shrink-0" />}
-                                                                    {isUserSelected && !isActuallyCorrect && <XCircle className="w-4 h-4 ml-2 flex-shrink-0" />}
-                                                                </div>
-                                                            )
-                                                        })}
-                                                    </div>
-                                                    
-                                                    {!isCorrect && q.explanation && (
-                                                        <div className="bg-blue-50 text-blue-800 text-sm p-3 rounded-lg flex gap-2 items-start">
-                                                            <Award className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                                                            <span><strong>Note :</strong> {q.explanation}</span>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    </div>
-                );
+            resetQuiz() {
+                if(confirm("Attention : Cela effacera toute votre progression et remettra le score à 0. Continuer ?")) {
+                    this.answers = {};
+                    this.verified = {};
+                    localStorage.removeItem(this.SESSION_KEY);
+                    this.renderQuizList();
+                    this.updateHeader();
+                    window.scrollTo(0,0);
+                }
             }
         };
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        // Démarrer l'application
+        app.init();
     </script>
 </body>
 </html>
