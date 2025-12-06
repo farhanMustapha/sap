@@ -37,7 +37,7 @@
     <div id="header" class="fixed top-0 left-0 right-0 z-30 glass-header px-4 py-3 shadow-sm">
         <div class="max-w-5xl mx-auto flex justify-between items-center">
             <div>
-                <h1 class="font-bold text-blue-700 text-lg">QCM SAP S/4HANA</h1>
+                <h1 class="font-bold text-blue-700 text-lg">Evaluation finale 1: Explore & Implementation</h1>
                 <div class="text-xs text-gray-500 mt-0.5">
                     <!-- Score en temps réel -->
                     <span id="score-display" class="font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded transition-all">Score : 0 / 80</span>
@@ -74,11 +74,23 @@
             { id: 6, text: "Which layer of SAP S/4HANA provides a universal language to read and process data across different applications?", options: ["SAP HANA", "SAP Fiori", "SAP Business Suite", "Core Data Services"], correctIndices: [3], explanation: "CDS (Core Data Services) provides the universal data definition layer." },
             { id: 7, text: "Which phase of SAP Activate involves the Fit-to-Standard workshops?", options: ["Discover", "Prepare", "Explore", "Realize"], correctIndices: [2], explanation: "Fit-to-Standard workshops take place in the Explore phase." },
             { id: 8, text: "In SAP S/4HANA Cloud Public Edition, who is responsible for the upgrade of the software?", options: ["The Customer", "The Partner", "SAP", "The Infrastructure Provider"], correctIndices: [2], explanation: "In Public Cloud, SAP manages and performs all upgrades." },
-            { id: 9, text: "An organization has their finance line of business (LoB) running in SAP S/4HANA Cloud Public Edition, while the rest of the LoBs are running in SAP S/4HANA Cloud Private Edition. Which two-tier ERP scenario is this?", options: ["Headquarters-Subsidiary", "Central Services", "Supply Chain", "Ecosystem"], correctIndices: [0], explanation: "This describes a hybrid/two-tier scenario." },
+            { 
+                id: 9, 
+                text: "An organization has their finance line of business (LoB) running in SAP S/4HANA Cloud Public Edition, while the rest of the LoBs are running in SAP S/4HANA Cloud Private Edition. Which two-tier ERP scenario is this?", 
+                options: ["Headquarters-Subsidiary", "Central Services", "Supply Chain", "Ecosystem"], 
+                correctIndices: [1], 
+                explanation: "This describes a hybrid/two-tier scenario." 
+            },
             { id: 10, text: "What is the primary tool used to configure business processes in SAP S/4HANA Cloud Public Edition?", options: ["SPRO (IMG)", "SAP Central Business Configuration (CBC)", "SAP Solution Manager", "SAP Cloud ALM"], correctIndices: [1], explanation: "CBC is the mandatory tool for scoping and organizational structure." },
             { id: 11, text: "Which SAP tool is recommended for managing the implementation project of SAP S/4HANA Cloud?", options: ["SAP Solution Manager", "SAP Cloud ALM", "Jira", "Excel"], correctIndices: [1], explanation: "SAP Cloud ALM is the cloud-native ALM tool for S/4HANA Cloud." },
             { id: 12, text: "During the Realize phase, what is a key activity regarding data?", options: ["Data Aging", "Data Archiving", "Data Migration and Loading", "Data Deletion"], correctIndices: [2], explanation: "Data Migration happens primarily in Realize (and Deploy)." },
-            { id: 13, text: "What are some pre-configured content packages on the Detailed Discovery for SAP S/4HANA Cloud Private Edition? (Choose two)", options: ["Enterprise Management Layer", "Model Company for Multinational Corporations", "Swift Implementation - Finance Only Package", "Agile Implementation - Medium Package"], correctIndices: [0, 1], explanation: "Enterprise Management Layer and Model Company are key packages." },
+            { 
+                id: 13, 
+                text: "What are some pre-configured content packages that can be chosen on the Detailed Discovery for new implementations with SAP S/4HANA Cloud Private Edition? (Choose two)", 
+                options: ["Enterprise Management Layer", "Model Company for Multinational Corporations", "Swift Implementation - Finance Only Package", "Agile Implementation - Medium Package"], 
+                correctIndices: [0, 1], 
+                explanation: "Enterprise Management Layer and Model Company are key packages." 
+            },
             { id: 14, text: "Which testing tool is delivered standard with SAP S/4HANA Cloud Public Edition?", options: ["SAP Quality Center", "Test Automation Tool", "HP ALM", "Tricentis Tosca (External)"], correctIndices: [1], explanation: "The Test Automation Tool is embedded." },
             { id: 15, text: "Which user ID is used to log in to the Starter System initially?", options: ["S-User", "Initial Admin User provided in the provisioning email", "Any employee ID", "Partner P-User"], correctIndices: [1], explanation: "The IT Contact receives the Initial Admin User." },
             { id: 16, text: "What could be included in a solution process? (3 correct answers)", options: ["Task tutorial", "Solution scenario", "Process flow diagram", "Test script", "Form templates"], correctIndices: [0, 2, 3], explanation: "Solution processes typically include diagrams, tutorials, and test scripts." },
@@ -137,15 +149,69 @@
             { id: 69, text: "Examples of in-app key user extensibility? (2 correct answers)", options: ["Industry cloud app", "Custom business object", "Custom field", "Custom mobile app"], correctIndices: [1, 2], explanation: "Custom Fields and Custom Business Objects." },
             { id: 70, text: "Tools to build a custom mobile application in JavaScript? (2 correct answers)", options: ["SAP Build Apps", "SAP Business Application Studio", "SAP Build Work Zone", "SAP Software Developer Kits"], correctIndices: [1, 3], explanation: "BAS and SDKs." },
             { id: 71, text: "Which tool do you use to add a field that already exists to an SAP Fiori app?", options: ["Custom Logic", "Adapt UI within an app", "Custom Fields", "Custom Tiles"], correctIndices: [1], explanation: "Adapt UI (Runtime Adaptation)." },
-            { id: 72, text: "Steps to make a custom tile visible for everyone? (2 correct answers)", options: ["Assign to business role", "Assign to business catalog", "Add to Launchpad Page", "Add to Launchpad Space"], correctIndices: [1, 2], explanation: "Catalog and Page assignment." },
-            { id: 73, text: "App to define inbound/outbound services for Communication Arrangement?", options: ["Extensions on BTP", "Custom Communication Scenarios", "Enterprise Event Enablement", "Custom Catalog Extensions"], correctIndices: [1], explanation: "Custom Communication Scenarios." },
-            { id: 74, text: "Where to find SAP Best Practices integration content? (3 correct answers)", options: ["BP Explorer", "SAP Signavio Process Navigator", "SAP Community", "SAP Help Portal", "Cloud Integration Automation Service"], correctIndices: [1, 3, 4], explanation: "Navigator, Help, CIAS." },
-            { id: 75, text: "Capability to identify most efficient integration interface for B2B?", options: ["Cloud Integration", "Migration Assessment", "API Management", "Integration Advisor"], correctIndices: [3], explanation: "Integration Advisor." },
-            { id: 76, text: "Reasons migration failed? (2 correct answers)", options: ["No simulation", "Predecessor object not migrated", "No required business role", "Too many objects"], correctIndices: [1, 2], explanation: "Dependencies and Permissions." },
-            { id: 77, text: "Options to add field to migration object? (2 correct answers)", options: ["Developer extensibility", "Custom field using extensibility framework", "Case to SAP", "Migration Object Modeler"], correctIndices: [1, 3], explanation: "Custom Fields or LTMOM." },
-            { id: 78, text: "Functionality to audit migrated data (source, target, IDs)?", options: ["HANA Cloud Service", "Migration Object Modeler", "Data Services", "Extended Statistics"], correctIndices: [3], explanation: "Extended Statistics." },
-            { id: 79, text: "Permission needed to migrate data? (2 correct answers)", options: ["Migrate all data types in customizing", "Access Migrate Your Data app", "Migrate all data types in dev", "Permission for specific object"], correctIndices: [1, 3], explanation: "App access AND object access." },
-            { id: 80, text: "Framework for notification when migration completes?", options: ["Responsibility Management", "In-App Notification", "Situation Handling", "Extensibility"], correctIndices: [2], explanation: "Situation Handling." }
+            { 
+                id: 72, 
+                text: "Steps to make a custom tile visible for everyone? (2 correct answers)", 
+                options: ["Assign to business role", "Assign to business catalog", "Add to Launchpad Page", "Add to Launchpad Space"], 
+                correctIndices: [1, 2], 
+                explanation: "Catalog and Page assignment." 
+            },
+            { 
+                id: 73, 
+                text: "App to define inbound/outbound services for Communication Arrangement?", 
+                options: ["Extensions on BTP", "Custom Communication Scenarios", "Enterprise Event Enablement", "Custom Catalog Extensions"], 
+                correctIndices: [1], 
+                explanation: "Custom Communication Scenarios." 
+            },
+            { 
+                id: 74, 
+                text: "Where to find SAP Best Practices integration content? (3 correct answers)", 
+                options: ["BP Explorer", "SAP Signavio Process Navigator", "SAP Community", "SAP Help Portal", "Cloud Integration Automation Service"], 
+                correctIndices: [1, 3, 4], 
+                explanation: "Navigator, Help, CIAS." 
+            },
+            { 
+                id: 75, 
+                text: "Which capability of the SAP Integration Suite would you use to identify the most efficientintegration interface for B2B scenarios?", 
+                options: ["Cloud Integration", "Migration Assessment", "API Management", "Integration Advisor"], 
+                correctIndices: [3], 
+                explanation: "Integration Advisor." 
+            },
+            { 
+                id: 76, 
+                text: "You tried to migrate data for a business object, but the migration failed. What are some reasons the migration could have failed?There are two correct answers.", 
+                options: ["No simulation", "Predecessor object not migrated", "No required business role", "Too many objects"], 
+                correctIndices: [1, 2], 
+                explanation: "Dependencies and Permissions." 
+            },
+            { 
+                id: 77, 
+                text: "You need to add an additional field to a migration object template. What are your options? (2 correct answers)", 
+                options: ["Developer extensibility", "Custom field using extensibility framework", "Case to SAP", "Migration Object Modeler"], 
+                correctIndices: [1, 3], 
+                explanation: "Custom Fields or LTMOM." 
+            },
+            { 
+                id: 78, 
+                text: "Which functionality enables you to capture information including source values, target values after mapping, and target IDs that could be used to audit your migrated data?", 
+                options: ["HANA Cloud Service", "Migration Object Modeler", "Data Services", "Extended Statistics"], 
+                correctIndices: [3], 
+                explanation: "Extended Statistics." 
+            },
+            { 
+                id: 79, 
+                text: "What types of permission do you need to migrate data for a migration object? There are two correct answers.", 
+                options: ["Migrate all data types in customizing", "Access Migrate Your Data app", "Migrate all data types in dev", "Permission for specific object"], 
+                correctIndices: [1, 3], 
+                explanation: "App access AND object access." 
+            },
+            { 
+                id: 80, 
+                text: "Which framework supports you to receive a notification when a migration object has completed the Migration step of the guided migration process?", 
+                options: ["Responsibility Management", "In-App Notification", "Situation Handling", "Extensibility"], 
+                correctIndices: [2], 
+                explanation: "Situation Handling." 
+            }
         ];
 
         // --- APPLICATION LOGIC (Vanilla JS) ---

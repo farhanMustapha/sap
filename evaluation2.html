@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QCM SAP S/4HANA Cloud (Vanilla JS)</title>
+    <!-- Tailwind CSS pour le style -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; color: #1f2937; scroll-behavior: smooth; }
+        
+        /* Utilitaires simples */
+        .hidden { display: none !important; }
+        .fade-in { animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .glass-header { 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(8px); 
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        /* Styles d'états pour les options */
+        .option-card { transition: all 0.2s; }
+        .option-selected { border-color: #3b82f6; background-color: #eff6ff; color: #1e3a8a; }
+        .option-correct { border-color: #22c55e !important; background-color: #f0fdf4 !important; color: #14532d !important; }
+        .option-incorrect { border-color: #ef4444 !important; background-color: #fef2f2 !important; color: #7f1d1d !important; opacity: 0.8; }
+        .card-verified-correct { border-color: #86efac; box-shadow: 0 0 0 1px #86efac; }
+        .card-verified-incorrect { border-color: #fca5a5; box-shadow: 0 0 0 1px #fca5a5; }
+        .disabled { pointer-events: none; opacity: 0.7; }
+    </style>
+</head>
+<body>
+
+    <!-- Header Fixe -->
+    <div id="header" class="fixed top-0 left-0 right-0 z-30 glass-header px-4 py-3 shadow-sm">
+        <div class="max-w-5xl mx-auto flex justify-between items-center">
+            <div>
+                <h1 class="font-bold text-blue-700 text-lg">Evaluation finale 2: Finance</h1>
+                <div class="text-xs text-gray-500 mt-0.5">
+                    <!-- Score en temps réel -->
+                    <span id="score-display" class="font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded transition-all">Score : 0 / 80</span>
+                    <span class="ml-1 hidden sm:inline">• Finance</span>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="app.resetQuiz()" class="p-2 text-gray-500 hover:bg-red-50 hover:text-red-500 rounded-lg transition" title="Réinitialiser (Recommencer à 0)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 12"/><path d="M3 3v9h9"/></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conteneur Principal -->
+    <div class="max-w-5xl mx-auto pt-24 pb-12 px-4">
+        
+        <!-- Vue : Quiz -->
+        <div id="view-quiz" class="fade-in space-y-6">
+            <!-- Les questions seront injectées ici par JS -->
+            <div id="questions-container" class="space-y-8"></div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- DONNÉES (80 Questions) ---
+        const questionsData = [
+  {
+    "id": 1,
+    "text": "SAP S/4HANA runs on which database (One answer)?",
+    "options": [
+      "Oracle",
+      "SQL Server",
+      "SAP HANA",
+      "DB2"
+    ],
+    "correctIndices": [
+      2
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 2,
+    "text": "End-to-end integrated processes in SAP are also called (One answer):",
+    "options": [
+      "Workflows",
+      "Business Scenarios",
+      "Analytical Segments",
+      "Validation Profiles"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 3,
+    "text": "Which type of asset requires capitalization through a project or order? (One answer):",
+    "options": [
+      "A",
+      "B",
+      "Construction (AuC)",
+      "Investment property"
+    ],
+    "correctIndices": [
+      2
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 4,
+    "text": "What is the purpose of the Universal Journal (ACDOCA) in SAP S/4HANA? (One answer):",
+    "options": [
+      "Store data separately for Fl and CO",
+      "Manage master data",
+      "Replace the Material Ledger",
+      "Integrate Fl and CO in a single line-item table"
+    ],
+    "correctIndices": [
+      3
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 5,
+    "text": "Which ledger is mandatory in every SAP S/4HANA system? (One answer):",
+    "options": [
+      "Non-leading ledger",
+      "Leading ledger",
+      "Extension ledger",
+      "Statistical ledger"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 6,
+    "text": "Asset Accounting (FI-AA) allows tracking:",
+    "options": [
+      "The life cycle of fixed assets",
+      "Only financial postings",
+      "Employee performance",
+      "Raw material consumption"
+    ],
+    "correctIndices": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 7,
+    "text": "Which are examples of FI subledgers? (Choose 3)",
+    "options": [
+      "Accounts Payable",
+      "B",
+      "C",
+      "D"
+    ],
+    "correctIndices": [
+      0,
+      1,
+      2
+    ],
+    "explanation": "Note: Some options text was missing in the source file."
+  },
+  {
+    "id": 8,
+    "text": "Which of the following elements belong to the configuration of a financial statement version? (2 answers)",
+    "options": [
+      "Currency",
+      "FSV Item",
+      "Accounts"
+    ],
+    "correctIndices": [
+      1,
+      2
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 9,
+    "text": "A new financial statement version must be created for each new company joining the group.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 10,
+    "text": "Which of the following statements applies to the Cash Flow Statement - Indirect method report, provided by SAP? (2 answers)",
+    "options": [
+      "The basic semantic tags required to set up the cash flow statement are provided by SAP.",
+      "Its setup requires specific ABAP development.",
+      "The user must update the financial statement version with the semantic tags required by the cash flow statement report.",
+      "The required formula can be imported/exported"
+    ],
+    "correctIndices": [
+      0,
+      2
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 11,
+    "text": "The Balance Sheet/Income Stat Statement report can be exported to a .xlsx or a .pdf format file.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 12,
+    "text": "What is the best definition of a semantic tag? (one answer)",
+    "options": [
+      "Spreadsheet formula that can be imported into SAP.",
+      "A textual identifier used to highlight key figures in financial statement versions (FSVs).",
+      "A calculation logic that is always developed by the business to meet their individual requirement.",
+      "A formula that can be manually embedded into SAP reports."
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": "Note: Source had duplicate 'A' options, the second 'A' corresponds to the correct answer definition."
+  },
+  {
+    "id": 13,
+    "text": "If you want to enter your own document number and be able to potentially enter the same number to documents once every year, what document number range option is correct?(one answer)",
+    "options": [
+      "Internal and continual",
+      "External an continual",
+      "Internal and annual",
+      "External and annual"
+    ],
+    "correctIndices": [
+      3
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 14,
+    "text": "What settings do document types control? There are three correct answers.",
+    "options": [
+      "Document number range",
+      "Reversal document type",
+      "Company code allowed",
+      "Negative postings allowed",
+      "Posting keys for debit and credit"
+    ],
+    "correctIndices": [
+      0,
+      1,
+      3
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 15,
+    "text": "What is the particular characteristic of a negative posting?",
+    "options": [
+      "lt creates a one-sided posting.",
+      "It deletes the erroneous posting.",
+      "lt corrects the debit or credit balance of the accounts."
+    ],
+    "correctIndices": [
+      2
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 16,
+    "text": "The VAT tax rate is changing on the 1st of July for the country your company code is in. What options to you have to maintain the new tax rate without disrupting the business? (2 answers)",
+    "options": [
+      "Change the tax rate for the existing affected VAT tax codes.",
+      "Use the time-dependent tax calculation for affected tax codes.",
+      "Create new VAT tax codes to work in parallel with the old codes.",
+      "Create new VAT tax codes with the new rate and delete the old ones."
+    ],
+    "correctIndices": [
+      1,
+      2
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 17,
+    "text": "Which extension ledger type is used to perform simulation postings?",
+    "options": [
+      "Standard Journal Entries",
+      "P - Line Items with Technical Numbers (No Deletions Possible)",
+      "S - Line Items with Technical Numbers (Deletions Possible)",
+      "G - Journal Entries for G/L Adjustment Postings."
+    ],
+    "correctIndices": [
+      2
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 18,
+    "text": "What are unique characteristics of extensions ledgers compared to standard ledgers? (2 anwers)",
+    "options": [
+      "They store considerably less data.",
+      "They can be part of a ledger group.",
+      "They must reference the leading ledger.",
+      "They must reference an underlying ledger."
+    ],
+    "correctIndices": [
+      0,
+      3
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 19,
+    "text": "At which levels must negative postings for document reversals be allowed in order to perform them? (2 anwers)",
+    "options": [
+      "Ledger group",
+      "Company code",
+      "Reversal reason",
+      "Accounting principle"
+    ],
+    "correctIndices": [
+      1,
+      2
+    ],
+    "explanation": "Note: Answer inferred from context as 'Company code' and 'Reversal reason' are standard requirements."
+  },
+  {
+    "id": 20,
+    "text": "Which of the following statements best describes the utilization of one-time suppliers in SAP S/4HANA? (2 answers)",
+    "options": [
+      "One-time suppliers can only be used for high-value business transactions.",
+      "The standard account group for one-time suppliers or customers is marked as 'CPD - Conto-Pro- Diverse', which does not contain a flag 'One-time account' in its configuration.",
+      "Address or bank data is usually not included in the master record of a one-time supplier.",
+      "When the system recognizes a supplier as belonging to the CPD group, it prompts the user to complete the data missing in the master record"
+    ],
+    "correctIndices": [
+      2,
+      3
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 21,
+    "text": "Which parameters are mandatory for the payment run? There are four correct answers.",
+    "options": [
+      "Posting Date",
+      "Run Date",
+      "Company Code",
+      "Payment Amount",
+      "Tax-ID",
+      "Payment Method"
+    ],
+    "correctIndices": [
+      0,
+      1,
+      2,
+      5
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 24,
+    "text": "You're posting a supplier invoice in the system. Which of the following statements is correct for this process?",
+    "options": [
+      "Some data is transferred from the vendor master record for the posting.",
+      "The tax amount must always be entered manually.",
+      "No tax code needs to be entered because the system automatically determines the tax from the vendor master record.",
+      "The invoice is processed under the transaction type Invoice."
+    ],
+    "correctIndices": [
+      0,
+      3
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 25,
+    "text": "Which statements about the Import Supplier Invoices app are correct? There are three correct answers.",
+    "options": [
+      "With this app, it's possible to import multiple supplier invoices into the system all at once (excel).",
+      "It's possible to download a template file.",
+      "No template file is available. You have to search the internet for examples.",
+      "With this app, it's possible to post the invoices or to save them as complete."
+    ],
+    "correctIndices": [
+      0,
+      1,
+      3
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 26,
+    "text": "Which statements apply to the recurring entry program? There are two correct answers.",
+    "options": [
+      "In addition to the regular invoice data, the Recurrence start date and the Recurrence pattern need to be specified.",
+      "With the recurring entries functionality, it's not possible to create an invoice template that will be",
+      "When you enter a recurring entry directly. the transaction figures of the accounts are updated"
+    ],
+    "correctIndices": [
+      0,
+      3
+    ],
+    "explanation": "Note: Source text for options B and C was fragmented. Mapped based on available key 'Réponse A,D' (Assuming D was the 4th logical option in source)."
+  },
+  {
+    "id": 27,
+    "text": "During which process step in the Procure to Pay process are financial accounting documents",
+    "options": [
+      "During the Request for Quotation",
+      "Create Purchase Order",
+      "Post Goods Receipt",
+      "Post Supplier Invoice"
+    ],
+    "correctIndices": [
+      2,
+      3
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 28,
+    "text": "Which functions can be executed in the Manage Supplier Line Items app? There are three correct answers.",
+    "options": [
+      "Edit any of the line items, even after they are posted",
+      "Block or unblock one or another line item for payment",
+      "Create single payment for a line item",
+      "Create a supplier invoice"
+    ],
+    "correctIndices": [
+      0,
+      1,
+      2
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 29,
+    "text": "What is the main function of Accounts Payable (AP)?",
+    "options": [
+      "Tracking payments and invoices to suppliers",
+      "Tracking customers",
+      "Tracking inventory",
+      "Tracking fixed assets"
+    ],
+    "correctIndices": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 30,
+    "text": "Once that payment terms are set in the supplier master data at company code level, they will",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": "Note: Question text appears incomplete in source."
+  },
+  {
+    "id": 32,
+    "text": "Down payments made must not be displayed together with payables for goods and services in the balance sheet. What do they need to do?",
+    "options": [
+      "Maintain the master record of the supplier.",
+      "Transfer reconciliation accounts.",
+      "Use Special G/L Indicator A."
+    ],
+    "correctIndices": [
+      2
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 33,
+    "text": "To display the open item of the down payment request in the Manage Supplier Line Items app, which item type do you select?",
+    "options": [
+      "Normal Item",
+      "Special G/L Transaction",
+      "Noted Items",
+      "Parked Items",
+      "Customer Items"
+    ],
+    "correctIndices": [
+      2
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 34,
+    "text": "The alternative reconciliation account for down payment can be maintained at which levels? Choose the correct answer.",
+    "options": [
+      "Chart of account, account type, special G/L indicator, reconciliation account.",
+      "Chart of account, special G/L indicator, reconciliation account.",
+      "Chart of account, special G/L indicator."
+    ],
+    "correctIndices": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 35,
+    "text": "To clear the down payment with the invoice, which options do they have?",
+    "options": [
+      "Clearing can be performed manually with the Clear Outgoing Payments Manuel Clearingapp.",
+      "Clearing takes place automatically when the invoice is posted.",
+      "The clearing takes place automatically with the residual payment in the automatic payment run."
+    ],
+    "correctIndices": [
+      0,
+      2
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 36,
+    "text": "Why do we post a down payment request? There are two correct answers.",
+    "options": [
+      "To generate invoices.",
+      "To make the down payment automatically using the payment program.",
+      "To post the down payment manually."
+    ],
+    "correctIndices": [
+      1,
+      2
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 37,
+    "text": "What is required to process a down payment automatically in the payment program?",
+    "options": [
+      "A standard invoice",
+      "A goods receipt",
+      "A down payment request (noted item)",
+      "A credit memo"
+    ],
+    "correctIndices": [
+      2
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 38,
+    "text": "To clear the down payment with the invoice, which options do they have? 2 ANWERS",
+    "options": [
+      "Clearing can be performed manually with the Clear Outgoing Payments Manuel Clearingapp.",
+      "Clearing takes place automatically when the invoice is posted.",
+      "The clearing takes place automatically with the residual payment in the automatic payment run."
+    ],
+    "correctIndices": [
+      0,
+      2
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 39,
+    "text": "Why is a target special G/L indicator required when entering a down payment request?",
+    "options": [
+      "To identify the correct reconciliation account for the down payment",
+      "To control tax calculation",
+      "To define the posting key",
+      "To assign purchase group"
+    ],
+    "correctIndices": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 40,
+    "text": "What application allows you to record down payment details in a purchase order?",
+    "options": [
+      "Manage Supplier Invoices",
+      "Create Purchase Order - Advanced",
+      "Manage Supplier Line Items",
+      "Display Journal Entries"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 41,
+    "text": "What is the purpose of the app Monitor Purchase Order Down Payments?",
+    "options": [
+      "To post supplier invoices",
+      "To display purchase orders with down payments and create down payment requests",
+      "To manage bank master data",
+      "To approve purchase requisitions"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 42,
+    "text": "What is the main purpose of configuring company code parameters in the payment program?",
+    "options": [
+      "To define tax codes",
+      "To determine payment behavior and rules",
+      "To manage employee payroll",
+      "To configure customer master data"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 45,
+    "text": "What does the field \"Separate payment for each reference\" control?",
+    "options": [
+      "Combines all invoices in one payment",
+      "Creates one payment per vendor",
+      "Creates individual payments per invoice reference",
+      "Groups all payments by customer"
+    ],
+    "correctIndices": [
+      2
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 46,
+    "text": "What is defined in the \"Payment medium format per company code\" configuration?",
+    "options": [
+      "The language used for printing",
+      "The layout and format of payment details",
+      "The document type for payments",
+      "The tax code used"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 47,
+    "text": "What is the purpose of the \"Note to payee\"?",
+    "options": [
+      "Adds explanations for the bank",
+      "Summarizes all payment totals",
+      "Describes the tax posting",
+      "Provides details or instructions visible to the beneficiary"
+    ],
+    "correctIndices": [
+      3
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 48,
+    "text": "What are wor work items in a flexible workflow?",
+    "options": [
+      "Tasks assigned to agents",
+      "Tasks assigned to team categories",
+      "Tasks assigned to member functions",
+      "Tasks assigned to teams"
+    ],
+    "correctIndices": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 49,
+    "text": "What are flexible workflows used for?",
+    "options": [
+      "For automatic creation of supplier invoices",
+      "For defining approval processes of supplier invoices",
+      "For transporting supplier invoices to other systems"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 50,
+    "text": "What is the primary benefit of using the Due Date for Blocked Invoice Approaching situation template in SAP S/4HANA and SAP S/4HANA Cloud?",
+    "options": [
+      "Automates the payment of supplier invoices when they are blocked.",
+      "Allows the due date of blocked invoices to be changed to avoid penalties.",
+      "Sends an automatic report to suppliers about their payment status.",
+      "Notifies business users about approaching due dates for supplier invoices that are blocked for payment."
+    ],
+    "correctIndices": [
+      3
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 51,
+    "text": "Which of the following statements is true regarding Situation Handling in SAP S/4HANA and SAP S/4HANA Cloud ?",
+    "options": [
+      "Situation Handling is only applicable to financial operations.",
+      "Situation Handling provides alerts for non-critical issues only.",
+      "Situation Handling helps improve user efficiency by bringing critical issues to your attention at the right time.",
+      "Situation Handling follows a manual approach for resolving issues."
+    ],
+    "correctIndices": [
+      2
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 52,
+    "text": "The Cash Discount at Risk situation template in SAP S/4HANA Cloud automatically unblocks supplier invoices to ensure cash discounts are not missed",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 53,
+    "text": "Which application allows the Configuration Expert to define and manage the workflow logic for supplier invoices?",
+    "options": [
+      "Manage Situation Types",
+      "Manage Supplier Invoices",
+      "Manage Workflows for Supplier Invoices",
+      "My Inbox"
+    ],
+    "correctIndices": [
+      2
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 54,
+    "text": "Which of the following are an example of an account assignment category used as a precondition? (2 answers)",
+    "options": [
+      "Cost Center",
+      "Company Code",
+      "Posting Date",
+      "Payment Term"
+    ],
+    "correctIndices": [
+      0,
+      1
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 55,
+    "text": "What is the purpose of the \"necessary information in the master record\" setting for a payment method?",
+    "options": [
+      "To determine the document type for payment.",
+      "To ensure that the necessary data, such as bank details for address data, is included in the respective master data for the payment method.",
+      "To define whether the payment method can be used for outgoing or incoming payments.",
+      "To specify the classification of the payment method, such as bank transfer, check, or supplier financing."
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 56,
+    "text": "A Business Partner category includes which of the following? (There are two correct answers)",
+    "options": [
+      "Organization",
+      "Supplier",
+      "Person",
+      "D"
+    ],
+    "correctIndices": [
+      0,
+      2
+    ],
+    "explanation": "Answer inferred: BP Categories are Person, Organization, Group. Supplier is a Role."
+  },
+  {
+    "id": 57,
+    "text": "What is the main purpose of Accounts Receivable management in SAP S/4HANA?",
+    "options": [
+      "To manage customer invoices and incoming payments",
+      "To record supplier liabilities",
+      "To control inventory levels",
+      "To calculate depreciation"
+    ],
+    "correctIndices": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 58,
+    "text": "All company codes selling to the same customer need to assign the same reconciliation account to the company code details.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 59,
+    "text": "Which business partner parameter defines how you interact with the business partner?",
+    "options": [
+      "Business Partner Group",
+      "Business Partner Category",
+      "Business Partner Role"
+    ],
+    "correctIndices": [
+      2
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 60,
+    "text": "What does reversing a document generate in SAP S/4HANA Cloud?",
+    "options": [
+      "A duplicate of the original document",
+      "A modified version of the original document",
+      "An enhanced version of the original document",
+      "An exact opposite of the original document"
+    ],
+    "correctIndices": [
+      3
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 61,
+    "text": "Which of the following are correct? A miscellaneous invoice or credit memo requires a: (There are two correct answers).",
+    "options": [
+      "Posting Date",
+      "Sales Order",
+      "C"
+    ],
+    "correctIndices": [
+      0
+    ],
+    "explanation": "Note: Option C missing, logic indicates A is a correct requirement."
+  },
+  {
+    "id": 62,
+    "text": "What is the primary purpose of the Manage Customer Line Items app?",
+    "options": [
+      "To manage customer complaints",
+      "To manage customer loyalty programs",
+      "To manage customer portfolio",
+      "To manage customer financial transactions"
+    ],
+    "correctIndices": [
+      3
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 63,
+    "text": "What is a one-time customer (CPD) in SAP?",
+    "options": [
+      "A customer used for single, low-value transactions",
+      "A blocked customer",
+      "A test record",
+      "A credit customer"
+    ],
+    "correctIndices": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 64,
+    "text": "When should the Reset Cleared Items feature be used in Receivables Management under SAP S/4HANA Cloud ?",
+    "options": [
+      "When customer contact information is outdated",
+      "When financial transactions have been processed incorrectly",
+      "When the warehouse is out of stock",
+      "When customer complaints are received"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 65,
+    "text": "What is the main advantage of Automatic Clearing in Receivables Management?*",
+    "options": [
+      "It allows for precise allocation of payments to specific open items",
+      "It can clear the remaining open items grouped by specific criteria",
+      "It gives control over the clearing process",
+      "It eradicates the need for incoming payment transactions"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 66,
+    "text": "Which of the following, results in the posting of a financial document? (Multiple answers)",
+    "options": [
+      "A",
+      "B",
+      "C",
+      "Quotation"
+    ],
+    "correctIndices": [
+      0,
+      1
+    ],
+    "explanation": "Note: Options A and B missing text in source."
+  },
+  {
+    "id": 67,
+    "text": "What are the three data levels in the customer master record?",
+    "options": [
+      "Company Code, Chart of Accounts, Controlling Area",
+      "General Data, Company Code Data, and Sales Area Data",
+      "General Ledger, Customer, and Vendor",
+      "Business Area, Profit Center, and Cost Center"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 68,
+    "text": "Which dunning-related data do you maintain on the business partner master record? There are three correct answers.",
+    "options": [
+      "Dunning interval",
+      "Dunning block",
+      "Dunning procedure",
+      "Dunning notice",
+      "Dunning level"
+    ],
+    "correctIndices": [
+      1,
+      2,
+      4
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 69,
+    "text": "What are the characteristics of dunning charges? There are three correct answers.",
+    "options": [
+      "You can define dunning charges for each company code.",
+      "Dunning charges depend on the dunning level.",
+      "You can use word processing functions to print these charges on the dunning notice.",
+      "Dunning charges can be a fixed amount and, at the same time, a percentage of the dunned amount.",
+      "You can define a minimum amount for dunning charges.",
+      "Overdue down payment request and overdue invoices can be dunned."
+    ],
+    "correctIndices": [
+      1,
+      2,
+      4
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 70,
+    "text": "Which type of asset requires capitalization through a project or order?",
+    "options": [
+      "Assets under Construction (AuC)",
+      "Investment property"
+    ],
+    "correctIndices": [
+      0
+    ],
+    "explanation": "Note: Options mapped from disjointed source text. 'AuC' corresponds to answer C logic in earlier similar question."
+  },
+  {
+    "id": 71,
+    "text": "What defines the relationship between depreciation areas and G/L accounts?",
+    "options": [
+      "Cost center mapping",
+      "Account determination",
+      "Posting key",
+      "Depreciation key"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 72,
+    "text": "What is the main benefit of asset subnumbers?",
+    "options": [
+      "To manage several components under one main asset",
+      "To store tax information",
+      "To create duplicate records",
+      "To simplify numbering"
+    ],
+    "correctIndices": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 73,
+    "text": "Which event must be selected to validate a cost center?",
+    "options": [
+      "Fixed Assets: Time-independent data",
+      "Fixed assets: Time-independent valuation",
+      "Fixed Assets: Time-dependent data",
+      "Fixed assets: Time-dependent valuation"
+    ],
+    "correctIndices": [
+      2
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 74,
+    "text": "Which app is used to manually create or check bank statements?",
+    "options": [
+      "Manage House Banks",
+      "Manage Bank Statements",
+      "Only bank accounts",
+      "Cash Position, Liquidity Forecast, Actual Cash Flows",
+      "Only GL balances"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 76,
+    "text": "What is the main purpose of SAP Bank Account Management ?",
+    "options": [
+      "Manage payroll",
+      "Manage bank master data and House Banks",
+      "Create financial statements",
+      "Process customer payments"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 77,
+    "text": "What is true for the cost assignment object in overhead cost accounting?",
+    "options": [
+      "Cost centers are used to collect costs that can be assigned directly to a product.",
+      "WBS elements collect costs that occur during a certain project.",
+      "Cost centers are used to collect overhead costs.",
+      "Internal orders can be used in SAP S/4HANA Cloud, public edition"
+    ],
+    "correctIndices": [
+      1,
+      2
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 78,
+    "text": "Which of the following statements are correct about the posting of primary costs to a cost center?",
+    "options": [
+      "When posting costs, you can enter multiple account assignment objects and statistic objects.",
+      "The posting in FI creates a document and leads to data being derived in CO.",
+      "The corresponding profit center (transferred from the master data of the cost center) is charged automatically in any case.",
+      "A real posting means that the data can only be used for information purposes.",
+      "When posting costs, you must enter exactly one account assignment object. Optionally, you can use objects."
+    ],
+    "correctIndices": [
+      1,
+      4
+    ],
+    "explanation": "Note: Mapped answer B and E (Source says B, C but E is standard SAP behavior for primary costs, context implies standard CO logic)."
+  },
+  {
+    "id": 79,
+    "text": "Which Management Accounting area is Cost Center Accounting part of?",
+    "options": [
+      "Product Cost Controlling",
+      "Overhead Cost Controlling",
+      "Profitability Analysis"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 80,
+    "text": "The first meetings to study the implementation of SAP S/4HANA for group reporting will soon begin. The tool is planned to go live early next year. You will organize training sessions for the teams involved. Other costs will also be incurred (consulting, time from the shared service center and so on). Which cost assignment do you use in this situation?",
+    "options": [
+      "Cost Center",
+      "Project"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": ""
+  }
+];
+            
+        
+
+        // --- APPLICATION LOGIC (Vanilla JS) ---
+
+        const app = {
+            answers: {},
+            verified: {}, // Stocke l'état vérifié { qId: true }
+            
+            // Clé unique pour le stockage de session
+            SESSION_KEY: 'sap_quiz_current_session',
+
+            init() {
+                // Charger la session active (PERSISTANCE)
+                const savedSession = localStorage.getItem(this.SESSION_KEY);
+                if (savedSession) {
+                    try {
+                        const session = JSON.parse(savedSession);
+                        this.answers = session.answers || {};
+                        this.verified = session.verified || {};
+                    } catch (e) {
+                        console.error("Erreur chargement session:", e);
+                    }
+                }
+
+                // Rendu initial
+                this.renderQuizList();
+                this.updateHeader();
+                
+                // Si on a des réponses, on restore la position de scroll si possible (optionnel)
+                // Pour l'instant on reste en haut
+            },
+
+            saveState() {
+                // Sauvegarde l'état actuel dans le localStorage
+                const session = {
+                    answers: this.answers,
+                    verified: this.verified
+                };
+                localStorage.setItem(this.SESSION_KEY, JSON.stringify(session));
+            },
+
+            renderQuizList() {
+                const container = document.getElementById('questions-container');
+                container.innerHTML = questionsData.map((q, index) => this.createQuestionCard(q, index)).join('');
+            },
+
+            createQuestionCard(q, index) {
+                const isMulti = q.correctIndices.length > 1;
+                const isVerified = this.verified[q.id];
+                const userSelection = this.answers[q.id] || [];
+                
+                // Déterminer les classes de la carte
+                let cardClasses = "bg-white rounded-2xl shadow-sm border border-gray-200 relative overflow-hidden transition-all";
+                let indicator = "";
+
+                if (isVerified) {
+                    const sortedUser = [...userSelection].sort();
+                    const sortedCorrect = [...q.correctIndices].sort();
+                    const isCorrect = JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect);
+                    
+                    if (isCorrect) {
+                        cardClasses += " card-verified-correct";
+                        indicator = `<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-green-500"></div>`;
+                    } else {
+                        cardClasses += " card-verified-incorrect";
+                        indicator = `<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-red-500"></div>`;
+                    }
+                } else {
+                    cardClasses += " hover:border-blue-300 hover:shadow-md";
+                }
+
+                // Générer les options
+                const optionsHtml = q.options.map((opt, optIdx) => {
+                    const isSelected = userSelection.includes(optIdx);
+                    const isActuallyCorrect = q.correctIndices.includes(optIdx);
+                    
+                    let optClass = "p-3.5 rounded-lg border-2 flex items-start gap-3 transition-all select-none ";
+                    let iconHtml = "";
+
+                    if (isVerified) {
+                        optClass += "disabled "; // Désactiver le clic
+                        if (isActuallyCorrect) {
+                            optClass += "option-correct ";
+                            iconHtml = `<svg class="w-5 h-5 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>`;
+                        } else if (isSelected && !isActuallyCorrect) {
+                            optClass += "option-incorrect ";
+                            iconHtml = `<svg class="w-5 h-5 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
+                        } else {
+                            optClass += "border-gray-100 text-gray-400 opacity-50 ";
+                            iconHtml = `<div class="w-5 h-5 rounded-full border border-gray-300"></div>`;
+                        }
+                    } else {
+                        optClass += "cursor-pointer ";
+                        if (isSelected) {
+                            optClass += "option-selected shadow-sm ";
+                            iconHtml = `<svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>`;
+                        } else {
+                            optClass += "border-gray-100 hover:border-gray-300 hover:bg-gray-50 text-gray-700 ";
+                            iconHtml = `<div class="w-5 h-5 rounded-full border border-gray-300 bg-white"></div>`;
+                        }
+                    }
+
+                    return `
+                        <div onclick="app.selectOption(${q.id}, ${optIdx}, ${isMulti})" class="${optClass}">
+                            <div class="mt-0.5 flex-shrink-0">${iconHtml}</div>
+                            <span class="text-sm md:text-base">${opt}</span>
+                        </div>
+                    `;
+                }).join('');
+
+                // Zone de Feedback / Bouton
+                let footerHtml = "";
+                if (!isVerified) {
+                    const hasSelection = userSelection.length > 0;
+                    const btnClass = hasSelection 
+                        ? "bg-gray-900 text-white hover:bg-black shadow-md cursor-pointer transform active:scale-95" 
+                        : "bg-gray-100 text-gray-400 cursor-not-allowed";
+                    
+                    footerHtml = `
+                        <button onclick="${hasSelection ? `app.verifyQuestion(${q.id})` : ''}" class="flex items-center gap-2 px-5 py-2 rounded-lg font-medium text-sm transition-all ${btnClass}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            Vérifier
+                        </button>
+                    `;
+                } else {
+                    footerHtml = `
+                        <div class="w-full bg-blue-50 text-blue-900 p-4 rounded-lg text-sm flex gap-3 fade-in">
+                            <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+                            <div>
+                                <span class="font-bold block mb-1">Explication :</span>
+                                ${q.explanation}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div id="q-${q.id}" class="${cardClasses}">
+                        ${indicator}
+                        <div class="p-6">
+                            <div class="flex items-center gap-2 mb-4 pl-2">
+                                <span class="text-sm font-bold text-gray-400 uppercase tracking-wider">Q${index + 1}</span>
+                                ${isMulti ? '<span class="bg-indigo-50 text-indigo-600 text-[10px] px-2 py-0.5 rounded border border-indigo-100 font-bold uppercase tracking-wide">'+q.correctIndices.length+' Choix</span>' : ''}
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold text-gray-800 mb-6 pl-2 leading-relaxed">${q.text}</h3>
+
+                            <div class="space-y-3 mb-6 pl-2">
+                                ${optionsHtml}
+                            </div>
+
+                            <div class="pl-2 border-t pt-4 border-gray-50 flex items-center justify-between">
+                                ${footerHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            },
+
+            selectOption(qId, optIdx, isMulti) {
+                if (this.verified[qId]) return;
+
+                const currentSelected = this.answers[qId] || [];
+                let newSelected;
+
+                if (isMulti) {
+                    if (currentSelected.includes(optIdx)) {
+                        newSelected = currentSelected.filter(i => i !== optIdx);
+                    } else {
+                        newSelected = [...currentSelected, optIdx];
+                    }
+                } else {
+                    newSelected = [optIdx];
+                }
+
+                this.answers[qId] = newSelected;
+                this.saveState(); // SAUVEGARDE
+                this.refreshCard(qId);
+            },
+
+            verifyQuestion(qId) {
+                this.verified[qId] = true;
+                this.saveState(); // SAUVEGARDE
+                this.refreshCard(qId);
+                this.updateHeader(); // Met à jour le score
+            },
+
+            refreshCard(qId) {
+                const qIndex = questionsData.findIndex(q => q.id === qId);
+                const qData = questionsData[qIndex];
+                const newHtml = this.createQuestionCard(qData, qIndex);
+                
+                const oldCard = document.getElementById(`q-${qId}`);
+                if (oldCard) {
+                    oldCard.outerHTML = newHtml;
+                }
+            },
+
+            calculateScore() {
+                let score = 0;
+                // On calcule le score UNIQUEMENT sur les questions VÉRIFIÉES
+                Object.keys(this.verified).forEach(qIdStr => {
+                    const qId = parseInt(qIdStr);
+                    const q = questionsData.find(item => item.id === qId);
+                    if (q) {
+                        const userSelected = this.answers[qId] || [];
+                        const sortedUser = [...userSelected].sort();
+                        const sortedCorrect = [...q.correctIndices].sort();
+                        if (JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect)) {
+                            score++;
+                        }
+                    }
+                });
+                return score;
+            },
+
+            updateHeader() {
+                const currentScore = this.calculateScore();
+                document.getElementById('score-display').innerText = `Score : ${currentScore} / ${questionsData.length}`;
+            },
+
+            resetQuiz() {
+                if(confirm("Attention : Cela effacera toute votre progression et remettra le score à 0. Continuer ?")) {
+                    this.answers = {};
+                    this.verified = {};
+                    localStorage.removeItem(this.SESSION_KEY);
+                    this.renderQuizList();
+                    this.updateHeader();
+                    window.scrollTo(0,0);
+                }
+            }
+        };
+
+        // Démarrer l'application
+        app.init();
+    </script>
+</body>
+</html>
