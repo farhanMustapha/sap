@@ -422,7 +422,7 @@ const questions = [
             "Supply Chain of Selling app",
             "Harmony"
         ],
-        correctAnswers: [0],
+        correctAnswers: [2],
         multipleChoice: false
     },
     {
@@ -437,7 +437,7 @@ const questions = [
             "SAP Cloud ALM",
             "Partner Deal Registration Tool"
         ],
-        correctAnswers: [0, 1, 2],
+        correctAnswers: [0, 2, 4],
         multipleChoice: true
     },
     {
@@ -451,7 +451,7 @@ const questions = [
             "Swift Implementation - Finance Only Package",
             "Agile Implementation - Medium Package"
         ],
-        correctAnswers: [0, 1],
+        correctAnswers: [0, 2],
         multipleChoice: true
     },
     {
