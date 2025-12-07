@@ -240,7 +240,7 @@ const questions = [
             "SAP Enterprise Central Component",
             "SAP cloud ERP applications"
         ],
-        correctAnswers: [2, 3, 4],
+        correctAnswers: [0, 2, 4],
         multipleChoice: true
     },
     {
