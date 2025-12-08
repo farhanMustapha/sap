@@ -398,7 +398,7 @@
             question: "When using the Local SAP S/4HANA Database Schema migration approach, what is the maximum file size? Note: There are 2 correct answers to this question",
             type: "multiple",
             options: ["A. 160 MB per file", "B. 160 MB per ZIP file", "C. 100 MB per ZIP file", "D. 100 MB per file"],
-            correct: ["B. 160 MB per ZIP file", "C. 100 MB per ZIP file"],
+            correct: ["D. 100 MB per file", "C. 100 MB per ZIP file"],
             explanation: "Dans le (SAP S/4HANA Migration Cockpit), lorsque l'on utilise l'approche de schéma de base de données locale, la taille maximale d'un fichier ZIP (contenant les fichiers de données) est de **160 MB** (A) ou **100 MB** (D) selon la version spécifique, mais la bonne pratique vise le ZIP (B et C). Les deux réponses **160 MB per ZIP file** et **100 MB per ZIP file** sont souvent considérées comme correctes dans la documentation SAP. Nous retenons les deux variantes de format ZIP qui sont généralement les plus restrictives. (SAP S/4HANA Migration Cockpit)"
         },
         {
@@ -426,7 +426,7 @@
             question: "Which process in the integrated procure-to-pay process generates a balance sheet-relevant financial accounting document?",
             type: "single",
             options: ["A. Invoice verification", "B. Material requirement planning", "C. Goods receipt", "D. Purchase order creation"],
-            correct: ["A. Invoice verification"],
+            correct: ["A. Invoice verification","C. Goods receipt"],
             explanation: "Dans le processus Achat-Paiement (Procure-to-Pay), la vérification de la facture (Invoice Verification - A) (et également la réception des marchandises - C) génère un document comptable. La vérification de la facture impacte le compte fournisseur (passif du bilan), ce qui est pertinent pour le bilan. (Accounts Payable)"
         },
         {
@@ -447,7 +447,7 @@
             question: "Which systems need to be provisioned via SAP for Me? There are two correct answers.",
             type: "multiple",
             options: ["A. SAP Cloud Identity Authentication", "B. SAP Central Business Configuration", "C. SAP S/4HANA Cloud Development system, development tenant", "D. SAP S/4HANA Cloud Production System"],
-            correct: ["C. SAP S/4HANA Cloud Development system, development tenant", "D. SAP S/4HANA Cloud Production System"],
+            correct: ["B. SAP Central Business Configuration", "D. SAP S/4HANA Cloud Production System"],
             explanation: "Dans le modèle à trois systèmes (3-system landscape) de (SAP S/4HANA Cloud Public Edition), les systèmes de Développement (Development) (C) et de Production (D) sont provisionnés et gérés via (SAP for Me). (Implementation / Provisioning)"
         },
         {
