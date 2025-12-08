@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz SAP S/4HANA Finance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
+        }
+
+        .question-card {
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .option-label {
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        /* Custom colors for feedback */
+        .bg-custom-red {
+            background-color: #fcebeb;
+            border-color: #ef4444;
+        }
+
+        .bg-custom-green {
+            background-color: #ecfdf5;
+            border-color: #10b981;
+        }
+
+        .border-custom-red {
+            border-color: #ef4444;
+        }
+
+        .border-custom-green {
+            border-color: #10b981;
+        }
+
+        /* Style pour le menu de navigation */
+        .nav-link {
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            background-color: #eef2ff;
+            color: #4f46e5;
+        }
+
+        /* Styles pour la modal d'explication / message */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(2px);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 12px;
+            animation: slide-down 0.3s ease-out;
+        }
+
+        @keyframes slide-down {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-8 flex justify-between items-center flex-wrap">
+            <div>
+                <h1 class="text-4xl font-bold text-gray-800 border-b-4 border-indigo-500 pb-2 inline-block">Quiz SAP
+                    S/4HANA Finance</h1>
+                <p class="text-lg text-gray-600 mt-2">Vérifiez vos connaissances sur les modules FI.</p>
+            </div>
+            <div class="flex items-center space-x-4 mt-4 md:mt-0">
+                <!-- Bouton Réinitialiser l'Historique -->
+                <button onclick="promptResetQuiz()"
+                    class="px-4 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition duration-150 shadow-md text-sm">
+                    <span class="font-bold">↻</span> Réinitialiser le Quiz
+                </button>
+
+                <!-- implimentation qcm -->
+                <button>
+                     <a href="implimentation.html" target="_blank"
+                     class="px-4 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition duration-150 shadow-md text-sm inline-block text-center">
+                        Implémentation QCM
+                        </a>
+                </button>
+                <!-- Explore qcm -->
+                <button>
+                     <a href="explore.html" target="_blank"
+                     class="px-4 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition duration-150 shadow-md text-sm inline-block text-center">
+                        Explore QCM
+                        </a>
+                </button>
+                <button>
+                     <a href="test_blanc1.html" target="_blank"
+                     class="px-4 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition duration-150 shadow-md text-sm inline-block text-center">
+                        Test Blanc 1
+                        </a>
+                </button>
+
+                <!-- Bouton Administration -->
+                <button onclick="switchView('admin-view')"
+                    class="px-4 py-2 bg-gray-700 text-white font-medium rounded-lg hover:bg-gray-800 transition duration-150 shadow-md text-sm">
+                    Ajouter une explication
+                </button>
+            </div>
+        </header>
+
+        <!-- VUE DU QUIZ PRINCIPAL -->
+        <div id="quiz-view">
+            <!-- CONTEUR DE SCORE -->
+            <div class="flex justify-center mb-6">
+                <div id="score-display"
+                    class="bg-indigo-100 text-indigo-800 text-xl font-bold py-3 px-6 rounded-lg shadow-inner">
+                    Score: 0 / 0
+                </div>
+            </div>
+            <!-- FIN DU CONTEUR DE SCORE -->
+
+            <!-- MENU DE NAVIGATION -->
+            <nav id="chapter-nav" class="mb-8 p-4 bg-white rounded-xl shadow-lg border border-gray-200">
+                <h3 class="text-lg font-bold text-gray-700 mb-3">Accéder à un Chapitre :</h3>
+                <div id="nav-links-container" class="flex flex-wrap gap-2 justify-center text-sm">
+                    <!-- Les liens seront insérés ici par JavaScript -->
+                </div>
+            </nav>
+            <!-- FIN DU MENU DE NAVIGATION -->
+
+            <div id="quiz-container" class="space-y-6">
+                <!-- Questions will be dynamically inserted here -->
+            </div>
+        </div>
+        <!-- FIN DU QUIZ PRINCIPAL -->
+
+        <!-- VUE D'ADMINISTRATION -->
+        <div id="admin-view" class="hidden">
+            <h2 class="text-3xl font-extrabold text-gray-800 mt-4 mb-6 pb-2 border-b-2 border-gray-300">Panneau
+                d'Administration</h2>
+
+            <button onclick="switchView('quiz-view')"
+                class="mb-6 px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition duration-150 shadow-md">
+                &larr; Retour au Quiz
+            </button>
+
+            <div id="admin-content" class="p-6 bg-white rounded-xl shadow-lg border border-gray-200">
+                <!-- Le contenu de l'administration (liste des questions/éditeur) sera injecté ici -->
+            </div>
+        </div>
+        <!-- FIN DE LA VUE D'ADMINISTRATION -->
+    </div>
+
+    <!-- Modal Général pour Explications et Messages -->
+    <div id="message-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeMessageModal()">&times;</span>
+            <h4 id="modal-title" class="text-2xl font-bold text-indigo-700 mb-4">Message</h4>
+            <div id="modal-content-text" class="text-gray-700 space-y-3">
+                <!-- Contenu du message ou de l'explication -->
+            </div>
+        </div>
+    </div>
+    <!-- Fin de la Modal -->
+
+    <script>
+        // =====================================================================================
+        // VARIABLES ET DONNÉES GLOBALES
+        // =====================================================================================
+
+        let currentScore = 0;
+        let totalQuestions = 0;
+        let quizData = [];
+        let userProgress = {};
+        let currentlyEditingIndex = -1;
+
+        const chapterBreaks = [
+            { start: 0, title: "Bases S/4HANA", anchor: "chapitre-0" },
+            { start: 10, title: "G/L & R2R", anchor: "chapitre-1" },
+            { start: 29, title: "États Financiers", anchor: "chapitre-2" },
+            { start: 39, title: "Compte Fournisseurs (AP)", anchor: "chapitre-3" },
+            { start: 58, title: "Acomptes Fournisseurs ", anchor: "chapitre-4" },
+            { start: 66, title: "Programme de Paiement", anchor: "chapitre-5" },
+            { start: 76, title: "Workflow & Situations", anchor: "chapitre-6" },
+            { start: 86, title: "Comptes Clients (AR)", anchor: "chapitre-7" },
+            { start: 108, title: "Transactions Spéciales G/L AR", anchor: "chapitre-8" },
+            { start: 117, title: "Relance (Dunning)", anchor: "chapitre-9" },
+            { start: 126, title: "10/11/12 Comptabilité des Actifs (AA)", anchor: "chapitre-10" },
+            { start: 146, title: "Gestion Bancaire", anchor: "chapitre-14" },
+        ];
+
+        // Fonction pour obtenir les données initiales (Hardcoded)
+        function getInitialQuizData() {
+    return [
+        {
+            question: "What are the restrictions when posting general journal entries to special periods? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. You must use the document type YE (year-end)", "B. You must manually enter the specific special period you are posting to", "C. You must only post to balance sheet accounts", "D. You must specify a posting date in the last period of the fiscal year"],
+            correct: ["B. You must manually enter the specific special period you are posting to", "D. You must specify a posting date in the last period of the fiscal year"],
+            explanation: "Les périodes spéciales (special periods) sont utilisées pour les ajustements de fin d'année. Pour y poster, vous devez manuellement spécifier la période (B) et la date de comptabilisation (posting date) doit tomber dans la dernière période standard de l'exercice fiscal (D). (G/L Account Posting)"
+        },
+        {
+            question: "You have a bank account in foreign currency. During the period, you have posted various deposits to and withdrawals from the account. After the foreign currency valuation run, how does the system evaluate the balance of this account?",
+            type: "single",
+            options: ["A. In local currency, with the exchange rate valid on the last day of the period", "B. In local currency, with the exchange rate valid for each transaction", "C. In foreign currency, converted to local currency on a statistical ledger", "D. In foreign currency, with no need for conversion"],
+            correct: ["A. In local currency, with the exchange rate valid on the last day of the period"],
+            explanation: "Lors de la valorisation des devises étrangères (Foreign Currency Valuation), le solde total du compte bancaire en devise étrangère est converti en devise locale en utilisant le taux de change du jour de la valorisation (généralement le dernier jour de la période ou de l'exercice). (Bank Accounting)"
+        },
+        {
+            question: "Which fields can you define on the chart of accounts level of a G/L account? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Account group", "B. Account currency", "C. Functional area", "D. G/L account type"],
+            correct: ["A. Account group", "D. G/L account type"],
+            explanation: "Au niveau du plan comptable (Chart of Accounts), vous définissez des paramètres globaux comme le groupe de comptes (Account Group - A) et le type de compte (G/L Account Type - D), qui structurent la hiérarchie et la classification du compte. La devise du compte (B) et le domaine fonctionnel (C) sont généralement définis au niveau de la société (Company Code). (General Ledger Accounting)"
+        },
+        {
+            question: "A fixed asset you ordered is delivered but is not activated. What could be the reason?",
+            type: "single",
+            options: ["A. The asset is only activated upon payment. It is a valuated goods receipt.", "B. The asset accountant did not enter the activation date in the asset master record", "C. The asset is only activated with the invoice. It is a non-valuated goods receipt", "D. The asset is only activated with the invoice. It is a valuated goods receipt."],
+            correct: ["C. The asset is only activated with the invoice. It is a non-valuated goods receipt"],
+            explanation: "Dans un processus d'acquisition d'immobilisation via MM-IM, si la réception des marchandises (Goods Receipt) est non valorisée ('Non-valuated Goods Receipt'), l'immobilisation n'est pas activée (capitalisée) tant que la facture (Invoice Verification) n'est pas enregistrée. C'est l'enregistrement de la facture qui déclenche la comptabilisation FI. (Asset Accounting)"
+        },
+        {
+            question: "To create a semantic tag, which element do you need to assign to it?",
+            type: "single",
+            options: ["A. FSV node", "B. G/L account", "C. Tag group", "D. Number range"],
+            correct: ["B. G/L account"],
+            explanation: "Les 'Semantic Tags' sont des indicateurs sémantiques attribués à des comptes généraux (G/L Accounts) pour améliorer le reporting et l'analyse, notamment dans le contexte de la 'Cost of Sales Accounting' ou pour identifier le type d'une transaction. (General Ledger Accounting)"
+        },
+        {
+            question: "What is the consequence of selecting Enforce SOX Requirements in the SAP Advanced Financial Closing configuration?",
+            type: "single",
+            options: ["A. The user responsible is notified by e-mail when a task processing status is changed", "B. The local system ID is checked to ensure a different system is used by each user", "C. The system checks that the user responsible for a task is different than the processing user", "D. The processing user must assign a substitute user in their profile for absences"],
+            correct: ["C. The system checks that the user responsible for a task is different than the processing user"],
+            explanation: "L'option 'Enforce SOX Requirements' (respect des exigences SOX) est une mesure de contrôle interne qui assure la ségrégation des tâches (SoD). Elle empêche qu'un utilisateur responsable d'une tâche (responsible user) soit également l'utilisateur qui l'exécute ou la finalise (processing user). (Advanced Financial Closing)"
+        },
+        {
+            question: "When do you specify the data retention period in SAP S/4HANA Migration Cockpit?",
+            type: "single",
+            options: ["A. When the project status is 'Not started'", "B. When the project status is 'Finished'", "C. When the project status is 'In progress'", "D. When the project status is 'Completed'"],
+            correct: ["B. When the project status is 'Finished'"],
+            explanation: "La période de conservation des données (data retention period) des objets de migration est définie après que le projet de migration ait atteint le statut 'Finished'. C'est une étape de post-clôture. (SAP S/4HANA Migration Cockpit)"
+        },
+        {
+            question: "The credit profile is used to store which information in the customer master data? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. The credit exposure", "B. The scoring rules", "C. The customer credit group", "D. The credit decisions"],
+            correct: ["B. The scoring rules", "C. The customer credit group"],
+            explanation: "Le profil de crédit (Credit Profile) dans la gestion du crédit (Credit Management) stocke des informations de configuration telles que le groupe de crédit du client (Customer Credit Group - C) et les règles de notation (Scoring Rules - B) utilisées pour évaluer sa solvabilité. L'exposition au crédit (A) et les décisions de crédit (D) sont des données opérationnelles calculées ou prises. (Accounts Receivable/Credit Management)"
+        },
+        {
+            question: "What does the journal entry type in general journal document posting control? Note: There are 2 correct answers to this question",
+            type: "multiple",
+            options: ["A. Which fields in the document header are mandatory fields", "B. The document number assigned", "C. Which fields in the line items are mandatory fields", "D. The number of possible line items in the FI document"],
+            correct: ["A. Which fields in the document header are mandatory fields", "C. Which fields in the line items are mandatory fields"],
+            explanation: "Le type d'écriture comptable (Journal Entry Type) contrôle la visibilité et l'obligation de saisie (champs obligatoires) des champs, à la fois dans l'en-tête (A) et dans les postes (C), via les règles de détermination du statut de champ (Field Status). Il n'affecte pas le nombre de postes (D) et ne détermine pas directement le numéro de document (B), qui est lié à la séquence numérique. (General Ledger Accounting)"
+        },
+        {
+            question: "What are some characteristics of the SAP S/4HANA Migration Cockpit? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Mapping source values to SAP S/4HANA target values", "B. Extensibility using the Legacy System Migration Workbench", "C. Combining the local and remote schema approaches into one migration object", "D. Guidance and simulation of the migration process"],
+            correct: ["A. Mapping source values to SAP S/4HANA target values", "D. Guidance and simulation of the migration process"],
+            explanation: "Le (SAP S/4HANA Migration Cockpit) permet le mappage des valeurs (A) et offre une guidance et une simulation du processus de migration (D) pour assurer une transition fluide et sans erreur. Il ne s'appuie pas sur le LSMW (B) et la combinaison des schémas (C) n'est pas une caractéristique principale. (SAP S/4HANA Migration Cockpit)"
+        },
+        {
+            question: "Which dimension do you use to produce external financial statements based on cost-of-sales accounting?",
+            type: "single",
+            options: ["A. Functional area", "B. Segment", "C. Market segment", "D. Profit center"],
+            correct: ["A. Functional area"],
+            explanation: "La méthode de comptabilisation par coûts des ventes (Cost-of-Sales Accounting) utilise le domaine fonctionnel (Functional Area) pour classer les dépenses par fonction (ventes, administration, production, etc.), ce qui est requis pour les états financiers externes sous certaines normes. (General Ledger Accounting)"
+        },
+        {
+            question: "What is the relation between the line item displayed for a journal entry in the entry view and the general ledger view?",
+            type: "single",
+            options: ["A. The entry view displays the subledger accounts (such as customer or supplier) while this is not available in the general ledger view", "B. The general ledger view has as many or more line items as the entry view", "C. The entry view has as many or more line items as the general ledger view", "D. The general ledger view displays direct account assignments such as the profit center while these are not available in the entry view"],
+            correct: ["B. The general ledger view has as many or more line items as the entry view"],
+            explanation: "La vue du grand livre (General Ledger View) peut contenir plus de postes que la vue d'entrée (Entry View) (B) car elle inclut les postes générés automatiquement par le système, comme les postes de split des documents (Document Splitting) ou des affectations supplémentaires pour la comptabilité parallèle. (General Ledger Accounting)"
+        },
+        {
+            question: "On what level can you restrict postings using the posting period variants? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Supplier account", "B. Customer reconciliation account", "C. G/L account", "D. Fixed asset number"],
+            correct: ["B. Customer reconciliation account", "C. G/L account"],
+            explanation: "Les variantes de périodes comptables (Posting Period Variants) permettent de restreindre la comptabilisation par type de compte, notamment les comptes généraux (G/L Account - C) et les comptes de rapprochement (Reconciliation Accounts) des clients/fournisseurs (B), pour contrôler plus finement l'ouverture et la fermeture des périodes. (General Ledger Accounting)"
+        },
+        {
+            question: "Which tasks are mandatory before you can migrate data for a specific object? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Predecessor objects have been migrated", "B. You select the same migration method previously used for other objects", "C. All previous migration projects are in the 'Finished' status", "D. Permission to migrate the data has been assigned"],
+            correct: ["A. Predecessor objects have been migrated", "D. Permission to migrate the data has been assigned"],
+            explanation: "Pour migrer des données, il est crucial que les objets prédécesseurs (Predecessor Objects - A) (ex: les centres de coûts avant les pièces comptables) soient déjà migrés. De plus, les autorisations (Permissions - D) sont obligatoires pour exécuter la migration. (SAP S/4HANA Migration Cockpit)"
+        },
+        {
+            question: "You are recording actions for custom process steps in a test automate. When do you press the 'Read' button on the recording panel? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. To capture a static label on the screen that should be checked during test execution", "B. To capture a value in a text field that should be stored as a variable", "C. To capture an error message on the screen that can be used later", "D. To capture text in a message screen that can be used for data binding later"],
+            correct: ["B. To capture a value in a text field that should be stored as a variable", "C. To capture an error message on the screen that can be used later"],
+            explanation: "Dans l'outil d'automatisation des tests (Test Automation Tool), l'action 'Read' est utilisée pour capturer dynamiquement une valeur affichée dans un champ (B) et la stocker comme variable, ou pour capturer un message affiché (y compris les messages d'erreur - C). (Test Automation)"
+        },
+        {
+            question: "If a customer wants to develop their own custom application and integrate it with SAP S/4HANA Cloud, what tools would you recommend to develop the app? Note: There are 2 correct answers to this question",
+            type: "multiple",
+            options: ["A. SAP Business Application Studio", "B. SAP HANA Cloud", "C. SAP Cloud Portal Service", "D. SAP Build"],
+            correct: ["A. SAP Business Application Studio", "D. SAP Build"],
+            explanation: "Pour le développement d'applications personnalisées pour (SAP S/4HANA Cloud), la plateforme recommandée est (SAP Business Technology Platform) (BTP). Les outils de développement clés sur BTP sont (SAP Business Application Studio) (A) (pour le développement pro-code) et (SAP Build) (D) (pour le développement low-code/no-code). (Extensibility)"
+        },
+        {
+            question: "Which technologies should you use to integrate SAP S/4HANA Cloud Public Edition with another SAP public cloud solution? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Predelivered APIs", "B. SAP Integration Suite", "C. SAP Cloud Connector", "D. SAP Process Orchestration"],
+            correct: ["A. Predelivered APIs", "B. SAP Integration Suite"],
+            explanation: "L'intégration entre des solutions Cloud SAP Publiques doit se faire en utilisant des APIs pré-livrées (A) via l'(SAP Integration Suite) (B). Le (SAP Cloud Connector) (C) est utilisé pour l'intégration Cloud vers On-Premise, ce qui n'est pas le cas ici. (Integration)"
+        },
+        {
+            question: "Why do you create a down-payment request for a customer?",
+            type: "single",
+            options: ["A. To inform the bank of a pending payment.", "B. To post the down-payment automatically.", "C. To update the general ledger.", "D. To report it on your P&L statement."],
+            correct: ["C. To update the general ledger."],
+            explanation: "Une demande d'acompte (Down-Payment Request) est un poste à caractère purement **statistique** dans le compte client qui sert de base au paiement futur. L'enregistrement comptable réel (qui impacte le grand livre - C) est effectué lorsque le paiement est reçu. (Accounts Receivable)"
+        },
+        {
+            question: "Where are the manual test cases created for customer User Acceptance Testing?",
+            type: "single",
+            options: ["A. SAP Solution Manager", "B. SAP Cloud ALM", "C. SAP Signavio Process Navigator", "D. Test Automation Tool"],
+            correct: ["B. SAP Cloud ALM"],
+            explanation: "(SAP Cloud ALM) (Application Lifecycle Management) est la plateforme standard de SAP pour la gestion des projets, des exigences et des tests (manuels et automatiques) dans les implémentations (SAP S/4HANA Cloud). (SAP Cloud ALM)"
+        },
+        {
+            question: "What can you do when executing a depreciation posting run? Note: There are 3 correct answers to this question.",
+            type: "multiple",
+            options: ["A. You can check the posted depreciation for each asset on the FI document", "B. You can reverse the FI posting documents of the depreciation run", "C. You can run depreciation separately for each ledger", "D. You can select to cancel the depreciation run if the program finds errors in individual assets", "E. You can process a depreciation test run for an individual asset"],
+            correct: ["A. You can check the posted depreciation for each asset on the FI document", "B. You can reverse the FI posting documents of the depreciation run", "C. You can run depreciation separately for each ledger"],
+            explanation: "Lors de la comptabilisation de l'amortissement (Depreciation Posting Run), vous pouvez vérifier les documents FI générés (A), inverser les documents comptabilisés si nécessaire (B) et lancer la procédure pour des ledgers spécifiques (C), ce qui est essentiel pour la comptabilité parallèle. Les erreurs n'annulent pas la procédure pour les autres actifs (D), et le test individuel est fait en dehors du run global (E). (Asset Accounting)"
+        },
+        {
+            question: "What are some characteristics of public cloud? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Perpetual license", "B. Software installation on customer site", "C. Multi-tenant server", "D. Lower total cost of ownership"],
+            correct: ["C. Multi-tenant server", "D. Lower total cost of ownership"],
+            explanation: "Les caractéristiques du 'Public Cloud' incluent un environnement multi-tenant (C), partagé par plusieurs clients, ce qui contribue à un coût total de possession (Total Cost of Ownership - D) plus faible grâce à la mutualisation des ressources et à l'abonnement (au lieu de la licence perpétuelle - A). (SAP S/4HANA Cloud Overview)"
+        },
+        {
+            question: "When do you perform the goods and invoice receipt reconciliation process?",
+            type: "single",
+            options: ["A. When an invoice is posted, but no relevant purchase order is available", "B. When a purchase order is posted but no invoice has been received", "C. When a purchase order is posted but no goods receipt has been received", "D. When an invoice is posted but no goods receipt has been received"],
+            correct: ["D. When an invoice is posted but no goods receipt has been received"],
+            explanation: "Le rapprochement Réception/Facture (Goods Receipt / Invoice Receipt - GR/IR) est un processus de clôture. Il est effectué lorsque le compte transitoire GR/IR présente un solde parce qu'il y a un décalage : par exemple, une facture a été enregistrée sans que la réception de marchandises correspondante ne l'ait été (D). (Accounts Payable / Closing Operations)"
+        },
+        {
+            question: "What provides a foundation for the SAP Cloud ERP where integrations and extensions live?",
+            type: "single",
+            options: ["A. SAP Business Accelerator Hub", "B. SAP Discovery Center", "C. SAP ABAP Environment", "D. SAP Business Technology Platform"],
+            correct: ["D. SAP Business Technology Platform"],
+            explanation: "Le (SAP Business Technology Platform) (D) est la plateforme d'innovation de SAP qui sert de fondation et d'environnement pour créer des extensions et gérer les intégrations du (SAP S/4HANA Cloud), en gardant le 'Core' propre. (SAP BTP)"
+        },
+        {
+            question: "In SAP Advanced Financial Closing, you try to generate a task list but receive an error from the consistency check. What could cause this? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Missing user assignments for tasks", "B. Missing factory calendar assignment for tasks", "C. Missing task assignments in folders", "D. Missing organizational unit assignments in folders"],
+            correct: ["B. Missing factory calendar assignment for tasks", "D. Missing organizational unit assignments in folders"],
+            explanation: "Lors de la vérification de cohérence (consistency check) avant la génération d'une liste de tâches (Task List) dans (SAP Advanced Financial Closing), l'absence d'un calendrier d'usine (Factory Calendar - B) pour définir les jours ouvrables, ou l'absence d'une unité organisationnelle (Organizational Unit - D) pour associer les tâches aux sociétés, sont des erreurs courantes. (Advanced Financial Closing)"
+        },
+        {
+            question: "Which of the following are steps in an automated payment run process? Note: There are 3 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Schedule invoice run", "B. Maintain parameters", "C. Upload bank statement", "D. Schedule payment run", "E. Schedule propose run"],
+            correct: ["B. Maintain parameters", "D. Schedule payment run", "E. Schedule propose run"],
+            explanation: "Le processus de paiement automatique (Automatic Payment Program - APP) comprend trois étapes principales : la maintenance des paramètres (Maintain Parameters - B), la proposition de paiement (Schedule Propose Run - E) qui identifie les factures à payer, et l'exécution du paiement (Schedule Payment Run - D) qui crée les documents FI et les supports de paiement. (Accounts Payable)"
+        },
+        {
+            question: "When using the Local SAP S/4HANA Database Schema migration approach, what is the maximum file size? Note: There are 2 correct answers to this question",
+            type: "multiple",
+            options: ["A. 160 MB per file", "B. 160 MB per ZIP file", "C. 100 MB per ZIP file", "D. 100 MB per file"],
+            correct: ["B. 160 MB per ZIP file", "C. 100 MB per ZIP file"],
+            explanation: "Dans le (SAP S/4HANA Migration Cockpit), lorsque l'on utilise l'approche de schéma de base de données locale, la taille maximale d'un fichier ZIP (contenant les fichiers de données) est de **160 MB** (A) ou **100 MB** (D) selon la version spécifique, mais la bonne pratique vise le ZIP (B et C). Les deux réponses **160 MB per ZIP file** et **100 MB per ZIP file** sont souvent considérées comme correctes dans la documentation SAP. Nous retenons les deux variantes de format ZIP qui sont généralement les plus restrictives. (SAP S/4HANA Migration Cockpit)"
+        },
+        {
+            question: "How can you process recurring entries? Note: There are 3 correct answers to this question.",
+            type: "multiple",
+            options: ["A. You can create a recurring entry without defining a recurrence start date", "B. You can post recurring entries only through the recurring entry program", "C. You can schedule recurring entries to start automatically", "D. You can post recurring entries in standard posting apps selecting the document type RE", "E. You can create a recurring invoice entry based on a template invoice"],
+            correct: ["B. You can post recurring entries only through the recurring entry program", "C. You can schedule recurring entries to start automatically", "E. You can create a recurring invoice entry based on a template invoice"],
+            explanation: "Les écritures récurrentes (Recurring Entries) sont gérées par le programme d'écritures récurrentes (B), que vous pouvez planifier pour une exécution automatique (C). Ce programme utilise un document modèle (E) pour générer automatiquement des écritures régulières. Le document de base (A) doit avoir une date de début et (D) est faux, le document RE est le document modèle. (General Ledger Accounting)"
+        },
+        {
+            question: "Where do you find industry cloud solutions to address a customer’s unique requirement?",
+            type: "single",
+            options: ["A. SAP Discovery Center", "B. SAP Store", "C. SAP Business Technology Platform", "D. SAP Signavio Process Navigator"],
+            correct: ["B. SAP Store"],
+            explanation: "Les solutions Industry Cloud, qui sont des applications spécifiques à un secteur d'activité, sont disponibles à l'achat ou à l'abonnement via le (SAP Store) (B). (Industry Cloud)"
+        },
+        {
+            question: "What is the result of an automatic payment run? Note: There are 3 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Payment plan", "B. Payment blocks", "C. Payment log", "D. Payment documents", "E. Payment media"],
+            correct: ["C. Payment log", "D. Payment documents", "E. Payment media"],
+            explanation: "L'exécution du programme de paiement automatique génère trois résultats clés : un journal des paiements (Payment Log - C), les documents comptables de paiement (Payment Documents - D) qui soldent les postes ouverts, et les supports de paiement (Payment Media - E) envoyés aux banques ou aux fournisseurs. (Accounts Payable)"
+        },
+        {
+            question: "Which process in the integrated procure-to-pay process generates a balance sheet-relevant financial accounting document?",
+            type: "single",
+            options: ["A. Invoice verification", "B. Material requirement planning", "C. Goods receipt", "D. Purchase order creation"],
+            correct: ["A. Invoice verification"],
+            explanation: "Dans le processus Achat-Paiement (Procure-to-Pay), la vérification de la facture (Invoice Verification - A) (et également la réception des marchandises - C) génère un document comptable. La vérification de la facture impacte le compte fournisseur (passif du bilan), ce qui est pertinent pour le bilan. (Accounts Payable)"
+        },
+        {
+            question: "How can you migrate data to S/4HANA Cloud Public Edition ?",
+            type: "single",
+            options: ["A. With XML or CSV templates", "B. With Core Data Services", "C. With the zero downtime service", "D. With a separate SAP HANA database"],
+            correct: ["A. With XML or CSV templates"],
+            explanation: "La migration des données vers (SAP S/4HANA Cloud Public Edition) via le (SAP S/4HANA Migration Cockpit) est réalisée en utilisant des modèles de fichiers, généralement au format **XML** ou **CSV** (A), qui sont mappés aux objets de migration. (SAP S/4HANA Migration Cockpit)"
+        },
+        {
+            question: "Which master record object controls the use of a business partner in accounts payable?",
+            type: "single",
+            options: ["A. Business partner role", "B. Business partner category", "C. Business partner classification", "D. Business partner grouping"],
+            correct: ["A. Business partner role"],
+            explanation: "Dans le concept du partenaire commercial (Business Partner - BP), c'est le rôle (Business Partner Role - A) qui détermine les segments de données visibles et utilisés. Pour la comptabilité fournisseur (Accounts Payable), le rôle 'Fournisseur FI' (FLVN00) est indispensable. (Accounts Payable / Business Partner)"
+        },
+        {
+            question: "Which systems need to be provisioned via SAP for Me? There are two correct answers.",
+            type: "multiple",
+            options: ["A. SAP Cloud Identity Authentication", "B. SAP Central Business Configuration", "C. SAP S/4HANA Cloud Development system, development tenant", "D. SAP S/4HANA Cloud Production System"],
+            correct: ["C. SAP S/4HANA Cloud Development system, development tenant", "D. SAP S/4HANA Cloud Production System"],
+            explanation: "Dans le modèle à trois systèmes (3-system landscape) de (SAP S/4HANA Cloud Public Edition), les systèmes de Développement (Development) (C) et de Production (D) sont provisionnés et gérés via (SAP for Me). (Implementation / Provisioning)"
+        },
+        {
+            question: "What is the role of the valuation method in the foreign currency valuation of accounts payable? Note: There are 3 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Define the posting and reversal date for the valuation posting", "B. Define the document type for the valuation posting", "C. Define the valuation procedure", "D. Define the exchange rate type", "E. Determine the G/L accounts for the valuation posting"],
+            correct: ["C. Define the valuation procedure", "D. Define the exchange rate type", "E. Determine the G/L accounts for the valuation posting"],
+            explanation: "La méthode de valorisation (Valuation Method) est l'élément central de la valorisation des devises étrangères (Foreign Currency Valuation). Elle définit la procédure (C), le type de taux de change à utiliser (D) et, indirectement, le compte général (G/L Account) (E) sur lequel les gains/pertes seront comptabilisés via la détermination des comptes. (General Ledger Accounting)"
+        },
+        {
+            question: "When processing manual incoming payments, which of the following options can be used to manage payment differences? Note: There are 3 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Individual value adjustment", "B. Return payment", "C. Residual payment", "D. Partial payment", "E. Payment on account"],
+            correct: ["C. Residual payment", "D. Partial payment", "E. Payment on account"],
+            explanation: "Lors du traitement des paiements entrants (Incoming Payments), les écarts peuvent être gérés via le paiement partiel (Partial Payment - D), le paiement résiduel (Residual Payment - C) ou en comptabilisant le paiement comme un acompte (Payment on Account - E). (Accounts Receivable)"
+        },
+        {
+            question: "You post and match an incoming payment to the incorrect customer account. How can you correct the mistake?",
+            type: "single",
+            options: ["A. Change the customer on the payment document", "B. Reset the clearing and reverse the document", "C. Issue a credit memo to the customer", "D. Contact the customer through correspondence"],
+            correct: ["B. Reset the clearing and reverse the document"],
+            explanation: "Si un paiement a été compensé (cleared) sur un mauvais compte client, la méthode correcte est d'abord d'annuler la compensation (Reset the Clearing) pour rouvrir les postes, puis d'inverser le document de paiement (Reverse the Document). (Accounts Receivable)"
+        },
+        {
+            question: "Which editing options are available in the dunning proposal list? Note: There are 3 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Change the dunning charges", "B. Editing the dunning texts", "C. Edit dunning blocks at account level", "D. Edit dunning blocks at line item level", "E. Change the dunning level of an open item"],
+            correct: ["A. Change the dunning charges", "D. Edit dunning blocks at line item level", "E. Change the dunning level of an open item"],
+            explanation: "Avant d'imprimer l'avis de relance (Dunning Notice), la liste de proposition (Dunning Proposal List) permet d'ajuster les frais de relance (A), de bloquer la relance sur certains postes (D) ou de modifier le niveau de relance d'un poste (E). L'édition des textes (B) se fait dans la configuration, pas dans la proposition, et le blocage au niveau du compte (C) se fait dans la fiche client. (Accounts Receivable)"
+        },
+        {
+            question: "In SAP Central Business Configuration, which activities can you perform in the Product-Specific Configuration Phase? Note: There are 3 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Create new scope items", "B. Add new sales organizations", "C. Add blocking reasons for billing", "D. Modify building blocks", "E. Change approval thresholds"],
+            correct: ["B. Add new sales organizations", "C. Add blocking reasons for billing", "E. Change approval thresholds"],
+            explanation: "Dans la phase de configuration spécifique au produit (Product-Specific Configuration) de (SAP Central Business Configuration) (CBC), vous effectuez la configuration détaillée, telle que l'ajout d'unités d'organisation (B), la définition de raisons de blocage (C) et la modification de seuils d'approbation (E). Le scoping (A) et les 'building blocks' (D) sont généralement gérés dans les phases antérieures. (SAP Central Business Configuration)"
+        },
+        {
+            question: "When processing payments, what are possible functions of reason codes? Note: There are 3 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Create a sales order", "B. Automatic posting of a residual item to a specific G/L account", "C. Control of the account where a residual item is posted", "D. Control of the type of payment notice sent to a customer", "E. Generate payment reminder"],
+            correct: ["B. Automatic posting of a residual item to a specific G/L account", "C. Control of the account where a residual item is posted", "D. Control of the type of payment notice sent to a customer"],
+            explanation: "Les codes motif (Reason Codes) sont utilisés pour gérer les différences de paiement. Ils permettent de déterminer le compte général de différence (C) (souvent en lien avec B) et peuvent contrôler le type d'avis de paiement (Payment Notice) envoyé au client (D). (Accounts Receivable / Payable)"
+        },
+        {
+            question: "Which of the following fields are maintained on the general data segment of the customer business partner? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Communication language", "B. Bank key", "C. Payment method", "D. Company code"],
+            correct: ["A. Communication language", "B. Bank key"],
+            explanation: "Le segment des données générales (General Data) du partenaire commercial (Business Partner) contient des informations qui s'appliquent à toutes les relations de l'entreprise, comme la langue de communication (A) et les informations bancaires (Bank Key - B). La méthode de paiement (C) et les données de société (D) sont spécifiques au rôle et à la société. (Business Partner)"
+        },
+        {
+            question: "Which field can be changed in a posted invoice? Note: There are 3 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Invoice amount", "B. Profit center", "C. Payment terms", "D. Line item text", "E. Reference"],
+            correct: ["C. Payment terms", "D. Line item text", "E. Reference"],
+            explanation: "Une fois qu'une pièce comptable (facture) est enregistrée, les champs sensibles (comme le montant - A, et les imputations de coûts - B) ne peuvent pas être modifiés. Seuls les champs administratifs et de reporting, comme les conditions de paiement (C), le texte du poste (D) et la référence (E), peuvent être modifiés via l'application 'Manage Journal Entries' (ACDOCA). (General Ledger Accounting)"
+        },
+        {
+            question: "What are the effects of a goods issue posting? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. It posts an accounting document", "B. It reduces the inventory values", "C. It generates an invoice for approval", "D. It increases the inventory value"],
+            correct: ["A. It posts an accounting document", "B. It reduces the inventory values"],
+            explanation: "La sortie de marchandises (Goods Issue) dans le processus de vente (Order-to-Cash) a deux conséquences majeures : elle enregistre un document comptable (A) qui débite le compte de coûts des ventes et crédite le stock, et elle réduit la valeur du stock (B). (Inventory Management / FI-GL)"
+        },
+        {
+            question: "At which point in the integrated sales process is a balance sheet-relevant accounting document created?",
+            type: "single",
+            options: ["A. Sales order confirmation", "B. Quotation", "C. Sales order creation", "D. Goods issue"],
+            correct: ["D. Goods issue"],
+            explanation: "La sortie de marchandises (Goods Issue - D) est le premier point du processus de vente (Order-to-Cash) qui génère un document comptable. Ce document impacte le compte de stock (Actif du Bilan) et le compte de Coût des Ventes (P&L). C'est un document pertinent pour le bilan. (Sales and Distribution / FI-GL)"
+        },
+        {
+            question: "You want to check why a down payment request was not generated for an item in a purchase order. Where would you check? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. The purchase order line item", "B. The purchase order header", "C. The goods receipt line item", "D. The invoice header"],
+            correct: ["A. The purchase order line item", "B. The purchase order header"],
+            explanation: "La demande d'acompte (Down Payment Request) est configurée et demandée aux niveaux de l'en-tête (B) et du poste (A) de la commande d'achat (Purchase Order). C'est là que les indicateurs et les conditions sont définis pour que le système puisse générer la demande d'acompte. (Accounts Payable / Purchasing)"
+        },
+        {
+            question: "How can you identify an asset number as a main asset number?",
+            type: "single",
+            options: ["A. By the prefix -1 after the asset number", "B. By the lack of prefix for the asset", "C. By the prefix -0 after the asset number", "D. By the description of the asset"],
+            correct: ["C. By the prefix -0 after the asset number"],
+            explanation: "Dans la comptabilité des immobilisations (Asset Accounting), le numéro principal d'immobilisation (Main Asset Number) se termine par le sous-numéro **0000** ou souvent **-0** (C). Les sous-numéros (sub-numbers) pour les ajouts postérieurs se terminent par -1, -2, etc. (Asset Accounting)"
+        },
+        {
+            question: "In which SAP Activate Methodology phase do consultants configure business processes based on the information gathered in the Fit-to-Standard workshops?",
+            type: "single",
+            options: ["A. Explore", "B. Realize", "C. Prepare", "D. Deploy"],
+            correct: ["B. Realize"],
+            explanation: "La phase **Realize** (B) de la méthodologie (SAP Activate) est celle où les consultants procèdent à la configuration du système (surtout dans le tenant de développement) sur la base des décisions prises lors des ateliers 'Fit-to-Standard' de la phase **Explore**. (SAP Activate)"
+        },
+        {
+            question: "You have started a project that requires help from external workers to submit their hours worked weekly. The manager responsible for this workspace approves the reported times irregularly. This causes the accountants to have to track multiple sources and make manual calculations as they must show the expected expense even for unapproved submissions. Which process automated by SAP S/4HANA system can support the accounting department?",
+            type: "single",
+            options: ["A. Service entry sheet deferrals", "B. Purchase order accruals", "C. Service entry sheet accruals", "D. Purchase order deferrals"],
+            correct: ["C. Service entry sheet accruals"],
+            explanation: "Pour les services non encore facturés mais consommés (y compris le temps de travail des externes), le processus d'**Accruals** (charges à payer) basé sur les feuilles de saisie de services (Service Entry Sheet - C) permet de comptabiliser l'estimation des coûts, assurant une image fidèle des dépenses pour l'exercice comptable, même si l'approbation/facture n'est pas encore là. (Service Procurement / Closing Operations)"
+        },
+        {
+            question: "You use the app Manage Journal Entries to display changes to journal entries. Which changes can be Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Date the change", "B. Amount that was changed", "C. User who made the change", "D. G/L account that was changed"],
+            correct: ["A. Date the change", "C. User who made the change"],
+            explanation: "L'application (Manage Journal Entries) permet de visualiser les modifications apportées aux écritures comptables. Ces modifications, comme la date de changement (A) et l'utilisateur responsable (C), sont enregistrées dans le journal des modifications ('Change Log') de la pièce comptable pour des raisons d'audit. Les champs sensibles (montant - B, compte général - D) ne peuvent pas être modifiés après la comptabilisation. (General Ledger Accounting)"
+        },
+        {
+            question: "For which fields can you enter time-dependent changes in the asset master record? Note: There are 3 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Description", "B. Trading partner number", "C. Cost center", "D. WBS Element", "E. Plant"],
+            correct: ["C. Cost center", "D. WBS Element", "E. Plant"],
+            explanation: "Dans la fiche d'immobilisation (Asset Master Record), des modifications dépendantes du temps (Time-Dependent Changes) sont possibles pour les affectations d'imputation (Cost Center - C, WBS Element - D) et l'emplacement physique (Plant - E). La description (A) et le partenaire commercial (B) ne sont généralement pas gérés de manière temporelle pour un actif. (Asset Accounting)"
+        },
+        {
+            question: "On which level do you define maximum amounts for low-value assets? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Valuation area", "B. Ledger group", "C. Accounting principle", "D. Company code"],
+            correct: ["A. Valuation area", "C. Accounting principle"],
+            explanation: "Le seuil des immobilisations de faible valeur (Low-Value Assets - LVA) est défini par **principe comptable** (C) et est associé à la **zone de valorisation** (Valuation Area - A) correspondante. Ceci est crucial pour la comptabilité parallèle, car le seuil LVA peut différer selon les normes (IFRS, GAAP locaux). (Asset Accounting)"
+        },
+        {
+            question: "Which date determines the period of the asset acquisition?",
+            type: "single",
+            options: ["A. Posting date", "B. Document date", "C. Asset value date", "D. Base date"],
+            correct: ["C. Asset value date"],
+            explanation: "La date de valeur de l'immobilisation (Asset Value Date - C) est la date à partir de laquelle l'amortissement commence à être calculé. C'est elle qui détermine la période comptable (et la période d'amortissement) de l'acquisition. (Asset Accounting)"
+        },
+        {
+            question: "If you cannot find a prepackaged solution process that addresses integration requirements, where would you look?",
+            type: "single",
+            options: ["A. SAP Signavio Process", "B. SAP Business Accelerator Hub", "C. SAP Business Technology Platform", "D. SAP Discovery Center", "E. SAP Cloud ALM"],
+            correct: ["B. SAP Business Accelerator Hub"],
+            explanation: "Le (SAP Business Accelerator Hub) (B) (anciennement API Hub) est la source centralisée pour trouver toutes les API, les événements, et les packages d'intégration réutilisables pour étendre et intégrer (SAP S/4HANA Cloud). (Integration)"
+        },
+        {
+            question: "How does an implementation consultant support customer experts during Fit-to-Standard workshops? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Conduct end-user training on active scope items", "B. Demonstrate SAP Best Practices business processes in the starter system", "C. Determine set up instructions for customer-driven integrations", "D. Highlight areas that require configuration or customization decisions"],
+            correct: ["B. Demonstrate SAP Best Practices business processes in the starter system", "D. Highlight areas that require configuration or customization decisions"],
+            explanation: "Pendant les ateliers 'Fit-to-Standard' (phase Explore), le consultant démontre les processus standard (SAP Best Practices) dans le système Starter (B) et identifie les 'écarts' ('Gaps') ou les besoins spécifiques du client, ce qui mène à des décisions de configuration ou de personnalisation (D). (SAP Activate)"
+        },
+        {
+            question: "After integration requirements have been finalized, what is used to analyze, design, and document the integration strategy?",
+            type: "single",
+            options: ["A. Integration and API list", "B. SAP Cloud ALM Requirements app", "C. Integration Solution Advisory Methodology", "D. SAP Business Accelerator Hub"],
+            correct: ["C. Integration Solution Advisory Methodology"],
+            explanation: "L'(Integration Solution Advisory Methodology) (iSAM - C) est une approche structurée pour analyser, concevoir et documenter la stratégie d'intégration, garantissant la cohérence et le respect des normes. (Integration)"
+        },
+        {
+            question: "Where is the initial list of known integrations documented?",
+            type: "single",
+            options: ["A. In SAP Cloud ALM", "B. In the Digital Discovery Assessment", "C. In the Business Driven Configuration", "D. In the Fit-to-Standard Workshops"],
+            correct: ["B. In the Digital Discovery Assessment"],
+            explanation: "L'évaluation initiale des besoins et des écarts, y compris la liste initiale des intégrations (Known integrations), est capturée dans le (Digital Discovery Assessment) (DDA) (B). (SAP Activate)"
+        },
+        {
+            question: "In which application can you see the available business context capacity remaining for extension items?",
+            type: "single",
+            options: ["A. Extensibility Cockpit app", "B. Extensibility Explorer app", "C. Extensibility Inventory app", "D. Custom Reusable Elements app"],
+            correct: ["C. Extensibility Inventory app"],
+            explanation: "L'(Extensibility Inventory app) (C) est l'outil permettant de visualiser l'utilisation et la capacité restante (Available Business Context Capacity) des contextes d'extension dans (SAP S/4HANA Cloud). (Extensibility)"
+        },
+        {
+            question: "You need to produce additional financial statements according to local GAAP requirements. Which of the following can help?",
+            type: "single",
+            options: ["A. Functional area", "B. Journal entry type", "C. Ledger group", "D. Profit center group"],
+            correct: ["C. Ledger group"],
+            explanation: "La comptabilité parallèle (Parallel Accounting) est gérée par les groupes de ledgers (Ledger Group - C). Pour répondre aux exigences de reporting (états financiers) d'un GAAP local, vous utilisez un ledger non-leading (Non-Leading Ledger) assigné à son propre groupe de ledgers. (General Ledger Accounting)"
+        },
+        {
+            question: "Which tools does SAP provide to make it easier for customers to maintain their SAP S/4HANA Cloud systems after a release upgrade? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. SAP Signavio Process Navigator Tool", "B. Release Assessment and Scope Dependency Tool", "C. Test Automation Tool", "D. What’s New Viewer Tool"],
+            correct: ["B. Release Assessment and Scope Dependency Tool", "D. What’s New Viewer Tool"],
+            explanation: "Pour la gestion des mises à jour (Release Upgrade), SAP fournit le (What's New Viewer Tool) (D) pour voir les nouveautés, et le (Release Assessment and Scope Dependency Tool) (RASD) (B) pour évaluer l'impact des changements sur le périmètre (Scope) client. (Lifecycle Management)"
+        },
+        {
+            question: "Which of the following are captured in a completed Digital Discovery Assessment? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Known integration requirements", "B. Target customer go-live date", "C. SAP Fiori application extensions", "D. Business role permission requirements"],
+            correct: ["A. Known integration requirements", "D. Business role permission requirements"],
+            explanation: "Le (Digital Discovery Assessment) (DDA) capture les exigences initiales et les écarts, incluant les besoins d'intégration (A) et les exigences de rôles/autorisations (D). La date de Go-Live (B) est une décision du projet, et les extensions Fiori (C) sont des solutions, pas des exigences brutes. (SAP Activate)"
+        },
+        {
+            question: "What does the asset class determine? Note: There are 3 correct answers to this question.",
+            type: "multiple",
+            options: ["A. The G/L accounts for asset transactions", "B. The inventory number", "C. The default depreciation key", "D. The balance sheet structure", "E. The asset number"],
+            correct: ["A. The G/L accounts for asset transactions", "C. The default depreciation key", "D. The balance sheet structure"],
+            explanation: "La classe d'immobilisation (Asset Class) est le contrôle clé dans (Asset Accounting). Elle détermine : la détermination des comptes généraux (A), la clé d'amortissement par défaut (C) et, par sa liaison aux comptes généraux, la position dans la structure du bilan (D). Elle ne détermine pas le numéro d'inventaire (B) ni directement le numéro de l'actif (E) (qui est plutôt lié à la séquence numérique de la classe). (Asset Accounting)"
+        },
+        {
+            question: "Which layer of SAP S/4HANA provides a universal language to read and process data across different applications?",
+            type: "single",
+            options: ["A. SAP HANA", "B. Core Data Services", "C. SAP Business Suite", "D. SAP Fiori"],
+            correct: ["B. Core Data Services"],
+            explanation: "Les (Core Data Services) (CDS) (B) sont la couche sémantique de l'architecture (SAP S/4HANA). Elles fournissent le modèle de données commun et le langage universel pour accéder et traiter les données en temps réel sur la base de données (SAP HANA). (Architecture)"
+        },
+        {
+            question: "Based on the SAP Activate Methodology, which activities must you perform in the Explore phase? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Conduct the Fit-to-Standard analysis to gather configuration values", "B. Conduct the Digital Discovery Assessment to identify extension requirements", "C. Use the Test system to demonstrate SAP Best Practices process", "D. Define the organizational structure and chart of accounts"],
+            correct: ["A. Conduct the Fit-to-Standard analysis to gather configuration values", "B. Conduct the Digital Discovery Assessment to identify extension requirements"],
+            explanation: "La phase **Explore** implique principalement l'analyse et la collecte d'informations : l'analyse 'Fit-to-Standard' pour identifier les écarts et collecter les valeurs de configuration (A), et le DDA pour identifier les besoins d'extension (B). (SAP Activate)"
+        },
+        {
+            question: "What must you create when you build an integration scenario using the SAP Fiori Communication Management apps in SAP S/4HANA Cloud Public Edition? Note: There are 2 correct answers to this question",
+            type: "multiple",
+            options: ["A. Communication system", "B. Communication arrangement", "C. Communication API", "D. Communication interface"],
+            correct: ["A. Communication system", "B. Communication arrangement"],
+            explanation: "Pour une intégration basée sur les scénarios de communication dans (SAP S/4HANA Cloud), vous devez configurer le **système de communication** (Communication System - A) (l'interlocuteur) et l'**arrangement de communication** (Communication Arrangement - B) (qui lie le scénario et le système, et définit les utilisateurs). (Communication Management)"
+        },
+        {
+            question: "Which asset characteristic controls if an asset is under construction?",
+            type: "single",
+            options: ["A. Settlement profile", "B. Capitalization date", "C. Depreciation key", "D. Asset class"],
+            correct: ["D. Asset class"],
+            explanation: "C'est la classe d'immobilisation (Asset Class - D) qui est utilisée pour identifier un actif comme une immobilisation en cours (Asset Under Construction - AUC). Les classes AUC ont des règles spécifiques, notamment en ce qui concerne l'amortissement et le règlement. (Asset Accounting)"
+        },
+        {
+            question: "Which asset accounting-relevant postings are made periodically, typically at the end of the month? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Post transfer", "B. Settlement of the WBS element", "C. Depreciation posting", "D. Post asset acquisition via clearing account"],
+            correct: ["C. Depreciation posting", "D. Post asset acquisition via clearing account"],
+            explanation: "La comptabilisation de l'amortissement (Depreciation Posting - C) et la comptabilisation des acquisitions via un compte de compensation (D) sont des processus effectués périodiquement, généralement à la fin du mois, via un programme de 'Run' (comme le Depreciation Run). (Asset Accounting)"
+        },
+        {
+            question: "How can you define the relationship between business roles and business catalogs?",
+            type: "single",
+            options: ["A. A business role restricts access to one or more business catalogs", "B. A business catalog is a collection of one or more business roles", "C. A business catalog restricts access to one or more business roles", "D. A business role is a collection of one or more business catalogs"],
+            correct: ["D. A business role is a collection of one or more business catalogs"],
+            explanation: "Un rôle d'utilisateur (Business Role - D) est un ensemble de catalogues d'entreprise (Business Catalogs) et de restrictions. L'utilisateur se voit attribuer un rôle, ce qui lui donne accès aux applications et aux données définies par les catalogues inclus. (Identity and Access Management - IAM)"
+        },
+        {
+            question: "Which activities can you complete in the Maintain Business Roles SAP Fiori app? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Assign business catalogs to a business role", "B. Maintain technical catalogs", "C. Assign PFCG profiles to a business role", "D. Maintain restrictions"],
+            correct: ["A. Assign business catalogs to a business role", "D. Maintain restrictions"],
+            explanation: "L'application (Maintain Business Roles) est l'outil central pour créer et modifier les rôles dans (SAP S/4HANA Cloud). Elle permet d'affecter des catalogues d'entreprise (Business Catalogs - A) au rôle et de définir les restrictions d'accès aux données (D). (Identity and Access Management - IAM)"
+        },
+        {
+            question: "An SAP Fiori app isn’t displaying on the SAP Fiori Launchpad even though the business role granting permission to the app is correctly assigned to the user. How would you troubleshoot? Note: There are 3 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Check the Role Maintenance app", "B. Check the space and page(s) assigned to the role", "C. Check the business role template", "D. Check the business catalogs assigned to the role", "E. Check the restrictions for the role"],
+            correct: ["B. Check the space and page(s) assigned to the role", "D. Check the business catalogs assigned to the role", "E. Check the restrictions for the role"],
+            explanation: "Le dépannage de l'accès aux applications Fiori implique de vérifier : 1. Les **catalogues d'entreprise** (D) sont-ils bien affectés au rôle ? (accès technique) ; 2. Les **espaces et pages** (B) sont-ils affectés au rôle ? (affichage sur le launchpad) ; 3. Les **restrictions** (E) n'empêchent-elles pas l'accès aux données de l'application ? (Identity and Access Management - IAM)"
+        },
+        {
+            question: "A supplier requests a down payment that was not specified in the original purchase order. What is the best way to create the down payment request?",
+            type: "single",
+            options: ["A. Use the automatic payment run to generate the down payment request automatically.", "B. You change the purchase order using the Create Purchase Order Advanced app to add the down payment request.", "C. Manually create a down payment request using the Manage Supplier Down Payment Requests app.", "D. You delete the original purchase order and create a new one with a downpayment request."],
+            correct: ["C. Manually create a down payment request using the Manage Supplier Down Payment Requests app."],
+            explanation: "S'il n'y a pas d'intégration automatique depuis la commande d'achat (Purchase Order), la meilleure pratique est de créer manuellement la demande d'acompte fournisseur (Supplier Down Payment Request) via l'application dédiée (Manage Supplier Down Payment Requests - C). (Accounts Payable)"
+        },
+        {
+            question: "Through which component do you access your assigned process tasks from the SAP Activate Roadmap of SAP S/4HANA Cloud Public Edition (3-system landscape)?",
+            type: "single",
+            options: ["A. SAP Central Business Configuration", "B. SAP Cloud ALM for Service", "C. SAP Cloud ALM for Implementation", "D. SAP Cloud ALM for Operations"],
+            correct: ["C. SAP Cloud ALM for Implementation"],
+            explanation: "Pour le suivi des tâches (Process Tasks) liées au projet et à la méthodologie (SAP Activate) dans une implémentation (SAP S/4HANA Cloud), l'outil de gestion du cycle de vie des applications est (SAP Cloud ALM for Implementation) (C). (SAP Cloud ALM)"
+        },
+        {
+            question: "What is the correct release code for the second feature delivery in February 2025?",
+            type: "single",
+            options: ["A. 2522", "B. 2502.2", "C. 2025.2", "D. 2025.2.2"],
+            correct: ["C. 2025.2"],
+            explanation: "Le modèle de numérotation des versions de (SAP S/4HANA Cloud) utilise l'année (2025) suivie du mois de publication : **YYYY.MM**. Le deuxième 'Feature Delivery' de l'année 2025 (qui arrive en Février) est **2025.02**, ou plus communément **2025.2** (C). (Release Management)"
+        },
+        {
+            question: "Which of the following systems are used to implement SAP S/4HANA Cloud Public Edition for a customer?",
+            type: "multiple",
+            options: ["A. Sandbox system", "B. Starter system", "C. Trial system", "D. Test system", "E. Development system"],
+            correct: ["B. Starter system", "D. Test system", "E. Development system"],
+            explanation: "L'implémentation de (SAP S/4HANA Cloud Public Edition) utilise un paysage à trois systèmes (3-system landscape) (Développement/Test/Production) plus le **Starter System** (B) pour les ateliers Fit-to-Standard. Le Development System (E) et le Test System (D) sont les systèmes utilisés pour la configuration et les tests. (Implementation / System Landscape)"
+        },
+        {
+            question: "What do you use to collect the values that are entered into the configuration activities in SAP Central Business Configuration?",
+            type: "single",
+            options: ["A. Business Driven Configuration", "B. SAP Cloud ALM Requirements app", "C. SAP Cloud ALM Processes app", "D. Availability and Dependencies of Solution Process Excel"],
+            correct: ["A. Business Driven Configuration"],
+            explanation: "Dans (SAP Central Business Configuration) (CBC), l'approche utilisée pour guider l'utilisateur dans la saisie des valeurs de configuration ('Configuration Values') est la **Business Driven Configuration** (A). (SAP Central Business Configuration)"
+        },
+        {
+            question: "Which activities are applied to the entire system and cannot be changed after confirmation in SAP Central Business Configuration? There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Scoping", "B. Configuration activities", "C. Fiscal year variant", "D. Group currency"],
+            correct: ["C. Fiscal year variant", "D. Group currency"],
+            explanation: "Dans CBC, les décisions du **Project Structure** qui impactent l'ensemble du système et sont difficiles à modifier sont la variante d'exercice comptable (Fiscal Year Variant - C) et la devise du groupe (Group Currency - D). Ces choix sont faits au début et ne sont pas modifiables facilement. (SAP Central Business Configuration)"
+        },
+        {
+            question: "You have assigned a business role to an end user who has been granted access to only one specific application. While you have a day off, it turns out that the app doesn’t show up on the user’s launchpad. What can the user do?",
+            type: "single",
+            options: ["A. Use the search function to find the app", "B. Assign a different business role that provides access", "C. Assign a launchpad space to the business role", "D. Create a page and assign it to the launchpad space"],
+            correct: ["A. Use the search function to find the app"],
+            explanation: "Même si une application n'est pas affichée sur le (SAP Fiori Launchpad) via un espace/une page (problème d'affichage), tant que l'utilisateur dispose du rôle et des autorisations, il peut la trouver en utilisant la fonction de **recherche** (Search - A). (SAP Fiori Launchpad)"
+        },
+        {
+            question: "You work in the IT department of your company and receive a call from the accounting department that there are two FI documents with the exact same numbers. After finding the two documents, which fields do you check in order to assure the accountant that there is no error? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Journal entry created by", "B. Journal entry type", "C. Fiscal year", "D. Company code"],
+            correct: ["C. Fiscal year", "D. Company code"],
+            explanation: "Dans SAP, le numéro de document n'est unique que pour une combinaison de **Société** (Company Code - D) et d'**Exercice Comptable** (Fiscal Year - C). Il est tout à fait normal que deux documents aient le même numéro s'ils sont dans des sociétés ou des exercices différents. (General Ledger Accounting)"
+        },
+        {
+            question: "Which feature is available with a resubmission in Collections & Dispute Management?",
+            type: "single",
+            options: ["A. It documents the details of a customer's pledge to pay an invoice", "B. It provides a specific reason why a customer needs to be contacted again", "C. It transfers the dispute case to the collections worklist", "D. It initiates the dispute resolution process for one or several invoices"],
+            correct: ["B. It provides a specific reason why a customer needs to be contacted again"],
+            explanation: "Le renvoi (Resubmission) dans la gestion des recouvrements (Collections Management) est une fonctionnalité de planification et de suivi. Il permet de planifier une date future pour recontacter le client, souvent avec un motif (Reason) spécifique (B). (Collections Management)"
+        },
+        {
+            question: "What can you do regarding approval tasks using the My Inbox app? Note: There are 3 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Display approval history.", "B. Configure workflow approvals.", "C. Forward approval tasks.", "D. Claim approval tasks.", "E. Review approval statistics."],
+            correct: ["A. Display approval history.", "C. Forward approval tasks.", "D. Claim approval tasks."],
+            explanation: "L'application (My Inbox) est l'outil Fiori pour les approbateurs. Elle permet de voir l'historique d'approbation (A), de transférer des tâches à un collègue (C) et de 'réclamer' ('Claim') une tâche d'approbation non encore prise en charge (D). La configuration (B) se fait dans (Manage Workflows), et les statistiques (E) dans d'autres outils de reporting. (SAP Fiori / Workflow)"
+        },
+        {
+            question: "What are valid levels for entering payment blocks to ensure the automatic payment program takes these into account for payment runs? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Bank key", "B. Invoice document", "C. Payment method", "D. Supplier master record"],
+            correct: ["B. Invoice document", "D. Supplier master record"],
+            explanation: "Le blocage de paiement (Payment Block) peut être défini sur deux niveaux pour affecter le programme de paiement automatique : sur la fiche partenaire commercial/fournisseur (Supplier Master Record - D) pour toutes les transactions, et sur le document de facture (Invoice Document - B) pour bloquer une transaction spécifique. (Accounts Payable)"
+        },
+        {
+            question: "Which embedded support offerings can you make use of in the SAP Fiori Launchpad? Note: There are 3 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Assessment questions from the SAP Learning Hub", "B. Video tutorials from the SAP Help Portal", "C. Digital assistance from generative AI (SAP Joule)", "D. Recorded system simulations from the learning center", "E. Recorded webinars from the SAP Learning Website"],
+            correct: ["B. Video tutorials from the SAP Help Portal", "C. Digital assistance from generative AI (SAP Joule)", "D. Recorded system simulations from the learning center"],
+            explanation: "Le support intégré (Embedded Support) dans le (SAP Fiori Launchpad) inclut : l'assistant IA (SAP Joule - C), les tutoriels vidéo/aide du (SAP Help Portal) (B) et les simulations enregistrées ('Learning Center' - D). (SAP Fiori Launchpad)"
+        },
+        {
+            question: "A company wants to use the automatic payment program in SAP S/4HANA and ensure that the system uses a specific document type for the generated postings during the payment run. Which configuration setting controls the document type used for payment postings?",
+            type: "single",
+            options: ["A. The bank determination settings, specifically the paying company codes section.", "B. The payment method settings, specifically the note to payee by origin section.", "C. The payment method setting, specifically the posting details section.", "D. The payment medium format settings, specifically the format output section."],
+            correct: ["C. The payment method setting, specifically the posting details section."],
+            explanation: "C'est dans la section **Détails de Comptabilisation** (Posting Details) de la configuration de la **Méthode de Paiement** (Payment Method - C) pour le pays que vous spécifiez le type de document (Document Type) à utiliser lors de la création des pièces de paiement par le programme de paiement automatique. (Accounts Payable)"
+        },
+        {
+            question: "Which financial statement nodes are part of the calculation for net profit/loss? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Financial Statement Notes", "B. Assets", "C. Not Assigned", "D. Liabilities and Equity"],
+            correct: ["B. Assets", "D. Liabilities and Equity"],
+            explanation: "Le résultat net (Net Profit/Loss) est la différence entre les produits et les charges. Dans la structure du bilan (Balance Sheet), le résultat net de la période est reporté comme un poste dans les **Capitaux Propres/Passifs** (D) qui équilibre l'ensemble des **Actifs** (B). (General Ledger Accounting / Financial Statement Version)"
+        },
+        {
+            question: "What does a partner line of business configuration expert reference when identifying business processes to cover in the Fit-to-Standard workshops?",
+            type: "single",
+            options: ["A. SAP Signavio Process Collaboration Hub", "B. Business Driven Configuration", "C. Digital Discovery Assessment", "D. SAP Signavio Journey Modeler"],
+            correct: ["C. Digital Discovery Assessment"],
+            explanation: "L'expert se réfère au (Digital Discovery Assessment) (DDA - C) complété au préalable pour obtenir une vue d'ensemble des processus métier ('Scope Items') sélectionnés par le client. (SAP Activate)"
+        },
+        {
+            question: "What have SAP S/4HANA Cloud Business Workflows been designed for? Note: There are 3 correct answers to this question.",
+            type: "multiple",
+            options: ["A. To create business processes with a high number of people involved in a pre-defined sequence", "B. To create complex, repeated work processes with iterative cycles", "C. To create standard procedures from SAP Signavio Process Navigator", "D. To create cross-product workflow procedures", "E. To create very simple release or approval procedures"],
+            correct: ["A. To create business processes with a high number of people involved in a pre-defined sequence", "C. To create standard procedures from SAP Signavio Process Navigator", "E. To create very simple release or approval procedures"],
+            explanation: "Les Workflows Métier (Business Workflows) de (SAP S/4HANA Cloud) sont destinés à l'automatisation de processus linéaires (A), souvent basés sur les procédures standard (C), et sont particulièrement adaptés aux scénarios d'approbation et de validation simples (E) (comme l'approbation de factures). (Workflow Management)"
+        },
+        {
+            question: "What are the main user roles in dispute management? Note: There are 3 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Processor", "B. Approver", "C. Coordinator", "D. Negotiator", "E. Person responsible"],
+            correct: ["A. Processor", "C. Coordinator", "E. Person responsible"],
+            explanation: "Les trois rôles principaux dans la gestion des litiges (Dispute Management) sont : la personne responsable (Person Responsible - E) (qui est responsable du litige), le coordonnateur (Coordinator - C) (qui gère l'équipe ou le processus) et le processeur (Processor - A) (qui effectue les tâches de résolution). (Dispute Management)"
+        },
+        {
+            question: "You post an incoming payment from a customer with a residual item for a payment difference. What are the consequences? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. The original document and the payment are cleared", "B. The residual item becomes a new receivable", "C. The residual item is written off to a cost account", "D. Both the original open item and the residual item remain on the account as open item"],
+            correct: ["A. The original document and the payment are cleared", "B. The residual item becomes a new receivable"],
+            explanation: "Lorsqu'on utilise la méthode du **Paiement Résiduel** (Residual Payment), l'écriture d'origine et le paiement sont **compensés** (Cleared - A), et un nouveau poste ouvert (open item) est généré pour le montant de l'écart. Ce nouveau poste devient une **nouvelle créance** (New Receivable - B). (Accounts Receivable)"
+        },
+        {
+            question: "To what element must you assign a collections specialist in collections management?",
+            type: "single",
+            options: ["A. Collection profile", "B. Collection group", "C. Collection segment", "D. Collection strategy"],
+            correct: ["B. Collection group"],
+            explanation: "Dans la gestion des recouvrements (Collections Management), le spécialiste du recouvrement (Collections Specialist) est affecté à un **Groupe de Recouvrement** (Collection Group - B). C'est ce groupe qui est ensuite affecté au partenaire commercial (Business Partner). (Collections Management)"
+        },
+        {
+            question: "Which of the following analyses can you create from the Manage KPIs and Reports app? Note: There are 3 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Lumira Dashboards", "B. Multidimensional Reports", "C. Review Booklets", "D. SAC Stories", "E. Object Views"],
+            correct: ["B. Multidimensional Reports", "D. SAC Stories", "E. Object Views"],
+            explanation: "L'application (Manage KPIs and Reports) est l'outil central de reporting et d'analyse dans (SAP S/4HANA Cloud). Elle permet de créer des rapports multidimensionnels (B), des vues d'objets (Object Views - E) et de lancer des histoires (SAC Stories - D). (Analytics)"
+        },
+        {
+            question: "Which of the following activities are completed in the Realize phase of the SAP Activate Methodology? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Demonstrate where to find business process documentation", "B. Gather perceived change impact feedback", "C. Set up manual test cases in SAP Cloud ALM", "D. Enter configuration values in SAP Central Business Configuration"],
+            correct: ["C. Set up manual test cases in SAP Cloud ALM", "D. Enter configuration values in SAP Central Business Configuration"],
+            explanation: "La phase **Realize** est dédiée à la construction et aux tests. Les activités clés sont la saisie des valeurs de configuration dans (SAP Central Business Configuration) (D) et la préparation/exécution des tests (y compris la mise en place des cas de test manuels dans (SAP Cloud ALM) - C). (SAP Activate)"
+        },
+        {
+            question: "Which of the following categories are defined in the dunning program settings? Note: There are 3 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Dunning levels", "B. Customer group", "C. Special G/L indicator", "D. Dunning clerk", "E. Minimum amounts"],
+            correct: ["A. Dunning levels", "D. Dunning clerk", "E. Minimum amounts"],
+            explanation: "La configuration du programme de relance (Dunning Program) inclut la définition des niveaux de relance (Dunning Levels - A), les montants minimums (Minimum Amounts - E) pour la relance, et le commis de relance (Dunning Clerk - D). (Accounts Receivable)"
+        },
+        {
+            question: "On which level do you define what account is derived in the automatic account determination for special G/L indicators?",
+            type: "single",
+            options: ["A. Business partner", "B. Ledger group", "C. Reconciliation account", "D. Planning level"],
+            correct: ["C. Reconciliation account"],
+            explanation: "La détermination des comptes pour les transactions de grand livre spécial (Special G/L - SGL) (comme les acomptes) est configurée en fonction du **Compte de Rapprochement** (Reconciliation Account - C) du partenaire commercial (client/fournisseur). (Accounts Receivable / Payable)"
+        },
+        {
+            question: "Which of the following business use cases can be managed using special general ledger transactions? Note: There are 3 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Down Payments", "B. Security deposits", "C. Travel expenses", "D. Bills of exchange", "E. Foreign currency invoices"],
+            correct: ["A. Down Payments", "B. Security deposits", "D. Bills of exchange"],
+            explanation: "Les transactions de grand livre spécial (Special G/L Transactions - SGL) sont utilisées pour des transactions qui doivent être enregistrées séparément du grand livre général pour le reporting, comme les Acomptes (Down Payments - A), les Dépôts de Garantie (Security Deposits - B) et les Effets de Commerce (Bills of Exchange - D). (Accounts Receivable / Payable)"
+        },
+        {
+            question: "What tasks make up the receivables line-item matching machine learning service of SAP Cash Application? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Reprocess bank statement items", "B. Payment matching", "C. Schedule jobs", "D. Exception handling"],
+            correct: ["B. Payment matching", "D. Exception handling"],
+            explanation: "Le service d'(SAP Cash Application) utilise l'apprentissage automatique pour deux fonctions principales : l'appariement des paiements (Payment Matching - B) pour compenser les postes ouverts, et la gestion des exceptions (Exception Handling - D) lorsque l'appariement automatique échoue. (Cash Management / Machine Learning)"
+        },
+        {
+            question: "Which dimensions can be used to provide complete balance sheet reports? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. Segment", "B. Cost center", "C. Functional area", "D. Profit center"],
+            correct: ["A. Segment", "D. Profit center"],
+            explanation: "Pour obtenir un bilan (Balance Sheet) complet avec une ventilation interne, les dimensions utilisées sont le **Segment** (A) et le **Centre de Profit** (Profit Center - D). Le segment est notamment requis pour le reporting externe (IFRS/GAAP). (General Ledger Accounting / Segment Reporting)"
+        }
+    ];
+}
+
+
+        // =====================================================================================
+        // FONCTIONS DE GESTION DE VUES ET DE DONNÉES
+        // =====================================================================================
+
+        function switchView(viewId) {
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('admin-view').classList.add('hidden');
+
+            document.getElementById(viewId).classList.remove('hidden');
+
+            if (viewId === 'admin-view') {
+                renderAdminPanel();
+            }
+        }
+
+        // Utility function to shuffle an array
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Chargement du QuizData et du progrès utilisateur
+        function loadQuizData() {
+            // 1. Charger les questions
+            const storedData = localStorage.getItem('quizData');
+            if (storedData) {
+                try {
+                    quizData = JSON.parse(storedData);
+                } catch (e) {
+                    console.error("Erreur lors du chargement de localStorage (quizData). Utilisation des données par défaut.", e);
+                    quizData = getInitialQuizData();
+                }
+            } else {
+                quizData = getInitialQuizData();
+            }
+
+            // Randomize options for each question
+            quizData.forEach(question => {
+                if (question.options && Array.isArray(question.options)) {
+                    shuffleArray(question.options);
+                }
+            });
+
+            totalQuestions = quizData.length;
+
+            // 2. Charger la progression utilisateur
+            const storedProgress = localStorage.getItem('userProgress');
+            if (storedProgress) {
+                try {
+                    userProgress = JSON.parse(storedProgress);
+                } catch (e) {
+                    console.error("Erreur lors du chargement de localStorage (userProgress). Réinitialisation de la progression.", e);
+                    userProgress = {};
+                }
+            } else {
+                userProgress = {};
+            }
+        }
+
+        // Sauvegarde de la progression utilisateur
+        function saveUserProgress() {
+            localStorage.setItem('userProgress', JSON.stringify(userProgress));
+        }
+
+        // NOUVEAU: Fonction déclenchée par le bouton de réinitialisation pour afficher la confirmation
+        function promptResetQuiz() {
+            // Réinitialise la modal pour le contenu de confirmation
+            const modalContentText = document.getElementById('modal-content-text');
+            modalContentText.innerHTML = `
+        <p class="text-lg font-semibold text-gray-800">Êtes-vous sûr de vouloir réinitialiser tout l'historique de vos réponses ?</p>
+        <p class="text-red-600 mt-2">Cette action est <span class="font-bold">irréversible</span> et votre progression actuelle sera perdue.</p>
+        <div id="modal-button-container" class="flex justify-end space-x-3 mt-6">
+            <button onclick="closeMessageModal()" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition font-medium">
+                Annuler
+            </button>
+            <button onclick="resetQuizProgress()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium">
+                Confirmer la Réinitialisation
+            </button>
+        </div>
+    `;
+            showMessageModal("Confirmation de Réinitialisation", modalContentText.innerHTML, false);
+        }
+
+        // NOUVEAU: Logique de réinitialisation après confirmation
+        function resetQuizProgress() {
+            closeMessageModal(); // Ferme la modal de confirmation
+
+            localStorage.removeItem('userProgress');
+            userProgress = {};
+            currentScore = 0;
+
+            // Redessine le quiz pour appliquer l'état initial
+            renderQuiz();
+
+            // Affiche une modal de succès
+            showMessageModal(
+                "Réinitialisation Effectuée",
+                '<p class="text-green-600 font-semibold">L\'historique du quiz a été réinitialisé avec succès !</p>',
+                true // Afficher le bouton de fermeture par défaut
+            );
+        }
+
+        // =====================================================================================
+        // LOGIQUE DU QUIZ
+        // =====================================================================================
+
+        function calculateScore() {
+            let score = 0;
+            quizData.forEach((q, qIndex) => {
+                const progress = userProgress[qIndex];
+                if (progress && progress.isCorrect) {
+                    score++;
+                }
+            });
+            return score;
+        }
+
+        function updateScoreDisplay() {
+            currentScore = calculateScore();
+            const scoreEl = document.getElementById('score-display');
+            if (scoreEl) {
+                scoreEl.textContent = `Score: ${currentScore} / ${totalQuestions}`;
+            }
+        }
+
+        function renderChapterNav() {
+            const navContainer = document.getElementById('nav-links-container');
+            if (!navContainer) return;
+
+            navContainer.innerHTML = '';
+
+            chapterBreaks.forEach(chapter => {
+                const link = document.createElement('a');
+                link.href = `#${chapter.anchor}`;
+                link.textContent = chapter.title.split(': ')[0];
+                link.title = chapter.title;
+                link.className = 'nav-link bg-indigo-50 text-indigo-700 font-semibold text-center shadow-sm';
+                navContainer.appendChild(link);
+            });
+        }
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+
+            loadQuizData();
+            updateScoreDisplay();
+            renderChapterNav();
+
+            let currentChapterIndex = 0;
+
+            quizData.forEach((q, qIndex) => {
+                const progress = userProgress[qIndex] || { answered: false, userSelections: [], isCorrect: false };
+
+                // Ajouter le titre du chapitre si c'est le début d'un nouveau chapitre
+                if (currentChapterIndex < chapterBreaks.length && chapterBreaks[currentChapterIndex].start === qIndex) {
+                    const chapter = chapterBreaks[currentChapterIndex];
+                    const chapterTitleHtml = `
+                <h2 id="${chapter.anchor}" class="text-3xl font-extrabold text-indigo-700 mt-10 mb-4 pt-4 border-b-2 border-indigo-300">
+                    ${chapter.title}
+                </h2>
+            `;
+                    container.innerHTML += chapterTitleHtml;
+                    currentChapterIndex++;
+                }
+
+                const questionHtml = `
+            <div id="q-${qIndex}" class="question-card p-4 md:p-6 bg-white rounded-xl border border-gray-200 ${progress.answered ? (progress.isCorrect ? 'bg-custom-green border-custom-green' : 'bg-custom-red border-custom-red') : ''}">
+                <p class="font-semibold text-gray-700 mb-4 text-lg">
+                    ${qIndex + 1}. ${q.question}
+                    ${q.type === 'multiple' ? '<span class="text-sm font-normal text-indigo-500 italic">(Plusieurs réponses possibles)</span>' : ''}
+                </p>
+                <div class="options-container space-y-3">
+                    ${q.options.map((option, oIndex) => {
+                    const isSelected = progress.userSelections.includes(option.trim());
+                    const isDisabled = progress.answered;
+                    const isCorrectOption = q.correct.includes(option.trim());
+
+                    let labelClasses = 'option-label flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors duration-150 bg-white';
+
+                    if (progress.answered) {
+                        if (isSelected) {
+                            labelClasses = isCorrectOption
+                                ? 'bg-custom-green border-custom-green flex items-center p-3 rounded-lg border'
+                                : 'bg-custom-red border-custom-red flex items-center p-3 rounded-lg border';
+                        } else if (isCorrectOption) {
+                            // Afficher la bonne réponse manquée
+                            labelClasses = 'bg-custom-green border-dashed border-2 border-green-400 flex items-center p-3 rounded-lg border';
+                        } else {
+                            labelClasses = 'bg-white flex items-center p-3 rounded-lg border border-gray-200';
+                        }
+                    }
+
+                    return `
+                            <label for="q${qIndex}o${oIndex}" class="${labelClasses}">
+                                <input 
+                                    type="${q.type === 'single' ? 'radio' : 'checkbox'}" 
+                                    id="q${qIndex}o${oIndex}" 
+                                    name="q${qIndex}" 
+                                    value="${option.trim()}" 
+                                    class="form-${q.type === 'single' ? 'radio' : 'checkbox'} text-indigo-600 focus:ring-indigo-500 h-4 w-4"
+                                    ${isSelected ? 'checked' : ''}
+                                    ${isDisabled ? 'disabled' : ''}
+                                >
+                                <span class="ml-3 text-gray-800">${option}</span>
+                            </label>
+                        `;
+                }).join('')}
+                </div>
+                <div class="flex flex-wrap gap-3 mt-4">
+                    <button 
+                        onclick="checkAnswer(${qIndex})" 
+                        id="btn-${qIndex}" 
+                        class="px-6 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition duration-150 shadow-md disabled:opacity-50"
+                        ${progress.answered ? 'disabled' : ''}
+                    >
+                        Vérifier la réponse
+                    </button>
+                    <button 
+                        onclick="showExplanation(${qIndex})" 
+                        id="exp-btn-${qIndex}" 
+                        class="px-6 py-2 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition duration-150 shadow-md"
+                    >
+                        Explication
+                    </button>
+                </div>
+                <div id="feedback-${qIndex}" class="mt-3 text-sm font-medium ${progress.answered ? '' : 'hidden'}">
+                    ${progress.answered ? (progress.isCorrect ? '<span class="text-green-600">Correct !</span>' : generateFeedbackHtml(qIndex, q, progress.userSelections)) : ''}
+                </div>
+            </div>
+        `;
+                container.innerHTML += questionHtml;
+            });
+        }
+
+        function generateFeedbackHtml(qIndex, question, userSelections) {
+            if (userProgress[qIndex] && userProgress[qIndex].isCorrect) {
+                return '<span class="text-green-600">Correct !</span>';
+            }
+
+            const correctAnswersHtml = question.correct.map(answer =>
+                `<span class="font-bold">${answer}</span>`
+            ).join(' <span class="mx-1">&bull;</span> ');
+
+            return `
+        <span class="text-red-600">Faux. Veuillez revoir la réponse.</span>
+        <div class="mt-2 p-2 bg-red-100 rounded-lg border border-red-300">
+            <span class="font-semibold text-gray-800">Réponse(s) correcte(s) :</span>
+            <p class="text-red-700">${correctAnswersHtml}</p>
+        </div>
+    `;
+        }
+
+        function checkAnswer(qIndex) {
+            const question = quizData[qIndex];
+            const questionEl = document.getElementById(`q-${qIndex}`);
+            const optionsContainer = questionEl.querySelector('.options-container');
+            const options = Array.from(optionsContainer.querySelectorAll(`input[name="q${qIndex}"]`));
+            const checkButton = document.getElementById(`btn-${qIndex}`);
+
+            if (checkButton.disabled) return;
+
+            let userSelections = options
+                .filter(input => input.checked)
+                .map(input => input.value);
+
+            // Vérification de la correction
+            const isCorrect = question.correct.length === userSelections.length &&
+                question.correct.every(val => userSelections.includes(val));
+
+            // Mise à jour et sauvegarde de la progression
+            userProgress[qIndex] = {
+                answered: true,
+                userSelections: userSelections,
+                isCorrect: isCorrect
+            };
+            saveUserProgress();
+
+            // Redessiner uniquement la question pour appliquer les classes et le feedback
+            renderQuestion(qIndex);
+            updateScoreDisplay();
+        }
+
+        // Fonction pour rendre une seule question (utilisée après la vérification)
+        function renderQuestion(qIndex) {
+            const question = quizData[qIndex];
+            const progress = userProgress[qIndex] || { answered: false, userSelections: [], isCorrect: false };
+            const questionEl = document.getElementById(`q-${qIndex}`);
+            const checkButton = document.getElementById(`btn-${qIndex}`);
+            const feedbackEl = document.getElementById(`feedback-${qIndex}`);
+
+            // Appliquer les styles de carte
+            questionEl.classList.remove('bg-custom-green', 'border-custom-green', 'bg-custom-red', 'border-custom-red', 'bg-white');
+            questionEl.classList.add(progress.isCorrect ? 'bg-custom-green' : 'bg-custom-red');
+            questionEl.classList.add(progress.isCorrect ? 'border-custom-green' : 'border-custom-red');
+
+            // Afficher le feedback
+            feedbackEl.innerHTML = generateFeedbackHtml(qIndex, question, progress.userSelections);
+            feedbackEl.classList.remove('hidden');
+
+            // Désactiver le bouton de vérification
+            checkButton.disabled = true;
+
+            // Mise à jour des options dans le DOM (pour les classes et désactivation)
+            const optionsContainer = questionEl.querySelector('.options-container');
+            const options = Array.from(optionsContainer.querySelectorAll(`input[name="q${qIndex}"]`));
+
+            options.forEach(input => {
+                const optionValue = input.value;
+                const isCorrectOption = question.correct.includes(optionValue);
+                const isSelected = input.checked;
+                const label = input.closest('label');
+
+                // Nettoyer les classes non persistantes
+                label.classList.remove('bg-custom-green', 'border-custom-green', 'bg-custom-red', 'border-custom-red', 'bg-gray-50', 'bg-white', 'border-dashed', 'border-2', 'border-green-400');
+
+                input.disabled = true;
+
+                if (isSelected) {
+                    label.classList.add(isCorrectOption ? 'bg-custom-green' : 'bg-custom-red');
+                    label.classList.add(isCorrectOption ? 'border-custom-green' : 'border-custom-red');
+                } else if (isCorrectOption) {
+                    // Afficher la bonne réponse non sélectionnée si la réponse globale est fausse
+                    if (!progress.isCorrect) {
+                        label.classList.add('bg-custom-green', 'border-dashed', 'border-2', 'border-green-400');
+                    }
+                }
+                if (!label.classList.contains('bg-custom-green') && !label.classList.contains('bg-custom-red')) {
+                    label.classList.add('bg-white');
+                }
+            });
+
+        }
+
+        // =====================================================================================
+        // LOGIQUE DE L'ADMINISTRATION
+        // =====================================================================================
+
+        function renderAdminPanel() {
+            const adminContent = document.getElementById('admin-content');
+            adminContent.innerHTML = `
+        <h3 class="text-2xl font-bold text-gray-700 mb-6 border-b pb-2">Liste des Questions</h3>
+        <ul id="question-list" class="space-y-2 max-h-[60vh] overflow-y-auto p-2 bg-gray-50 rounded-lg">
+            ${quizData.map((q, index) => `
+                <li class="p-3 bg-white rounded-lg border border-gray-200 flex justify-between items-center hover:bg-indigo-50 cursor-pointer transition-colors duration-150">
+                    <span class="text-sm font-medium text-gray-800 truncate">${index + 1}. ${q.question}</span>
+                    <button 
+                        class="text-xs px-3 py-1 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 font-semibold ml-4"
+                        onclick="editQuestionExplanation(${index})"
+                    >
+                        Éditer
+                    </button>
+                </li>
+            `).join('')}
+        </ul>
+        
+        <div id="explanation-editor" class="mt-8 hidden">
+            <!-- Le contenu de l'éditeur sera injecté ici lors de l'édition -->
+        </div>
+    `;
+            // Assure que l'éditeur est caché initialement
+            document.getElementById('explanation-editor').innerHTML = '';
+        }
+
+        function editQuestionExplanation(qIndex) {
+            currentlyEditingIndex = qIndex;
+            const question = quizData[qIndex];
+
+            const editorHtml = `
+        <h3 class="text-xl font-bold text-gray-700 mb-4">Éditer l'Explication de la Question ${qIndex + 1}</h3>
+        <p id="editor-q-text" class="italic text-gray-600 mb-4 bg-gray-100 p-3 rounded-lg border border-gray-200">${question.question}</p>
+        
+        <label for="explanation-textarea" class="block text-sm font-medium text-gray-700 mb-2">Nouvelle Explication (Markdown accepté)</label>
+        <textarea id="explanation-textarea" rows="8" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">${question.explanation || ''}</textarea>
+        
+        <div class="flex flex-wrap gap-4 mt-4">
+            <button 
+                onclick="saveExplanation()" 
+                id="save-exp-btn" 
+                class="px-6 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition duration-150 shadow-md"
+            >
+                Sauvegarder
+            </button>
+            <button 
+                onclick="renderAdminPanel()" 
+                class="px-6 py-2 bg-gray-400 text-white font-medium rounded-lg hover:bg-gray-500 transition duration-150 shadow-md"
+            >
+                Annuler
+            </button>
+        </div>
+    `;
+
+            document.getElementById('explanation-editor').innerHTML = editorHtml;
+            document.getElementById('explanation-editor').classList.remove('hidden');
+            document.getElementById('question-list').classList.add('hidden');
+            document.getElementById('admin-view').scrollTop = 0;
+        }
+
+        function saveExplanation() {
+            if (currentlyEditingIndex === -1) {
+                console.error("Aucune question sélectionnée pour la sauvegarde.");
+                return;
+            }
+
+            const newExplanation = document.getElementById('explanation-textarea').value.trim();
+
+            quizData[currentlyEditingIndex].explanation = newExplanation;
+
+            // Persistance des questions mises à jour 
+            localStorage.setItem('quizData', JSON.stringify(quizData));
+
+            // Remplacement de window.alert() par une modal de succès
+            showMessageModal(
+                "Sauvegarde Effectuée",
+                `<p class="text-green-600 font-semibold">Explication de la Question ${currentlyEditingIndex + 1} sauvegardée avec succès !</p>`,
+                true
+            );
+
+            // Retour à la liste des questions
+            currentlyEditingIndex = -1;
+            renderAdminPanel();
+            document.getElementById('question-list').classList.remove('hidden');
+        }
+
+
+        // =====================================================================================
+        // LOGIQUE DE LA MODAL (UNIFIÉE POUR MESSAGES ET EXPLICATIONS)
+        // =====================================================================================
+
+        // NOUVEAU: Fonction pour afficher un message/explication dans la modal
+        function showMessageModal(title, content, showCloseButton = true) {
+            const modal = document.getElementById('message-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalContentText = document.getElementById('modal-content-text');
+            const closeBtn = modal.querySelector('.close-btn');
+
+            modalTitle.textContent = title;
+            modalContentText.innerHTML = content;
+
+            // Gère l'affichage du bouton de fermeture (utile pour les confirmations)
+            closeBtn.style.display = showCloseButton ? 'block' : 'none';
+
+            // S'assurer que le bouton de fermeture par défaut est retiré s'il y a des boutons personnalisés
+            if (modalContentText.querySelector('#modal-button-container')) {
+                closeBtn.style.display = 'none';
+            }
+
+            modal.style.display = 'block';
+        }
+
+        // NOUVEAU: Fonction pour fermer la modal
+        function closeMessageModal() {
+            document.getElementById('message-modal').style.display = 'none';
+            // Nettoyer les boutons de confirmation après fermeture
+            const buttonContainer = document.getElementById('modal-content-text').querySelector('#modal-button-container');
+            if (buttonContainer) buttonContainer.remove();
+        }
+
+        // Ancienne fonction showExplanation, mise à jour pour utiliser showMessageModal
+        function showExplanation(qIndex) {
+            const question = quizData[qIndex];
+            const title = `Explication de la Question ${qIndex + 1}`;
+            const content = `
+        <p class="font-semibold text-lg text-gray-800 mb-2">${question.question}</p>
+        <div class="bg-gray-100 p-3 rounded-lg border border-gray-200">
+            <h5 class="font-bold text-indigo-600 mb-1">Détails:</h5>
+            <p>${question.explanation ? question.explanation.replace(/\n/g, '<br>') : 'Aucune explication n\'est encore disponible pour cette question.'}</p>
+        </div>
+    `;
+            showMessageModal(title, content);
+        }
+
+
+        // =====================================================================================
+        // INITIALISATION
+        // =====================================================================================
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Lie la fonction de fermeture de la modal au clic sur le bouton de fermeture
+            document.getElementById('message-modal').querySelector('.close-btn').onclick = closeMessageModal;
+
+            // Lie la fonction de fermeture de la modal au clic en dehors de la modal
+            window.onclick = function (event) {
+                const modal = document.getElementById('message-modal');
+                if (event.target == modal) {
+                    closeMessageModal();
+                }
+            }
+
+            loadQuizData();
+            renderQuiz();
+            switchView('quiz-view');
+        });
+    </script>
+
+</body>
+
+</html>
