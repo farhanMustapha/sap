@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QCM Training - SAP</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font for icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>QCM Master</h2>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <h3>Général</h3>
+                    <button class="nav-btn active" data-mode="global" id="btn-global">
+                        <span class="material-icons">public</span> Global
+                    </button>
+                    <button class="nav-btn" data-mode="incorrect" id="btn-incorrect">
+                        <span class="material-icons">error_outline</span> Incorrects 
+                        <span class="badge" id="incorrect-count">0</span>
+                    </button>
+                    <button class="nav-btn" id="btn-reset-data">
+                        <span class="material-icons">delete_sweep</span> Réinitialiser
+                    </button>
+                </div>
+
+                <div class="nav-section">
+                    <h3>Chapitres</h3>
+                    <div id="chapter-list">
+                        <!-- Dynamically populated -->
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <button id="toggle-sidebar" class="icon-btn mobile-only">
+                    <span class="material-icons">menu</span>
+                </button>
+                <div class="progress-container">
+                    <span>Progression</span>
+                    <div class="progress-bar-wrapper">
+                        <div class="progress-bar" id="global-progress" style="width: 0%"></div>
+                    </div>
+                    <span id="progress-text">0/0</span>
+                </div>
+            </header>
+
+            <div id="quiz-area" class="quiz-container">
+                <div class="question-card">
+                    <div class="question-header">
+                        <span class="q-tag" id="q-chapter-tag">Chapitre 1</span>
+                        <span class="q-number" id="q-number">Question 1/50</span>
+                    </div>
+                    
+                    <h2 id="question-text" class="question-text">Loading...</h2>
+                    
+                    <div id="options-container" class="options-grid">
+                        <!-- Options injected here -->
+                    </div>
+
+                    <div id="feedback-area" class="feedback-area hidden">
+                        <div class="feedback-content">
+                            <h4 id="feedback-title">Réponse Correcte!</h4>
+                            <p id="feedback-explanation">Explanation text goes here.</p>
+                        </div>
+                    </div>
+
+                    <div class="action-bar">
+                        <button id="btn-prev" class="btn secondary" disabled>Précédent</button>
+                        <button id="btn-validate" class="btn primary">Valider</button>
+                        <button id="btn-next" class="btn secondary">Suivant</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Empty State for Incorrect Mode -->
+            <div id="empty-state" class="empty-state hidden">
+                <span class="material-icons large-icon">check_circle</span>
+                <h3>Tout est correct !</h3>
+                <p>Aucune réponse fausse enregistrée pour le moment.</p>
+                <button class="btn primary" id="btn-back-global">Retour au Global</button>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Data Source -->
+    <script src="tout_les_questions.js"></script>
+    <!-- App Logic -->
+    <script src="script.js"></script>
+</body>
+</html>
