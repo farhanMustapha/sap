@@ -7,6 +7,7 @@ const STATE = {
     currentMode: 'global', // 'global', 'incorrect', 'chapter'
     userAnswers: {}, // { qId: { selected: [], validated: bool } }
     history: {}, // { qId: { isCorrect: bool, lastAttempt: timestamp } }
+    currentChapterId: null // Track current chapter ID
 };
 
 // --- Initialization ---
@@ -16,7 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
     loadHistory();
     initUI();
     renderSidebar();
-    startQuiz(); // Default to global
+
+    // Try to resume progress, otherwise default to global
+    if (!loadProgress()) {
+        startQuiz();
+    }
 });
 
 // --- Data Handling ---
@@ -179,6 +184,39 @@ function resetHistory() {
     location.reload();
 }
 
+function saveProgress() {
+    const progress = {
+        mode: STATE.currentMode,
+        chapterId: STATE.currentChapterId,
+        index: STATE.currentIndex
+    };
+    localStorage.setItem('qcm_progress', JSON.stringify(progress));
+}
+
+function loadProgress() {
+    const saved = localStorage.getItem('qcm_progress');
+    if (saved) {
+        try {
+            const p = JSON.parse(saved);
+            // Verify if valid
+            if (p.mode) {
+                setMode(p.mode, p.chapterId);
+                // Ensure index is within bounds
+                if (p.index >= 0 && p.index < STATE.filteredQuestions.length) {
+                    STATE.currentIndex = p.index;
+                } else {
+                    STATE.currentIndex = 0;
+                }
+                renderQuestion();
+                return true;
+            }
+        } catch (e) {
+            console.error("Failed to load progress", e);
+        }
+    }
+    return false;
+}
+
 // --- UI Logic ---
 
 // --- UI Logic ---
@@ -233,6 +271,7 @@ function updateIncorrectBadge() {
 
 function setMode(mode, chapterId = null) {
     STATE.currentMode = mode;
+    STATE.currentChapterId = chapterId;
     STATE.currentIndex = 0;
 
     // Update active UI
@@ -261,6 +300,7 @@ function setMode(mode, chapterId = null) {
     }
 
     renderQuestion();
+    saveProgress();
 }
 
 function startQuiz() {
@@ -424,6 +464,7 @@ function prevQuestion() {
     if (STATE.currentIndex > 0) {
         STATE.currentIndex--;
         renderQuestion();
+        saveProgress();
     }
 }
 
@@ -431,5 +472,6 @@ function nextQuestion() {
     if (STATE.currentIndex < STATE.filteredQuestions.length - 1) {
         STATE.currentIndex++;
         renderQuestion();
+        saveProgress();
     }
 }
