@@ -66,183 +66,1175 @@
     <script>
         // --- DONNÉES (80 Questions) ---
         const questionsData = [
-            { id: 1, text: "Which of the following is a benefit of cloud computing?", options: ["High upfront investment in hardware", "Rapid elasticity and scalability", "Limited access for remote users"], correctIndices: [1], explanation: "Cloud computing offers rapid elasticity and scalability." },
-            { id: 2, text: "If an organization requires software with predefined business processes for employees to submit expense reports, what type of cloud service would you recommend?", options: ["SaaS", "PaaS", "IaaS"], correctIndices: [0], explanation: "SaaS (Software as a Service) provides ready-to-use software." },
-            { id: 3, text: "If a developer needs to build an application hosted in the cloud, what type of cloud service would you recommend?", options: ["SaaS", "PaaS", "IaaS"], correctIndices: [1], explanation: "PaaS (Platform as a Service) is for building applications." },
-            { id: 4, text: "In the cloud model, which of the following are responsibilities of the service provider? (3 correct answers)", options: ["Software backups", "Maintenance of physical servers", "Data center security", "Maintaining customizations after upgrades"], correctIndices: [0, 1, 2], explanation: "The provider handles infrastructure, security, and backups." },
-            { id: 5, text: "What type of database is SAP HANA? (2 correct answers)", options: ["Row-oriented", "Column-oriented", "Disk-based", "In-memory"], correctIndices: [1, 3], explanation: "SAP HANA is an In-memory, Column-oriented database." },
-            { id: 6, text: "Which layer of SAP S/4HANA provides a universal language to read and process data across different applications?", options: ["SAP HANA", "SAP Fiori", "SAP Business Suite", "Core Data Services"], correctIndices: [3], explanation: "CDS (Core Data Services) provides the universal data definition layer." },
-            { id: 7, text: "Which phase of SAP Activate involves the Fit-to-Standard workshops?", options: ["Discover", "Prepare", "Explore", "Realize"], correctIndices: [2], explanation: "Fit-to-Standard workshops take place in the Explore phase." },
-            { id: 8, text: "In SAP S/4HANA Cloud Public Edition, who is responsible for the upgrade of the software?", options: ["The Customer", "The Partner", "SAP", "The Infrastructure Provider"], correctIndices: [2], explanation: "In Public Cloud, SAP manages and performs all upgrades." },
-            { 
-                id: 9, 
-                text: "An organization has their finance line of business (LoB) running in SAP S/4HANA Cloud Public Edition, while the rest of the LoBs are running in SAP S/4HANA Cloud Private Edition. Which two-tier ERP scenario is this?", 
-                options: ["Headquarters-Subsidiary", "Central Services", "Supply Chain", "Ecosystem"], 
-                correctIndices: [1], 
-                explanation: "This describes a hybrid/two-tier scenario." 
-            },
-            { id: 10, text: "What is the primary tool used to configure business processes in SAP S/4HANA Cloud Public Edition?", options: ["SPRO (IMG)", "SAP Central Business Configuration (CBC)", "SAP Solution Manager", "SAP Cloud ALM"], correctIndices: [1], explanation: "CBC is the mandatory tool for scoping and organizational structure." },
-            { id: 11, text: "Which SAP tool is recommended for managing the implementation project of SAP S/4HANA Cloud?", options: ["SAP Solution Manager", "SAP Cloud ALM", "Jira", "Excel"], correctIndices: [1], explanation: "SAP Cloud ALM is the cloud-native ALM tool for S/4HANA Cloud." },
-            { id: 12, text: "During the Realize phase, what is a key activity regarding data?", options: ["Data Aging", "Data Archiving", "Data Migration and Loading", "Data Deletion"], correctIndices: [2], explanation: "Data Migration happens primarily in Realize (and Deploy)." },
-            { 
-                id: 13, 
-                text: "What are some pre-configured content packages that can be chosen on the Detailed Discovery for new implementations with SAP S/4HANA Cloud Private Edition? (Choose two)", 
-                options: ["Enterprise Management Layer", "Model Company for Multinational Corporations", "Swift Implementation - Finance Only Package", "Agile Implementation - Medium Package"], 
-                correctIndices: [0, 1], 
-                explanation: "Enterprise Management Layer and Model Company are key packages." 
-            },
-            { id: 14, text: "Which testing tool is delivered standard with SAP S/4HANA Cloud Public Edition?", options: ["SAP Quality Center", "Test Automation Tool", "HP ALM", "Tricentis Tosca (External)"], correctIndices: [1], explanation: "The Test Automation Tool is embedded." },
-            { id: 15, text: "Which user ID is used to log in to the Starter System initially?", options: ["S-User", "Initial Admin User provided in the provisioning email", "Any employee ID", "Partner P-User"], correctIndices: [1], explanation: "The IT Contact receives the Initial Admin User." },
-            { id: 16, text: "What could be included in a solution process? (3 correct answers)", options: ["Task tutorial", "Solution scenario", "Process flow diagram", "Test script", "Form templates"], correctIndices: [0, 2, 3], explanation: "Solution processes typically include diagrams, tutorials, and test scripts." },
-            { id: 17, text: "What is the purpose of the SAP Best Practices Explorer (now Process Navigator)?", options: ["To buy licenses", "To view solution processes and scope items", "To configure the system", "To monitor system performance"], correctIndices: [1], explanation: "It lists all available Scope Items (e.g., J01, BD9)." },
-            { id: 18, text: "Which component handles authentication for SAP S/4HANA Cloud users?", options: ["SAP GUI", "Identity Authentication Service (IAS)", "Active Directory (Directly)", "SAP Cloud Connector"], correctIndices: [1], explanation: "IAS is the central identity provider." },
-            { id: 19, text: "In the 3-System Landscape (3SL), what are the three systems?", options: ["Dev, Quality, Prod", "Sandbox, Dev, Prod", "Development, Test, Production", "Starter, Quality, Production"], correctIndices: [2], explanation: "The standard 3SL is Development, Test, and Production." },
-            { id: 20, text: "Which lines of business are included in Finance-led administrative ERP? (3 correct answers)", options: ["Supply Chain", "Finance", "Manufacturing", "Sourcing and Procurement", "Sales"], correctIndices: [1, 3, 4], explanation: "Finance, Sales, and Sourcing & Procurement are often core to admin ERP." },
-            { id: 21, text: "Which methodology is used for SAP S/4HANA Cloud implementations?", options: ["ASAP", "Waterfall", "SAP Activate", "Agile only"], correctIndices: [2], explanation: "SAP Activate is the standard methodology." },
-            { id: 22, text: "What happens during the 'Run' phase of SAP Activate?", options: ["Go-live support", "Continuous improvement and operations", "Fit-to-Standard", "Initial scoping"], correctIndices: [1], explanation: "Run phase is for ongoing operations and optimization." },
-            { id: 23, text: "Which app allows Key Users to create custom fields?", options: ["Custom Fields", "ADT (ABAP Development Tools)", "SE11", "Manage Tables"], correctIndices: [0], explanation: "The 'Custom Fields' Fiori app is for In-App Extensibility." },
-            { id: 24, text: "How often does SAP S/4HANA Cloud Public Edition typically receive major upgrades?", options: ["Every month", "Twice a year (Feb & Aug)", "Once a year", "Every quarter"], correctIndices: [1], explanation: "Since 2024, it is roughly twice a year (e.g. 2402, 2408)." },
-            { id: 25, text: "What is the purpose of a 'Scope Item'?", options: ["To define a user role", "To represent a pre-delivered business process", "To create a custom report", "To configure the printer"], correctIndices: [1], explanation: "Scope items (like BD9) represent standard processes." },
-            { id: 26, text: "Where do you define the Organizational Structure (Company Code, Plant, etc.)?", options: ["In the Fiori Launchpad 'Manage Orgs'", "In SAP Central Business Configuration (CBC)", "In the SAP Backend GUI", "In SuccessFactors"], correctIndices: [1], explanation: "Org structure is defined in CBC." },
-            { id: 27, text: "How many people can be assigned the role of the IT Contact?", options: ["1", "2", "3", "Unlimited"], correctIndices: [0], explanation: "Only 1 IT Contact is assigned initially." },
-            { id: 28, text: "Which systems need to be provisioned via SAP for Me? (2 correct answers)", options: ["SAP Cloud Identity Authentication", "SAP Central Business Configuration", "SAP S/4HANA Cloud Dev System", "SAP S/4HANA Cloud Prod System"], correctIndices: [1, 3], explanation: "CBC and Production Systems are provisioned via SAP for Me." },
-            { id: 29, text: "What is the 'Starter System' used for?", options: ["Production use", "Fit-to-Standard workshops", "Data Migration tests only", "Custom code development"], correctIndices: [1], explanation: "It contains demo data for workshops in Explore phase." },
-            { id: 30, text: "Which embedded support offerings are in SAP Fiori Launchpad? (3 correct answers)", options: ["Video tutorials", "Digital assistance (Joule)", "Assessment questions", "Recorded webinars"], correctIndices: [0, 1, 2], explanation: "Help topics, tutorials, and AI assistants." },
-            { id: 31, text: "How do you access the SAP Fiori Launchpad?", options: ["Via SAP Logon Pad", "Via a Web Browser URL", "Via Command Line", "Via VPN only"], correctIndices: [1], explanation: "It is a web-based interface." },
-            { 
-                id: 32, 
-                text: "What does a deployment plan in SAP Cloud ALM contain? (Two correct answers)", 
-                options: ["Timeboxes", "System Group", "Scopes", "Releases"], 
-                correctIndices: [1, 3], 
-                explanation: "It manages timelines (timeboxes) and releases." 
-            },
-            { 
-                id: 33, 
-                text: "Important activities for partner LoB experts in Prepare phase? (Two correct answers)", 
-                options: ["Provide test user", "Gather L2 BDCQ responses", "Gather L3 BDCQ responses", "Identify customer experts for workshops"], 
-                correctIndices: [1, 3], 
-                explanation: "Identifying experts and gathering initial questionnaires (L2)." 
-            },
-            { 
-                id: 34, 
-                text: "What is BDCQ?", 
-                options: ["Business Data Configuration Query", "Business Driven Configuration Questionnaire", "Basic Data Check Quality", "Best Digital Cloud Quality"], 
-                correctIndices: [1], 
-                explanation: "Used to capture configuration requirements." 
-            },
-            { 
-                id: 35, 
-                text: "Which environment allows for 'Developer Extensibility' (ABAP Cloud)?", 
-                options: ["Customizing Tenant", "Development Tenant", "Test Tenant", "Starter System"], 
-                correctIndices: [1], 
-                explanation: "The Development Tenant allows ADT access." 
-            },
-            { 
-                id: 36, 
-                text: "Which type of ledger is always active by default in SAP S/4HANA Cloud Public Edition?", 
-                options: ["Ledger 2L (IFRS)", "Ledger 3L (US GAAP)", "Ledger 4G", "Ledger 0L (Leading Ledger)"], 
-                correctIndices: [3], 
-                explanation: "Ledger 0L is the leading ledger." 
-            },
-            { id: 37, text: "What is the main purpose of the 'Realize' phase?", options: ["Scoping", "Configuration and Testing", "Contract signing", "Support"], correctIndices: [1], explanation: "Building and testing the system." },
-            { id: 38, text: "Which tool is used for Data Migration?", options: ["LSMW", "SAP S/4HANA Migration Cockpit", "SAP Data Services", "SQL Injection"], correctIndices: [1], explanation: "Migration Cockpit is the standard tool." },
-            { id: 39, text: "In Migration Cockpit, what is a 'Staging Table'?", options: ["A table in production", "A temporary table to fill legacy data before processing", "A configuration table", "A reporting table"], correctIndices: [1], explanation: "Data is loaded into staging tables then migrated." },
-            { id: 40, text: "What is 'Side-by-Side Extensibility'?", options: ["Extending via SAP BTP", "Extending inside the S/4HANA core", "Modifying SAP source code", "Changing the GUI theme"], correctIndices: [0], explanation: "Decoupled extensions running on SAP BTP." },
-            { id: 41, text: "What defines which apps a user sees on the Launchpad?", options: ["Business Role assigned to the user", "The user's computer", "The time of day", "The internet speed"], correctIndices: [0], explanation: "Business Roles (containing Catalogs) control access." },
-            { id: 42, text: "What does 'Fit-to-Standard' mean?", options: ["Changing the standard code to fit the business", "Adopting the standard process and minimizing gaps", "Ignoring the standard", "Writing a new ERP"], correctIndices: [1], explanation: "Adopting standard best practices." },
-            { id: 43, text: "Which Quality Gate occurs at the end of the Explore phase?", options: ["Q-Gate Realize", "Q-Gate Explore", "Q-Gate Deploy", "Q-Gate Run"], correctIndices: [1], explanation: "Ensures scope and requirements are finalized." },
-            { id: 44, text: "Who creates the Project Plan in SAP Cloud ALM?", options: ["The Project Manager", "The Developer", "The End User", "The Auditor"], correctIndices: [0], explanation: "Project Manager responsibilities." },
-            { id: 45, text: "What can a business catalog include? (Two correct answers)", options: ["Access to data", "Access to a launchpad space", "Access to a business role", "Access to one or more applications"], correctIndices: [0, 3], explanation: "Catalogs group apps and data access restrictions." },
-            { id: 46, text: "What is a 'Business User' in S/4HANA Cloud?", options: ["A technical user", "A person who uses the system for daily tasks", "A batch job", "An API"], correctIndices: [1], explanation: "Linked to an employee/worker." },
-            { id: 47, text: "Which app is used to monitor message integration errors?", options: ["Message Dashboard / AIF", "Role Maintenance", "Maintain Business Partner", "Balance Sheet"], correctIndices: [0], explanation: "Application Interface Framework (AIF) / Message Dashboard." },
-            { id: 48, text: "Can you modify SAP source code in Public Cloud?", options: ["Yes, unrestricted", "No, strictly forbidden", "Yes, with a special key", "Only on weekends"], correctIndices: [1], explanation: "Clean Core principle forbids core modification." },
-            { id: 49, text: "You've created a custom app UI from a custom business object. How do you make sure it displays for end-users? (Two correct answers)", options: ["Use Custom Business Catalogs app", "Use Custom Catalog Extensions to assign to existing catalog", "Use Manage Launchpad Pages", "Use Manage Launchpad Spaces"], correctIndices: [0, 1], explanation: "Assign to a catalog (custom or extension)." },
-            { id: 50, text: "What is 'SAP Joule'?", options: ["A new database", "The AI Copilot for SAP", "A legacy system", "A programming language"], correctIndices: [1], explanation: "Joule is the Generative AI assistant." },
-            { id: 51, text: "Which API type is considered stable and recommended?", options: ["Private APIs", "Whitelisted / Public APIs", "Deprecated APIs", "Internal Tables"], correctIndices: [1], explanation: "Only Public/Whitelisted APIs should be used." },
-            { id: 52, text: "What does 'CAS' stand for in the context of Activate?", options: ["Cloud Application Services", "Central Admin System", "Customer Active Support", "Core Application Setup"], correctIndices: [0], explanation: "Services provided by SAP." },
-            { id: 53, text: "In which system do you perform the 'Cutover' activities?", options: ["Starter", "Development", "Production", "Trial"], correctIndices: [2], explanation: "Cutover happens in Production before Go-Live." },
-            { id: 54, text: "Where can you access the Cloud Integration Automation Service (CIAS)? (Two correct answers)", options: ["SAP Cloud ALM", "SAP for Me", "SAP Signavio Process Navigator", "SAP Discovery Center"], correctIndices: [0, 1], explanation: "CIAS is accessible via maintenance tools like SAP for Me." },
-            { id: 55, text: "What is the role of the 'Communication Arrangement'?", options: ["To chat with support", "To enable a communication scenario at runtime", "To write emails", "To configure the printer"], correctIndices: [1], explanation: "It configures the technical details of an integration." },
-            { id: 56, text: "Which SAP S/4HANA Cloud tenant is the main project for business process configuration?", options: ["Development Tenant", "Customizing Tenant", "Starter System", "Production System"], correctIndices: [1], explanation: "Configuration happens in the Customizing Tenant." },
-            { id: 57, text: "In which system is the content upgrade released first?", options: ["SAP CBC", "SAP S/4HANA Test System", "SAP S/4HANA Dev Customizing", "SAP S/4HANA Dev Development"], correctIndices: [0], explanation: "Upgrades often hit the central configuration or test environments early." },
-            { id: 58, text: "Which system is preconfigured with all SAP Best Practice business processes active?", options: ["Development System", "Starter System", "Production System", "Test System"], correctIndices: [1], explanation: "The Starter System comes pre-loaded." },
-            { id: 59, text: "In which months are upgrades released for SAP S/4HANA Cloud Public Edition?", options: ["February", "May", "August"], correctIndices: [0, 2], explanation: "Public Cloud has a specific release cycle (often Feb/Aug)." },
-            { id: 60, text: "What needs to match with the Login Name in the Identity Authentication Service system?", options: ["Worker ID", "First Name", "User Name", "Worker Type"], correctIndices: [2], explanation: "The User Name is the link between the S/4 system and IAS." },
-            { id: 61, text: "What includes one or more business catalogs that grant access to data and/or applications?", options: ["Business User", "Business Role", "Launchpad Space", "Launchpad Page"], correctIndices: [1], explanation: "A Business Role is a collection of Catalogs." },
-            { id: 62, text: "What does the partner project manager align the scope in SAP Cloud ALM with?", options: ["The bill of materials", "The Starter System", "The Digital Discovery Assessment", "The Process Navigator"], correctIndices: [2], explanation: "Scope is aligned with the DDA." },
-            { id: 63, text: "Important activities for partner LoB configuration experts in Explore phase?", options: ["Prepare deck", "UAT sign-off", "Document customization requirements in ALM", "Demonstrate business processes"], correctIndices: [2, 3], explanation: "Show processes and capture requirements." },
-            { id: 64, text: "What does a launchpad page include?", options: ["One or more apps", "One or more spaces", "One or more sections", "One or more catalogs"], correctIndices: [0, 2], explanation: "A Page contains Sections, which contain Apps." },
-            { id: 65, text: "Where can you find sample code for a Business Add-In (BAdI)?", options: ["Custom Fields app", "Custom Business Objects app", "Extensibility Inventory", "Custom Logic app"], correctIndices: [3], explanation: "Custom Logic app handles BAdIs." },
-            { id: 66, text: "Where is the master library of all key user in-app extensions?", options: ["Extensibility Cockpit", "Extensibility Explorer", "Extensibility Inventory", "Export Customizing Requests"], correctIndices: [2], explanation: "Extensibility Inventory shows what exists." },
-            { id: 67, text: "Where do you change the recipients of a form template?", options: ["Maintain Form Templates", "Manage Texts", "Output Parameter Determination", "Monitor Form Transmissions"], correctIndices: [2], explanation: "OPD/BRF+ handles recipients." },
-            { id: 68, text: "What can be transported with the Export Software Collection app? (3 correct answers)", options: ["Custom form template", "Business config value", "Customer-specific CDS view", "New organizational entity", "Adapted Fiori UI"], correctIndices: [0, 2, 4], explanation: "Key user extensions move via Software Collection." },
-            { id: 69, text: "Examples of in-app key user extensibility? (2 correct answers)", options: ["Industry cloud app", "Custom business object", "Custom field", "Custom mobile app"], correctIndices: [1, 2], explanation: "Custom Fields and Custom Business Objects." },
-            { id: 70, text: "Tools to build a custom mobile application in JavaScript? (2 correct answers)", options: ["SAP Build Apps", "SAP Business Application Studio", "SAP Build Work Zone", "SAP Software Developer Kits"], correctIndices: [1, 3], explanation: "BAS and SDKs." },
-            { id: 71, text: "Which tool do you use to add a field that already exists to an SAP Fiori app?", options: ["Custom Logic", "Adapt UI within an app", "Custom Fields", "Custom Tiles"], correctIndices: [1], explanation: "Adapt UI (Runtime Adaptation)." },
-            { 
-                id: 72, 
-                text: "Steps to make a custom tile visible for everyone? (2 correct answers)", 
-                options: ["Assign to business role", "Assign to business catalog", "Add to Launchpad Page", "Add to Launchpad Space"], 
-                correctIndices: [1, 2], 
-                explanation: "Catalog and Page assignment." 
-            },
-            { 
-                id: 73, 
-                text: "App to define inbound/outbound services for Communication Arrangement?", 
-                options: ["Extensions on BTP", "Custom Communication Scenarios", "Enterprise Event Enablement", "Custom Catalog Extensions"], 
-                correctIndices: [1], 
-                explanation: "Custom Communication Scenarios." 
-            },
-            { 
-                id: 74, 
-                text: "Where to find SAP Best Practices integration content? (3 correct answers)", 
-                options: ["BP Explorer", "SAP Signavio Process Navigator", "SAP Community", "SAP Help Portal", "Cloud Integration Automation Service"], 
-                correctIndices: [1, 3, 4], 
-                explanation: "Navigator, Help, CIAS." 
-            },
-            { 
-                id: 75, 
-                text: "Which capability of the SAP Integration Suite would you use to identify the most efficientintegration interface for B2B scenarios?", 
-                options: ["Cloud Integration", "Migration Assessment", "API Management", "Integration Advisor"], 
-                correctIndices: [3], 
-                explanation: "Integration Advisor." 
-            },
-            { 
-                id: 76, 
-                text: "You tried to migrate data for a business object, but the migration failed. What are some reasons the migration could have failed?There are two correct answers.", 
-                options: ["No simulation", "Predecessor object not migrated", "No required business role", "Too many objects"], 
-                correctIndices: [1, 2], 
-                explanation: "Dependencies and Permissions." 
-            },
-            { 
-                id: 77, 
-                text: "You need to add an additional field to a migration object template. What are your options? (2 correct answers)", 
-                options: ["Developer extensibility", "Custom field using extensibility framework", "Case to SAP", "Migration Object Modeler"], 
-                correctIndices: [1, 3], 
-                explanation: "Custom Fields or LTMOM." 
-            },
-            { 
-                id: 78, 
-                text: "Which functionality enables you to capture information including source values, target values after mapping, and target IDs that could be used to audit your migrated data?", 
-                options: ["HANA Cloud Service", "Migration Object Modeler", "Data Services", "Extended Statistics"], 
-                correctIndices: [3], 
-                explanation: "Extended Statistics." 
-            },
-            { 
-                id: 79, 
-                text: "What types of permission do you need to migrate data for a migration object? There are two correct answers.", 
-                options: ["Migrate all data types in customizing", "Access Migrate Your Data app", "Migrate all data types in dev", "Permission for specific object"], 
-                correctIndices: [1, 3], 
-                explanation: "App access AND object access." 
-            },
-            { 
-                id: 80, 
-                text: "Which framework supports you to receive a notification when a migration object has completed the Migration step of the guided migration process?", 
-                options: ["Responsibility Management", "In-App Notification", "Situation Handling", "Extensibility"], 
-                correctIndices: [2], 
-                explanation: "Situation Handling." 
-            }
-        ];
+  {
+    "id": 1,
+    "text": "Which of the following is a benefit of cloud computing?",
+    "options": [
+      "High upfront investment in hardware",
+      "Rapid elasticity and scalability",
+      "Limited access for remote users"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": "L'élasticité rapide et l'évolutivité (Rapid elasticity and scalability) sont un avantage clé du cloud. Contrairement à un système sur site, vous pouvez ajuster les ressources informatiques (serveurs, stockage) à la hausse ou à la baisse instantanément, sans investissement initial lourd."
+  },
+  {
+    "id": 2,
+    "text": "If an organization requires software with predefined business processes for employees to submit expense reports, what type of cloud service would you recommend?",
+    "options": [
+      "SaaS",
+      "PaaS",
+      "IaaS"
+    ],
+    "correctIndices": [
+      0
+    ],
+    "explanation": "Software as a Service (SaaS) fournit une application logicielle complète et prête à l'emploi (comme un outil de notes de frais). L'utilisateur n'a qu'à l'utiliser, sans se soucier de l'infrastructure ou du développement."
+  },
+  {
+    "id": 3,
+    "text": "If a developer needs to build an application hosted in the cloud, what type of cloud service would you recommend?",
+    "options": [
+      "SaaS",
+      "PaaS",
+      "IaaS"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": "Platform as a Service (PaaS) fournit l'environnement nécessaire (système d'exploitation, base de données, outils) pour qu'un développeur puisse créer, tester et exécuter des applications sans gérer l'infrastructure sous-jacente."
+  },
+  {
+    "id": 4,
+    "text": "In the cloud model, which of the following are responsibilities of the service provider? There are three correct answers.",
+    "options": [
+      "Software backups",
+      "Maintenance of physical servers",
+      "Data center security",
+      "Maintaining customizations after upgrades"
+    ],
+    "correctIndices": [
+      0,
+      1,
+      2
+    ],
+    "explanation": "Dans un modèle Cloud Public comme S/4HANA Cloud, SAP (le fournisseur) gère l'infrastructure physique, la sécurité du centre de données et la maintenance du système de base, y compris les sauvegardes (backups) du logiciel standard."
+  },
+  {
+    "id": 5,
+    "text": "What type of database is SAP HANA? There are two correct answers.",
+    "options": [
+      "Row-oriented",
+      "Column-oriented",
+      "Disk-based",
+      "In-memory"
+    ],
+    "correctIndices": [
+      1,
+      3
+    ],
+    "explanation": "SAP HANA est une base de données 'In-memory' (traitement en mémoire vive) pour une rapidité maximale. Elle est également 'Column-oriented' (orientée colonne), ce qui est optimal pour l'analyse et l'agrégation de données que l'on retrouve dans l'ERP."
+  },
+  {
+    "id": 6,
+    "text": "Which layer of SAP S/4HANA provides a universal language to read and process data across different applications?",
+    "options": [
+      "SAP HANA",
+      "SAP Fiori",
+      "SAP Business Suite",
+      "Core Data Services"
+    ],
+    "correctIndices": [
+      3
+    ],
+    "explanation": "Les 'Core Data Services' (CDS) sont la couche sémantique de S/4HANA. Elles offrent un modèle de données unifié et une manière standardisée de lire et traiter les données pour les applications et les rapports (analytique), quelle que soit la source."
+  },
+  {
+    "id": 7,
+    "text": "Which of the following is SAP's recommended Human Capital Management system (HCM)?",
+    "options": [
+      "SAP Concur",
+      "SAP SuccessFactors",
+      "SAP Ariba",
+      "SAP Fieldglass"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": "SAP SuccessFactors est la solution Cloud stratégique de SAP pour la gestion du capital humain (HCM), couvrant le recrutement, la paie, la formation et l'expérience employé."
+  },
+  {
+    "id": 8,
+    "text": "Which end-to-end business process focuses on the measurement, processing, and communication of financial and non-financial information about a corporation?",
+    "options": [
+      "Lead to Cash",
+      "Source to Pay",
+      "Plan to Fulfill",
+      "Record to Report"
+    ],
+    "correctIndices": [
+      3
+    ],
+    "explanation": "Le processus 'Record to Report' (R2R) englobe toutes les activités financières, de l'enregistrement d'une transaction à la clôture et à la communication des rapports financiers. C'est le cœur de la comptabilité et du reporting."
+  },
+  {
+    "id": 9,
+    "text": "An organization has their finance line of business (LoB) running in SAP S/4HANA Cloud Public Edition, while the rest of the LoBs are running in SAP S/4HANA Cloud Private Edition. Which two-tier ERP scenario is this an example of?",
+    "options": [
+      "Headquarter and Subsidiary",
+      "Central Services",
+      "Supply Chain Ecosystem"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": "Le scénario 'Central Services' (Services Centraux) consiste à déployer le Cloud Public pour une fonction centralisée (comme la Finance via Central Finance) ou un service partagé, tandis que le reste des opérations reste sur une plateforme différente (ici, le Cloud Privé)."
+  },
+  {
+    "id": 10,
+    "text": "Which of the following solutions are included in the SAP Business Suite? There are three correct answers.",
+    "options": [
+      "SAP Business AI",
+      "SAP Solution Manager",
+      "SAP Business Data Cloud",
+      "SAP Enterprise Central Component",
+      "SAP cloud ERP applications"
+    ],
+    "correctIndices": [
+      0,
+      2,
+      4
+    ],
+    "explanation": "Dans le contexte de la 'SAP Intelligent Suite' (évolution de l'ancienne Business Suite), l'offre inclut l'ERP Cloud (SAP S/4HANA Cloud applications), des capacités d'intelligence artificielle intégrées (SAP Business AI) et des solutions de données stratégiques (comme SAP Datasphere/Business Data Cloud)."
+  },
+  {
+    "id": 11,
+    "text": "Which SAP S/4HANA Cloud edition is always implemented in a greenfield scenario?",
+    "options": [
+      "SAP S/4HANA Cloud Public Edition",
+      "SAP S/4HANA Cloud Private Edition",
+      "SAP ECC",
+      "SAP Business Suite"
+    ],
+    "correctIndices": [
+      0
+    ],
+    "explanation": "L'édition 'Public Edition' est toujours un projet 'greenfield' (démarrage à neuf). Elle impose l'adoption des meilleures pratiques standard de SAP, ne permettant pas les migrations techniques 'brownfield' (conversion d'un système existant)."
+  },
+  {
+    "id": 12,
+    "text": "Who is responsible for delivering advisory, implementation, and application management services to customers transitioning to cloud ERP?",
+    "options": [
+      "SAP only",
+      "Partners",
+      "End customers",
+      "CIOs"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": "SAP s'appuie sur ses 'Partners' (partenaires) pour fournir l'expertise en conseil, en implémentation (avec la méthodologie SAP Activate) et en gestion quotidienne de l'application Cloud ERP."
+  },
+  {
+    "id": 13,
+    "text": "What are some pre-configured content packages that can be chosen on the Detailed Discovery for new implementations with SAP S/4HANA Cloud Private Edition? (Choose two)",
+    "options": [
+      "Enterprise Management Layer",
+      "Model Company for Multinational Corporations",
+      "Swift Implementation – Finance Only Package",
+      "Agile Implementation – Medium Package"
+    ],
+    "correctIndices": [
+      0,
+      1
+    ],
+    "explanation": "Pour le Cloud Privé, le 'Enterprise Management Layer' (EML) et les offres 'Model Company' (comme celle pour les multinationales) sont des systèmes préconfigurés basés sur des meilleures pratiques pour accélérer le déploiement."
+  },
+  {
+    "id": 14,
+    "text": "Which of the following values are displayed in the Digital Discovery Assessment PDF report? (Choose three)",
+    "options": [
+      "Known integrations",
+      "Data volume to be migrated",
+      "Legal entities",
+      "Extensibility requirements",
+      "Percentage of processes selected in a line of business"
+    ],
+    "correctIndices": [
+      0,
+      2,
+      4
+    ],
+    "explanation": "Le 'Digital Discovery Assessment' (DDA) capture les exigences initiales : la portée des processus sélectionnés (par LoB), la structure organisationnelle (entités légales) et les intégrations de haut niveau ('Known integrations')."
+  },
+  {
+    "id": 15,
+    "text": "Where can you launch the Quick Qualification? (Choose three)",
+    "options": [
+      "Supply Chain of Selling app",
+      "Digital Discovery Assessment app",
+      "Harmony",
+      "SAP Cloud ALM",
+      "Partner Deal Registration Tool"
+    ],
+    "correctIndices": [
+      0,
+      2,
+      4
+    ],
+    "explanation": "La 'Quick Qualification' est un outil d'évaluation initiale de l'éligibilité, souvent utilisé par les partenaires via des plateformes commerciales comme 'Harmony', le 'Partner Deal Registration Tool' et 'Supply Chain of Selling'."
+  },
+  {
+    "id": 16,
+    "text": "What could be included in a solution process? (3 correct answers)",
+    "options": [
+      "Solution scenario",
+      "Process flow diagram",
+      "Test script",
+      "Form templates",
+      "Task tutorial"
+    ],
+    "correctIndices": [
+      1,
+      2,
+      4
+    ],
+    "explanation": "Les processus de solution SAP (Best Practices) sont documentés avec un 'Process flow diagram' (organigramme), un 'Test script' (scénario de test) et un 'Task tutorial' (tutoriel d'utilisation étape par étape)."
+  },
+  {
+    "id": 17,
+    "text": "What can be used to identify which type of extensibility best addresses a requirement, and how to implement the extension?",
+    "options": [
+      "SAP Extensibility Cockpit",
+      "SAP Business Technology Platform",
+      "SAP Extensibility Explorer",
+      "SAP Business Application Studio"
+    ],
+    "correctIndices": [
+      2
+    ],
+    "explanation": "Le 'SAP Extensibility Explorer' est la ressource centrale qui donne des conseils et des exemples sur l'approche d'extensibilité la plus appropriée (In-App ou Side-by-Side) pour un besoin spécifique."
+  },
+  {
+    "id": 18,
+    "text": "Which line of business includes responding to claims and delivering the service guaranteed in the warranty?",
+    "options": [
+      "Sales",
+      "Sourcing and Procurement",
+      "Finance",
+      "Service"
+    ],
+    "correctIndices": [
+      3
+    ],
+    "explanation": "La gestion des garanties, des réclamations et la prestation de services de réparation/maintenance relèvent de la Ligne de Business 'Service' (gestion des services clients)."
+  },
+  {
+    "id": 19,
+    "text": "An organization designs and builds automobiles. What scope do they require?",
+    "options": [
+      "Finance-led administrative ERP",
+      "Product-centric industries",
+      "Service-centric industries"
+    ],
+    "correctIndices": [
+      0,
+      1
+    ],
+    "explanation": "La fabrication automobile est une industrie 'Product-centric' (centrée sur le produit) qui requiert une gestion de la production et de la chaîne d'approvisionnement. Cependant, toutes les entreprises ont besoin des fonctions administratives clés, qui sont l'objectif principal d'un ERP 'Finance-led' (Piloté par la Finance)."
+  },
+  {
+    "id": 20,
+    "text": "Which lines of business are included in Finance-led administrative ERP? (3 correct answers)",
+    "options": [
+      "Supply Chain",
+      "Finance",
+      "Manufacturing",
+      "Sourcing and Procurement",
+      "Sales"
+    ],
+    "correctIndices": [
+      1,
+      3,
+      4
+    ],
+    "explanation": "Un périmètre 'Finance-led administrative ERP' se concentre sur les fonctions de support : la 'Finance' (Cœur), 'Sales' (Ventes/Order-to-Cash) et 'Sourcing and Procurement' (Approvisionnement/Source-to-Pay), excluant les processus industriels lourds (Manufacturing, Supply Chain)."
+  },
+  {
+    "id": 21,
+    "text": "Which role completes the majority of the business process content activation and setup in SAP Central Business Configuration?",
+    "options": [
+      "Customer IT Contact",
+      "Partner Lead Configuration Expert",
+      "Customer Project Manager",
+      "End Users"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": "L'expert principal en configuration partenaire ('Partner Lead Configuration Expert') est le responsable de l'activation du périmètre, du contenu des meilleures pratiques et de la gestion initiale du déploiement dans 'SAP Central Business Configuration' (CBC)."
+  },
+  {
+    "id": 22,
+    "text": "What is the main responsibility of the customer system admin (IT Contact)?",
+    "options": [
+      "Leading Fit-to-Standard workshops",
+      "Provisioning systems and granting access",
+      "Building the business case",
+      "Running UAT"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": "Le Contact Informatique Client ('IT Contact') est le point de contact technique qui gère les demandes de systèmes (provisioning) et attribue les accès utilisateur (User IDs) aux différents systèmes."
+  },
+  {
+    "id": 23,
+    "text": "Which tool shows planned future enhancements divided by quarters?",
+    "options": [
+      "Release Navigator",
+      "Road Map Explorer",
+      "RASD Tool",
+      "What's New Viewer"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": "Le 'Road Map Explorer' est l'outil officiel de SAP qui présente la feuille de route des innovations et améliorations futures planifiées (par trimestre) pour ses produits, y compris S/4HANA Cloud."
+  },
+  {
+    "id": 24,
+    "text": "Which tool compares the release upgrade information against a customer's actual landscape to provide the 'day 1 impact' of a release?",
+    "options": [
+      "What's New Viewer",
+      "SAP Road Map Explorer",
+      "Release Assessment Scope Dependency Tool (RASD)",
+      "Release Navigator"
+    ],
+    "correctIndices": [
+      2
+    ],
+    "explanation": "Le 'Release Assessment Scope Dependency Tool' (RASD) est un outil d'impact des mises à jour. Il analyse le nouveau contenu par rapport au périmètre actuel du client pour évaluer les changements à prévoir après l'upgrade ('day 1 impact')."
+  },
+  {
+    "id": 25,
+    "text": "How long before an upgrade are customers notified by email?",
+    "options": [
+      "3 weeks",
+      "6 weeks",
+      "2 months",
+      "1 week"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": "SAP envoie une notification par email environ '6 weeks' (6 semaines) avant le début d'un upgrade trimestriel de SAP S/4HANA Cloud Public Edition, donnant le temps nécessaire pour la planification des tests."
+  },
+  {
+    "id": 26,
+    "text": "What optional system can be subscribed to (for an additional fee) to continue Fit-to-Standard workshops after the Starter System is decommissioned?",
+    "options": [
+      "Development Tenant",
+      "Sandbox System",
+      "Test Tenant",
+      "Training Environment"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": "Le 'Sandbox System' (bac à sable) est un environnement optionnel (payant) qui permet aux clients de continuer à explorer, tester des prototypes ou réaliser des workshops après que le système Starter initial (qui est temporaire) ait été décommissionné."
+  },
+  {
+    "id": 27,
+    "text": "How many people can be assigned the role of the IT Contact ?",
+    "options": [
+      "1",
+      "2",
+      "3",
+      "Unlimited"
+    ],
+    "correctIndices": [
+      0
+    ],
+    "explanation": "Le rôle de 'IT Contact' (Contact Informatique Client) est limité à une seule personne dans l'organisation du client. Cette personne est le point de contact technique principal pour SAP."
+  },
+  {
+    "id": 28,
+    "text": "Which systems need to be provisioned via SAP for Me? There are two correct answers.",
+    "options": [
+      "SAP Cloud Identity Authentication",
+      "SAP Central Business Configuration",
+      "SAP S/4HANA Cloud Development system, development tenant",
+      "SAP S/4HANA Cloud Production System"
+    ],
+    "correctIndices": [
+      1,
+      3
+    ],
+    "explanation": "Le 'Central Business Configuration' (CBC) et le 'Production System' sont les systèmes clés du paysage qui doivent être officiellement demandés ('provisioned') par le client via le portail 'SAP for Me'."
+  },
+  {
+    "id": 29,
+    "text": "What is populated in the Starter System after activating business process content in SAP Central Business Configuration? There are two correct answers.",
+    "options": [
+      "Users",
+      "Master data",
+      "Business roles",
+      "Configuration values"
+    ],
+    "correctIndices": [
+      1,
+      3
+    ],
+    "explanation": "L'activation du contenu via CBC dans le 'Starter System' charge les 'Configuration values' (valeurs de configuration) prédéfinies et des exemples de 'Master data' (données de base) pour permettre l'exécution immédiate des processus standard."
+  },
+  {
+    "id": 30,
+    "text": "Which embedded support offerings can you make use of in the SAP Fiori Launchpad? Note: There are 3 correct answers.",
+    "options": [
+      "Video tutorials from the SAP Help Portal",
+      "Digital assistance from generative AI (SAP Joule)",
+      "Assessment questions from the SAP Learning Hub",
+      "Recorded webinars from the SAP Learning Website",
+      "Recorded system simulations from the Learning Center"
+    ],
+    "correctIndices": [
+      0,
+      1,
+      4
+    ],
+    "explanation": "Les outils d'aide intégrés (Web Assistant) dans SAP Fiori donnent accès à des 'Video tutorials' (tutoriels vidéo), des simulations système du 'Learning Center', et à l'assistant conversationnel 'SAP Joule' (IA générative)."
+  },
+  {
+    "id": 31,
+    "text": "What are restrictions in a business role used for?",
+    "options": [
+      "To define which business catalogs are included",
+      "To control field-level and value-level access",
+      "To assign spaces to the role",
+      "To define business process variants"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": "Une 'Business Role' (Rôle Commercial) définit *quelles* applications sont accessibles. Les 'restrictions' affinent cet accès en limitant la visibilité ou l'édition à des valeurs spécifiques (ex: une seule société) ou à des 'field-level' (au niveau des champs)."
+  },
+  {
+    "id": 32,
+    "text": "What does a deployment plan in SAP Cloud ALM contain? There are two correct answers.",
+    "options": [
+      "Timeboxes",
+      "System Group",
+      "Scopes",
+      "Releases"
+    ],
+    "correctIndices": [
+      1,
+      3
+    ],
+    "explanation": "Un plan de déploiement dans 'SAP Cloud ALM' gère le transfert des changements. Il définit le 'System Group' (groupe de systèmes) à traverser (Dev -> Test -> Prod) et les versions logicielles ('Releases') concernées."
+  },
+  {
+    "id": 33,
+    "text": "What are some important activities the partner LoB configuration experts need to complete in the Prepare phase? There are two correct answers.",
+    "options": [
+      "Providing test user and starter system login information to the customer LoB experts.",
+      "Gathering L2 BDCQ responses.",
+      "Gathering L3 BDCQ responses.",
+      "Identifying customer LoB experts to participate in Fit-to-Standard workshops."
+    ],
+    "correctIndices": [
+      1,
+      3
+    ],
+    "explanation": "La phase 'Prepare' (Préparation) implique l'identification des experts clients qui participeront aux workshops et la collecte des réponses au Questionnaire de Configuration (BDCQ) de niveau 2 (L2) pour définir l'étendue du système Starter."
+  },
+  {
+    "id": 34,
+    "text": "What are some important activities the partner LoB configuration experts need to complete in the Realize phase? There are two correct answers.",
+    "options": [
+      "Setting up manual test cases in SAP Cloud ALM.",
+      "Gathering perceived change impact feedback.",
+      "Entering configuration values in SAP Central Business Configuration.",
+      "Scheduling meetings with customer experts to gather BDCQ responses."
+    ],
+    "correctIndices": [
+      0,
+      2
+    ],
+    "explanation": "La phase 'Realize' (Réalisation) est dédiée à l'implémentation et aux tests. Les experts configuration saisissent les 'configuration values' dans CBC et préparent les tests d'acceptation utilisateur (UAT) en configurant les cas de test dans 'SAP Cloud ALM'."
+  },
+  {
+    "id": 35,
+    "text": "What should be demonstrated in SAP Signavio Process Navigator during Fit-to-Standard workshops? There are three correct answers.",
+    "options": [
+      "Business Driven Configuration Questionnaire",
+      "Tutorial (if available)",
+      "Set-up instructions",
+      "Where to download Test Script",
+      "Process Flow diagram"
+    ],
+    "correctIndices": [
+      1,
+      3,
+      4
+    ],
+    "explanation": "Lors des ateliers 'Fit-to-Standard', on utilise le 'SAP Signavio Process Navigator' (Best Practices) pour présenter l''Process Flow diagram' (flux de processus), le 'Tutorial' (démonstration) et le 'Test Script' (script de test) associé à télécharger."
+  },
+  {
+    "id": 36,
+    "text": "Which type of ledger is always active by default in SAP S/4HANA Cloud Public Edition? Choose the correct answer.",
+    "options": [
+      "Ledger 2L (IFRS)",
+      "Ledger 3L (US GAAP)",
+      "Ledger 4G (Group Valuation)",
+      "Ledger 0L (Leading Ledger)"
+    ],
+    "correctIndices": [
+      3
+    ],
+    "explanation": "Dans S/4HANA, le 'Ledger 0L' (Leading Ledger) est le grand livre principal. Il est obligatoire, toujours actif par défaut, et sert de base pour la consolidation des états financiers du groupe."
+  },
+  {
+    "id": 37,
+    "text": "What is the maximum recommended number of countries to activate at the same time for performance reasons in SAP Central Business Configuration? One correct answer",
+    "options": [
+      "1",
+      "5",
+      "10",
+      "2"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": "Pour des raisons de performance et de stabilité lors de l'activation du contenu de configuration dans CBC, il est fortement recommandé de ne pas activer plus de '5 country versions' (versions pays) à la fois."
+  },
+  {
+    "id": 38,
+    "text": "How can you activate integration scenarios? Two correct answers",
+    "options": [
+      "In SAP Central Business Configuration",
+      "In SAP Signavio Process Navigator",
+      "In SAP Cloud ALM through the Cloud Integration Automation Service",
+      "In SAP for Me by creating a support case"
+    ],
+    "correctIndices": [
+      0,
+      2
+    ],
+    "explanation": "Les scénarios d'intégration sont sélectionnés dans 'SAP Central Business Configuration' (CBC) et leur configuration technique est ensuite gérée et exécutée via le 'Cloud Integration Automation Service' (CIAS), qui est accessible dans 'SAP Cloud ALM'."
+  },
+  {
+    "id": 39,
+    "text": "Who is responsible for entering configuration values in SAP Central Business Configuration?",
+    "options": [
+      "IT Contact",
+      "Lead configuration expert",
+      "LoB configuration experts",
+      "Project manager"
+    ],
+    "correctIndices": [
+      2
+    ],
+    "explanation": "Bien que l'expert principal ('Lead') gère le projet, ce sont les experts en configuration par ligne de business ('LoB configuration experts') qui saisissent concrètement les valeurs de configuration métier (ex: sociétés, centres de coûts) dans CBC."
+  },
+  {
+    "id": 40,
+    "text": "What determines the organizational entities that are required to create in SAP Central Business Configuration? There are two correct answers.",
+    "options": [
+      "Business processes",
+      "Group currency",
+      "Country versions",
+      "Fiscal year variant"
+    ],
+    "correctIndices": [
+      0,
+      2
+    ],
+    "explanation": "Les entités organisationnelles (ex: société) nécessaires dépendent de la portée fonctionnelle (les 'Business processes' sélectionnés) et des exigences légales spécifiques aux 'Country versions' (versions pays) activées."
+  },
+  {
+    "id": 41,
+    "text": "How many workspaces does the partner lead configuration expert create in SAP Central Business Configuration for the Development system ?",
+    "options": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": "Le système de développement ('Development system') dans S/4HANA Cloud est séparé en deux environnements logiques : le tenant de 'Customizing' (configuration) et le tenant de 'Development' (développement). Deux espaces de travail (workspaces) sont donc créés dans CBC pour les gérer séparément."
+  },
+  {
+    "id": 42,
+    "text": "What are some examples of Team Categories in Responsibility Management? There are two correct answers.",
+    "options": [
+      "Operational Purchaser",
+      "Procurement",
+      "Purchasing Group",
+      "Distribution"
+    ],
+    "correctIndices": [
+      1,
+      3
+    ],
+    "explanation": "Les 'Team Categories' (Catégories d'Équipe) dans la Gestion des Responsabilités sont des classifications fonctionnelles de haut niveau comme 'Procurement' (Achats) et 'Distribution' (Distribution/Logistique). Les autres options sont des rôles ou des unités organisationnelles."
+  },
+  {
+    "id": 43,
+    "text": "What provides a common set of domain-specific languages and services for defining and consuming semantically rich data models in SAP S/4HANA Cloud?",
+    "options": [
+      "SAP Analytics Cloud",
+      "Virtual Data Model",
+      "Core Data Services",
+      "SAP Datasphere"
+    ],
+    "correctIndices": [
+      2
+    ],
+    "explanation": "Les 'Core Data Services' (CDS) offrent un langage et des services unifiés pour créer des vues de données intelligentes et structurées, qui constituent le 'Virtual Data Model' (VDM) de S/4HANA Cloud."
+  },
+  {
+    "id": 44,
+    "text": "You are limiting access for certain users to enter data in specific fields of an application. Which of the following business role access categories would you choose?",
+    "options": [
+      "Read, Value Help: Restricted",
+      "Write, Read, Value Help: Restricted",
+      "Read, Value Help: Unrestricted",
+      "Write, Read, Value Help: Unrestricted"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": "Pour limiter l'accès à la saisie de données (ce qui nécessite l'autorisation 'Write'), il faut choisir l'option qui inclut 'Write' et l'appliquer avec une 'Restriction' pour cibler des champs ou des valeurs spécifiques."
+  },
+  {
+    "id": 45,
+    "text": "What can a business catalog include? There are two correct answers.",
+    "options": [
+      "Access to data",
+      "Access to a launchpad space",
+      "Access to a business role",
+      "Access to one or more applications"
+    ],
+    "correctIndices": [
+      0,
+      3
+    ],
+    "explanation": "Un 'Business Catalog' (Catalogue Commercial) est l'objet technique qui regroupe les applications ('Access to one or more applications') et, par conséquent, fournit les autorisations nécessaires pour accéder aux données ('Access to data') utilisées par ces applications."
+  },
+  {
+    "id": 46,
+    "text": "In which system is the content upgrade released first ?",
+    "options": [
+      "SAP Central Business Configuration",
+      "SAP S/4HANA Cloud Test System",
+      "SAP S/4HANA Cloud Development System, customizing tenant",
+      "SAP S/4HANA Cloud Development System, development tenant"
+    ],
+    "correctIndices": [
+      0
+    ],
+    "explanation": "Toute mise à jour de contenu (nouvelles meilleures pratiques, ajustements de configuration) est toujours livrée en premier dans 'SAP Central Business Configuration' (CBC) avant d'être déployée vers les systèmes S/4HANA Cloud."
+  },
+  {
+    "id": 47,
+    "text": "What is the difference between key user extensibility and developer extensibility? There are two correct answers.",
+    "options": [
+      "Key user extensibility uses Fiori apps without coding",
+      "Developer extensibility is done in the ABAP environment of the development tenant",
+      "Key user extensibility allows editing all SAP objects",
+      "Developer extensibility is available in a 2-system landscape"
+    ],
+    "correctIndices": [
+      0,
+      1
+    ],
+    "explanation": "L'extensibilité 'Key User' est sans code et se fait via des applications Fiori dans l'interface utilisateur. L'extensibilité 'Developer' est basée sur le code (ABAP Cloud) et est effectuée dans le tenant de développement ('development tenant')."
+  },
+  {
+    "id": 48,
+    "text": "Which SAP solution provides low/no-code tools for side-by-side extensibility?",
+    "options": [
+      "SAP Signavio",
+      "SAP Build",
+      "SAP Datasphere",
+      "SAP GUI"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": "'SAP Build' est la suite d'outils low-code/no-code de SAP (incluant SAP Build Apps et SAP Build Process Automation) utilisée pour créer des extensions indépendantes ('side-by-side') sur la SAP Business Technology Platform (BTP)."
+  },
+  {
+    "id": 49,
+    "text": "You've created a custom app UI from a custom business object. How to you make sure it displays for end-users on the launchpad? There are two correct answers.",
+    "options": [
+      "Use the Custom Business Catalogs app to assign the app to a custom business catalog.",
+      "Use the Custom Catalog Extensions app to assign the app to an existing business catalog",
+      "Use the Manage Launchpad Pages app to add the app to a launchpad page.",
+      "Use the Manage Launchpad Spaces app to add the app to a launchpad space."
+    ],
+    "correctIndices": [
+      1,
+      2
+    ],
+    "explanation": "Pour rendre une application personnalisée visible, il faut : 1. L'associer à un catalogue commercial via l''Custom Catalog Extensions' pour les droits d'accès. 2. L'ajouter à une 'Launchpad Page' (Page du Launchpad) pour l'affichage visuel."
+  },
+  {
+    "id": 50,
+    "text": "What is used to transport extensions built in the development tenant of the Development system to the Test system? There are two correct answers.",
+    "options": [
+      "Export Software Collection app",
+      "Transport Organizer app",
+      "Export Customizing Transports app",
+      "Import Collection app"
+    ],
+    "correctIndices": [
+      0,
+      3
+    ],
+    "explanation": "Dans le tenant de développement, le transport des objets se fait via des 'Software Collections'. On utilise l''Export Software Collection app' (Application d'Exportation de Collection de Logiciels) et l''Import Collection app' (Application d'Importation de Collection) dans le système cible (Test)."
+  },
+  {
+    "id": 51,
+    "text": "In which SAP Activate phase are Implementation tests typically executed?",
+    "options": [
+      "Explore",
+      "Realize",
+      "Deploy",
+      "Run"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": "Les tests d'implémentation, incluant les tests d'intégration et les tests d'acceptation utilisateur (UAT) initiaux, sont menés de manière itérative dans la phase 'Realize' (Réalisation) de la méthodologie SAP Activate."
+  },
+  {
+    "id": 52,
+    "text": "How do you capture a value, error message, or label that is static on the screen when recording new actions?",
+    "options": [
+      "Capture button",
+      "Read button",
+      "Check button",
+      "Copy button"
+    ],
+    "correctIndices": [
+      2
+    ],
+    "explanation": "Lorsque vous enregistrez des scripts de test automatisés, l'action 'Check button' (Bouton Vérifier) est utilisée pour valider qu'un élément statique (valeur, message ou étiquette) est présent et correct sur l'écran."
+  },
+  {
+    "id": 53,
+    "text": "Where can you customize the scope of a post-upgrade test?",
+    "options": [
+      "Test Your Processes app",
+      "Manage Your Test Processes app",
+      "Analyze Automated Test Results app",
+      "Manage Upgrade Tests app"
+    ],
+    "correctIndices": [
+      3
+    ],
+    "explanation": "L''Manage Upgrade Tests app' (Application Gérer les Tests de Mise à Niveau) est l'outil dédié pour configurer et personnaliser le périmètre des tests qui doivent être exécutés après une mise à niveau du système pour s'assurer que tout fonctionne comme prévu."
+  },
+  {
+    "id": 54,
+    "text": "Where can you access the Cloud Integration Automation Service (CIAS)? There are two correct answers.",
+    "options": [
+      "SAP Cloud ALM",
+      "SAP for Me",
+      "SAP Signavio Process Navigator",
+      "SAP Discovery Center"
+    ],
+    "correctIndices": [
+      0,
+      1
+    ],
+    "explanation": "Le 'Cloud Integration Automation Service' (CIAS) est accessible via 'SAP Cloud ALM' pour l'exécution des tâches d'intégration, ainsi que via le portail client 'SAP for Me' (Mon SAP)."
+  },
+  {
+    "id": 55,
+    "text": "You migrated data from a legacy DB to the target SAP S/4HANA Cloud using a remote HANA DB. Which data migration procedure did you use? There are two correct answers.",
+    "options": [
+      "Local SAP S/4HANA Database Schema",
+      "Remote SAP HANA Database Schema",
+      "Direct connection to an SAP system",
+      "Migration using staging tables"
+    ],
+    "correctIndices": [
+      1,
+      3
+    ],
+    "explanation": "La migration via le Migration Cockpit se fait souvent en deux étapes : d'abord le chargement dans des 'staging tables' (tables de transfert) qui peuvent se trouver sur un 'Remote SAP HANA Database Schema' (Schéma de Base de Données HANA distant)."
+  },
+  {
+    "id": 56,
+    "text": "Which SAP S/4HANA Cloud tenant is the main project for business process configuration and key user extensibility?",
+    "options": [
+      "Development Tenant",
+      "Customizing Tenant"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": "Le 'Customizing Tenant' (Tenant de Configuration) du système de développement est l'environnement principal pour la configuration fonctionnelle et l'extensibilité utilisateur clé ('Key User Extensibility'). Le 'Development Tenant' est pour le développement ABAP pur."
+  },
+  {
+    "id": 57,
+    "text": "In which system is the content upgrade released first?",
+    "options": [
+      "SAP Central Business Configuration",
+      "SAP S/4HANA Cloud Test System",
+      "SAP S/4HANA Cloud Development System, customizing tenant",
+      "SAP S/4HANA Cloud Development System, development tenant"
+    ],
+    "correctIndices": [
+      0
+    ],
+    "explanation": "C'est la même réponse que la question 46 : tout nouveau contenu est d'abord livré dans 'SAP Central Business Configuration' (CBC)."
+  },
+  {
+    "id": 58,
+    "text": "Which SAP S/4HANA Cloud system is preconfigured with all SAP Best Practice business processes active and existing master data?",
+    "options": [
+      "Development System",
+      "Starter System",
+      "Production System",
+      "Test System"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": "Le 'Starter System' (Système de Démarrage) est l'environnement initial et temporaire fourni en phase Explore, préconfiguré avec les meilleures pratiques sélectionnées et des exemples de données pour les workshops 'Fit-to-Standard'."
+  },
+  {
+    "id": 59,
+    "text": "In which months are upgrades released for SAP S/4HANA Cloud Public Edition?",
+    "options": [
+      "February",
+      "May",
+      "August",
+      "November"
+    ],
+    "correctIndices": [
+      0,
+      2
+    ],
+    "explanation": "Les mises à jour majeures de SAP S/4HANA Cloud Public Edition sont semestrielles et sont publiées en 'February' (Février) et en 'August' (Août) de chaque année."
+  },
+  {
+    "id": 60,
+    "text": "What needs to match with the Login Name in the Identity Authentication Service system?",
+    "options": [
+      "Worker ID",
+      "First Name",
+      "User Name",
+      "Worker Type"
+    ],
+    "correctIndices": [
+      2
+    ],
+    "explanation": "Pour assurer la connexion unique (Single Sign-On) et le mappage des utilisateurs, le 'Login Name' (Nom de Connexion) dans le service IAS (Identity Authentication Service) doit correspondre au 'User Name' (Nom d'Utilisateur) de l'enregistrement utilisateur dans S/4HANA Cloud."
+  },
+  {
+    "id": 61,
+    "text": "What includes one or more business catalogs that grant access to data and/or applications?",
+    "options": [
+      "Business User",
+      "Business Role",
+      "Launchpad Space",
+      "Launchpad Page"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": "La 'Business Role' (Rôle Commercial) est l'objet central qui regroupe les catalogues commerciaux (pour l'accès aux applications et aux données) et les espaces du Launchpad (pour la disposition de l'interface Fiori)."
+  },
+  {
+    "id": 62,
+    "text": "What does the partner project manager align the scope in SAP Cloud ALM with?",
+    "options": [
+      "The bill of materials",
+      "The Starter System",
+      "The Digital Discovery Assessment",
+      "The Process Navigator"
+    ],
+    "correctIndices": [
+      2
+    ],
+    "explanation": "Le périmètre du projet, géré dans 'SAP Cloud ALM' par le chef de projet partenaire, doit être cohérent et aligné avec le périmètre initialement défini et approuvé dans le 'Digital Discovery Assessment' (DDA)."
+  },
+  {
+    "id": 63,
+    "text": "What are some important activities the partner LoB configuration experts need to complete in the Explore phase? There are two correct answers.",
+    "options": [
+      "Preparing a presentation deck for each Fit-to-Standard workshop.",
+      "Documenting formal UAT sign-off in SAP Cloud ALM.",
+      "Documenting customization requirements in SAP Cloud ALM.",
+      "Demonstrating where to find business process documentation."
+    ],
+    "correctIndices": [
+      2,
+      3
+    ],
+    "explanation": "Pendant la phase 'Explore' (Exploration), les activités clés sont la démonstration des processus standard (en montrant la documentation) et l'enregistrement des écarts ou des besoins de personnalisation ('customization requirements') dans 'SAP Cloud ALM'."
+  },
+  {
+    "id": 64,
+    "text": "What does a launchpad page include? There are two correct answers.",
+    "options": [
+      "One or more apps",
+      "One or more spaces",
+      "One or more sections",
+      "One or more catalogs"
+    ],
+    "correctIndices": [
+      0,
+      2
+    ],
+    "explanation": "Une 'Launchpad Page' (Page du Launchpad) est l'élément qui structure visuellement le Launchpad. Elle est composée d''Sections' (Sections) qui contiennent les 'Apps' (Applications/Tuiles Fiori)."
+  },
+  {
+    "id": 65,
+    "text": "Where can you find sample code for a Business Add-In (BAdI)?",
+    "options": [
+      "Custom Fields app",
+      "Custom Business Objects app",
+      "Extensibility Inventory",
+      "Custom Logic app"
+    ],
+    "correctIndices": [
+      3
+    ],
+    "explanation": "L''Custom Logic app' (Application Logique Personnalisée) est l'outil où les utilisateurs clés peuvent implémenter des extensions de type BAdI et où ils trouvent le code d'exemple ('sample code') nécessaire pour guider leur développement."
+  },
+  {
+    "id": 66,
+    "text": "Where is the master library of all key user in-app extensions that have been made in an SAP S/4HANA Cloud system?",
+    "options": [
+      "Extensibility Cockpit app",
+      "Extensibility Explorer app",
+      "Extensibility Inventory app",
+      "Export Customizing Requests app"
+    ],
+    "correctIndices": [
+      2
+    ],
+    "explanation": "L''Extensibility Inventory app' (Application d'Inventaire d'Extensibilité) fournit une liste centrale et un aperçu de toutes les extensions réalisées par les utilisateurs clés (ex: champs personnalisés, objets métier personnalisés)."
+  },
+  {
+    "id": 67,
+    "text": "Where do you change the recipients of a form template?",
+    "options": [
+      "In the Maintain Form Templates app",
+      "In the Manage Texts app",
+      "In the Output Parameter Determination app",
+      "In the Monitor Form Transmissions app"
+    ],
+    "correctIndices": [
+      2
+    ],
+    "explanation": "La détermination des destinataires (recipients) pour les formulaires de sortie est gérée via l''Output Parameter Determination app' (Application de Détermination des Paramètres de Sortie), qui utilise la technologie BRFplus pour définir les règles d'envoi."
+  },
+  {
+    "id": 68,
+    "text": "What can be transported with the Export Software Collection app? There are three correct answers.",
+    "options": [
+      "A custom form template",
+      "A business configuration value",
+      "A customer-specific CDS view",
+      "A new organizational entity",
+      "An adapted Fiori UI"
+    ],
+    "correctIndices": [
+      0,
+      2,
+      4
+    ],
+    "explanation": "L'application d''Export Software Collection' est utilisée pour transporter les objets de développement (vues CDS personnalisées), les formulaires personnalisés ('custom form template') et les modifications apportées à l'interface utilisateur Fiori ('adapted Fiori UI') via les outils d'extensibilité."
+  },
+  {
+    "id": 69,
+    "text": "Which of the following are examples of in-app key user extensibility? There are two correct answers.",
+    "options": [
+      "An industry cloud app",
+      "A custom business object",
+      "A custom field",
+      "A custom mobile app"
+    ],
+    "correctIndices": [
+      1,
+      2
+    ],
+    "explanation": "L'extensibilité utilisateur clé 'in-app' comprend la création de 'Custom fields' (champs personnalisés) sur des objets existants et la création de 'Custom business objects' (objets métier personnalisés) complets via les applications Fiori."
+  },
+  {
+    "id": 70,
+    "text": "Which tools would a developer use to build a custom mobile application in JavaScript? There are two correct answers.",
+    "options": [
+      "SAP Build Apps",
+      "SAP Business Application Studio",
+      "SAP Build Work Zone",
+      "SAP Software Developer Kits"
+    ],
+    "correctIndices": [
+      1,
+      3
+    ],
+    "explanation": "Pour le développement codé (JavaScript) d'une application mobile, un développeur utilise l'IDE 'SAP Business Application Studio' (BAS) et les kits de développement logiciel ('SAP Software Developer Kits' ou SDKs) pour l'intégration mobile."
+  },
+  {
+    "id": 71,
+    "text": "Which tool do you use to add a field that already exists to an SAP Fiori app?",
+    "options": [
+      "Custom Logic app",
+      "Adapt UI within an app",
+      "Custom Fields app",
+      "Custom Tiles app"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": "Si un champ est déjà dans le modèle de données, mais pas visible dans l'application Fiori, l'utilisateur clé peut le rendre visible en utilisant la fonction 'Adapt UI' (Adapter l'interface utilisateur) directement à l'intérieur de l'application."
+  },
+  {
+    "id": 72,
+    "text": "You created a custom tile that links to a website relevant for all employees. What are your next steps to make sure the app is visible for everyone? There are two correct answers.",
+    "options": [
+      "Assign the app to a relevant business role",
+      "Assign the app to a relevant business catalog",
+      "Add the app to an SAP Fiori Launchpad Page",
+      "Add the app to an SAP Fiori Launchpad Space"
+    ],
+    "correctIndices": [
+      1,
+      2
+    ],
+    "explanation": "Pour que l'application soit visible, il faut : 1. La lier à un 'Business Catalog' (pour l'accès). 2. L'inclure dans une 'SAP Fiori Launchpad Page' (Page du Launchpad) pour qu'elle s'affiche visuellement sur le tableau de bord des utilisateurs."
+  },
+  {
+    "id": 73,
+    "text": "Which SAP Fiori app do you use to define inbound/outbound services that can be later used in a Communication Arrangement?",
+    "options": [
+      "Maintain Extensions on SAP BTP",
+      "Custom Communication Scenarios",
+      "Enterprise Event Enablement",
+      "Custom Catalog Extensions"
+    ],
+    "correctIndices": [
+      1
+    ],
+    "explanation": "L''Custom Communication Scenarios' (Scénarios de Communication Personnalisés) est l'application utilisée pour regrouper logiquement les services entrants et sortants qui seront ensuite connectés techniquement via l'Arrangement de Communication ('Communication Arrangement')."
+  },
+  {
+    "id": 74,
+    "text": "Where can you find SAP Best Practices integration content? There are three correct answers.",
+    "options": [
+      "SAP Best Practices Explorer",
+      "SAP Signavio Process Navigator",
+      "SAP Community",
+      "SAP Help Portal",
+      "Cloud Integration Automation Service"
+    ],
+    "correctIndices": [
+      1,
+      3,
+      4
+    ],
+    "explanation": "Le contenu d'intégration des meilleures pratiques est documenté dans 'SAP Signavio Process Navigator' et le 'SAP Help Portal'. L'activation technique de ce contenu est facilitée par le 'Cloud Integration Automation Service' (CIAS)."
+  },
+  {
+    "id": 75,
+    "text": "Which capability of the SAP Integration Suite would you use to identify the most efficient integration interface for B2B scenarios?",
+    "options": [
+      "Cloud Integration",
+      "Migration Assessment",
+      "API Management",
+      "Integration Advisor"
+    ],
+    "correctIndices": [
+      3
+    ],
+    "explanation": "L''Integration Advisor' (Conseiller d'Intégration) utilise l'intelligence artificielle pour recommander et générer des mappings d'interface optimaux, ce qui est particulièrement utile pour les scénarios complexes B2B."
+  },
+  {
+    "id": 76,
+    "text": "You tried to migrate data for a business object, but the migration failed. What are some reasons the migration could have failed? There are two correct answers.",
+    "options": [
+      "You didn't simulate the migration before migrating the data.",
+      "A predecessor object wasn't migrated.",
+      "You don't have the required business role to migrate the data.",
+      "You assigned more than one migration object to the project."
+    ],
+    "correctIndices": [
+      1,
+      2
+    ],
+    "explanation": "Deux raisons fréquentes d'échec : 1. La violation de l'ordre de migration (si un objet prédécesseur n'est pas migré, l'objet dépendant échoue). 2. Un manque d'autorisation (l'utilisateur doit avoir le rôle commercial requis pour migrer l'objet)."
+  },
+  {
+    "id": 77,
+    "text": "You need to add an additional field to a migration object template. What are your options? There are two correct answers.",
+    "options": [
+      "Developer extensibility for any migration object",
+      "A custom field using the extensibility framework",
+      "Submit a case through SAP for Me for a special request",
+      "Migration Object Modeler for supported objects"
+    ],
+    "correctIndices": [
+      1,
+      3
+    ],
+    "explanation": "Pour ajouter un champ : 1. Si le champ existe dans le modèle de données, utilisez un 'Custom field using the extensibility framework' (champ personnalisé). 2. Si l'objet est pris en charge, utilisez le 'Migration Object Modeler' (Modélisateur d'Objet de Migration) pour modifier le modèle de migration lui-même."
+  },
+  {
+    "id": 78,
+    "text": "Which functionality enables you to capture information including source values, target values after mapping, and target IDs that could be used to audit your migrated data?",
+    "options": [
+      "SAP HANA Cloud Service",
+      "Migration Object Modeler",
+      "SAP Data Services",
+      "Extended Statistics"
+    ],
+    "correctIndices": [
+      3
+    ],
+    "explanation": "La fonctionnalité des 'Extended Statistics' (Statistiques Étendues) dans le Migration Cockpit permet de capturer un journal détaillé de la migration, y compris les valeurs source, le mappage et les ID cibles, ce qui est crucial pour l'audit."
+  },
+  {
+    "id": 79,
+    "text": "What types of permission do you need to migrate data for a migration object? There are two correct answers.",
+    "options": [
+      "Permission to migrate all data types in the customizing tenant of the development system.",
+      "Permission to access the Migrate Your Data app.",
+      "Permission to migrate all data types in the development tenant of the development system.",
+      "Permission to migrate data for the specific object."
+    ],
+    "correctIndices": [
+      1,
+      3
+    ],
+    "explanation": "Vous devez avoir l'autorisation d'accéder à l'application ('Permission to access the Migrate Your Data app') et les autorisations d'écriture spécifiques ('Permission to migrate data for the specific object') pour l'objet de migration concerné."
+  },
+  {
+    "id": 80,
+    "text": "Which framework supports you to receive a notification when a migration object has completed the Migration step of the guided migration process?",
+    "options": [
+      "Responsibility Management Framework",
+      "In-App Notification Framework",
+      "Situation Handling Framework",
+      "Extensibility Framework"
+    ],
+    "correctIndices": [
+      2
+    ],
+    "explanation": "Le 'Situation Handling Framework' (Cadre de Gestion des Situations) permet de configurer des notifications basées sur des événements critiques, comme la réussite ou l'échec d'une étape de migration de données, et de les envoyer à l'utilisateur concerné."
+  }
+];
 
         // --- APPLICATION LOGIC (Vanilla JS) ---
 

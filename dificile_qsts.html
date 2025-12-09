@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hard Questions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
+        }
+
+        .question-card {
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .option-label {
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        /* Custom colors for feedback */
+        .bg-custom-red {
+            background-color: #fcebeb;
+            border-color: #ef4444;
+        }
+
+        .bg-custom-green {
+            background-color: #ecfdf5;
+            border-color: #10b981;
+        }
+
+        .border-custom-red {
+            border-color: #ef4444;
+        }
+
+        .border-custom-green {
+            border-color: #10b981;
+        }
+
+        /* Style pour le menu de navigation */
+        .nav-link {
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            background-color: #eef2ff;
+            color: #4f46e5;
+        }
+
+        /* Styles pour la modal d'explication / message */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(2px);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 12px;
+            animation: slide-down 0.3s ease-out;
+        }
+
+        @keyframes slide-down {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-8 flex justify-between items-center flex-wrap">
+            
+            <div class="flex items-center space-x-4 mt-4 md:mt-0">
+                <!-- Bouton Réinitialiser l'Historique -->
+                <button onclick="promptResetQuiz()"
+                    class="px-4 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition duration-150 shadow-md text-sm">
+                    <span class="font-bold">↻</span> Réinitialiser 
+                </button>
+
+                <!-- Bouton Administration -->
+                <button onclick="switchView('admin-view')"
+                    class="px-4 py-2 bg-gray-700 text-white font-medium rounded-lg hover:bg-gray-800 transition duration-150 shadow-md text-sm">
+                    Ajouter une explication
+                </button>
+            </div>
+        </header>
+
+        <!-- VUE DU QUIZ PRINCIPAL -->
+        <div id="quiz-view">
+            <!-- CONTEUR DE SCORE -->
+            <div class="flex justify-center mb-6">
+                <div id="score-display"
+                    class="bg-indigo-100 text-indigo-800 text-xl font-bold py-3 px-6 rounded-lg shadow-inner">
+                    Score: 0 / 0
+                </div>
+            </div>
+            <!-- FIN DU CONTEUR DE SCORE -->
+
+            
+            <!-- FIN DU MENU DE NAVIGATION -->
+
+            <div id="quiz-container" class="space-y-6">
+                <!-- Questions will be dynamically inserted here -->
+            </div>
+        </div>
+        <!-- FIN DU QUIZ PRINCIPAL -->
+
+        <!-- VUE D'ADMINISTRATION -->
+        <div id="admin-view" class="hidden">
+            <h2 class="text-3xl font-extrabold text-gray-800 mt-4 mb-6 pb-2 border-b-2 border-gray-300">Panneau
+                d'Administration</h2>
+
+            <button onclick="switchView('quiz-view')"
+                class="mb-6 px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition duration-150 shadow-md">
+                &larr; Retour au Quiz
+            </button>
+
+            <div id="admin-content" class="p-6 bg-white rounded-xl shadow-lg border border-gray-200">
+                <!-- Le contenu de l'administration (liste des questions/éditeur) sera injecté ici -->
+            </div>
+        </div>
+        <!-- FIN DE LA VUE D'ADMINISTRATION -->
+    </div>
+
+    <!-- Modal Général pour Explications et Messages -->
+    <div id="message-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeMessageModal()">&times;</span>
+            <h4 id="modal-title" class="text-2xl font-bold text-indigo-700 mb-4">Message</h4>
+            <div id="modal-content-text" class="text-gray-700 space-y-3">
+                <!-- Contenu du message ou de l'explication -->
+            </div>
+        </div>
+    </div>
+    <!-- Fin de la Modal -->
+
+    <script>
+        // =====================================================================================
+        // VARIABLES ET DONNÉES GLOBALES
+        // =====================================================================================
+
+        let currentScore = 0;
+        let totalQuestions = 0;
+        let quizData = [];
+        let userProgress = {};
+        let currentlyEditingIndex = -1;
+
+        const chapterBreaks = [
+            
+        ];
+
+        // Fonction pour obtenir les données initiales (Hardcoded)
+        function getInitialQuizData() {
+    return [
+        {
+            question: "What are the restrictions when posting general journal entries to special periods? Note: There are 2 correct answers to this question.",
+            type: "multiple",
+            options: ["A. You must use the document type YE (year-end)", "B. You must manually enter the specific special period you are posting to", "C. You must only post to balance sheet accounts", "D. You must specify a posting date in the last period of the fiscal year"],
+            correct: ["B. You must manually enter the specific special period you are posting to", "D. You must specify a posting date in the last period of the fiscal year"],
+            explanation: "Les périodes spéciales (special periods) sont utilisées pour les ajustements de fin d'année. Pour y poster, vous devez manuellement spécifier la période (B) et la date de comptabilisation (posting date) doit tomber dans la dernière période standard de l'exercice fiscal (D). (G/L Account Posting)"
+        },
+        {
+            question: "You have a bank account in foreign currency. During the period, you have posted various deposits to and withdrawals from the account. After the foreign currency valuation run, how does the system evaluate the balance of this account?",
+            type: "single",
+            options: ["A. In local currency, with the exchange rate valid on the last day of the period", "B. In local currency, with the exchange rate valid for each transaction", "C. In foreign currency, converted to local currency on a statistical ledger", "D. In foreign currency, with no need for conversion"],
+            correct: ["A. In local currency, with the exchange rate valid on the last day of the period"],
+            explanation: "Lors de la valorisation des devises étrangères (Foreign Currency Valuation), le solde total du compte bancaire en devise étrangère est converti en devise locale en utilisant le taux de change du jour de la valorisation (généralement le dernier jour de la période ou de l'exercice). (Bank Accounting)"
+        },
+        //evaluation2.html questions difiicile
+        {
+    
+            question: "46-What is defined in the \"Payment medium format per company code\" configuration?",
+            type: "single",
+            options: ["The language used for printing","The layout and format of payment details","The document type for payments","The tax code used"],
+            correct: ["The layout and format of payment details"],
+            explanation: ""
+        },
+        {
+            question: "50-What is the primary benefit of using the Due Date for Blocked Invoice Approaching situation template in SAP S/4HANA and SAP S/4HANA Cloud?",
+            type: "single",
+            options: [
+                "A. Automates the payment of supplier invoices when they are blocked.",
+                "B. Allows the due date of blocked invoices to be changed to avoid penalties.",
+                "C. Sends an automatic report to suppliers about their payment status.",
+                "D. Notifies business users about approaching due dates for supplier invoices that are blocked for payment."
+            ],
+            correct: [
+                "D. Notifies business users about approaching due dates for supplier invoices that are blocked for payment."
+            ],
+            explanation: "Le modèle de situation 'Due Date for Blocked Invoice Approaching' est un outil essentiel pour le suivi des factures fournisseurs bloquées. Il génère automatiquement des **notifications** (notifications) pour les utilisateurs métier concernés, les alertant du fait que la **date d'échéance** (due date) d'une facture bloquée pour paiement approche. Cela permet d'agir rapidement pour résoudre le blocage (par exemple, dans l'application **Manage Supplier Invoices** ou **My Inbox**) et garantir le paiement à temps, évitant ainsi des pénalités ou des relations tendues avec le fournisseur. (Situation Handling)"
+        },
+        {
+            question: "54-Which of the following are an example of an account assignment category used as a precondition? (2 answers)",
+            type: "multiple",
+            options: ["A. Cost Center", "B. Company Code", "C. Posting Date", "D. Payment Term"],
+            correct: ["A. Cost Center", "B. Company Code"],
+            explanation: "Dans le contexte des conditions préalables pour la détermination des comptes (Account Determination), un **imputation analytique** (Account Assignment Category) sert à définir où l'opération comptable sera finalement imputée. Les options 'Cost Center' (Centre de Coûts) et 'Company Code' (Société) sont des exemples typiques de champs d'imputation analytique (ou d'éléments du contexte comptable) que l'on utilise comme **précondition** pour dériver un compte GL spécifique. (Account Determination)"
+        },
+        {
+            question: "61-Which of the following are correct? A miscellaneous invoice or credit memo requires a: (There are two correct answers).",
+            type: "multiple",
+            options: ["A. Posting Date", "B. Sales Order", "C. Header Text", "D. Invoice Date"],
+            correct: ["A. Posting Date", "D. Invoice Date"],
+            explanation: "Lors de l'enregistrement d'une facture ou d'un avoir divers (miscellaneous invoice/credit memo) — généralement effectué via l'application **Manage Journal Entries** ou **Post General Journal Entry** — deux dates sont absolument obligatoires pour une pièce comptable valide : la **Date de Comptabilisation** (Posting Date) et la **Date de Facture** (Invoice Date ou Document Date). La Posting Date détermine la période fiscale, et la Document Date/Invoice Date est la date officielle du document. 'Sales Order' (B) n'est requis que pour les documents liés aux ventes. 'Header Text' (C) est fortement recommandé, mais n'est pas un champ requis pour la validation du document par défaut. (General Ledger Accounting)"
+        },
+        {
+    question: "68-Which dunning-related data do you maintain on the business partner master record? There are three correct answers.",
+    type: "multiple",
+    options: ["A. Dunning interval", "B. Dunning block", "C. Dunning procedure", "D. Dunning notice", "E. Dunning level"],
+    correct: ["B. Dunning block", "C. Dunning procedure", "E. Dunning level"],
+    explanation: "Les informations de relance (Dunning) sont cruciales pour l'application **Dunning** ou **Manage Dunning Proposals**. Elles sont gérées au niveau du Partenaire Commercial (Business Partner) dans le rôle 'Client' ou 'Fournisseur'. Les trois éléments principaux enregistrés sont : la **Procédure de Relance** (Dunning Procedure) à utiliser (C), un éventuel **Blocage de Relance** (Dunning Block) si le Partenaire ne doit pas être relancé (B), et le **Niveau de Relance** (Dunning Level) atteint lors de la dernière exécution (E). 'Dunning interval' (A) et 'Dunning notice' (D) sont des paramètres de configuration de la procédure, non des données maîtresses du partenaire. (Accounts Receivable)"
+},
+{
+    question: "69-What are the characteristics of dunning charges? There are three correct answers.",
+    type: "multiple",
+    options: ["A. You can define dunning charges for each company code.", "B. Dunning charges depend on the dunning level.", "C. You can use word processing functions to print these charges on the dunning notice.", "D. Dunning charges can be a fixed amount and, at the same time, a percentage of the dunned amount.", "E. You can define a minimum amount for dunning charges.", "F. Overdue down payment request and overdue invoices can be dunned."],
+    correct: ["B. Dunning charges depend on the dunning level.", "C. You can use word processing functions to print these charges on the dunning notice.", "E. You can define a minimum amount for dunning charges."],
+    explanation: "Les **Frais de Relance** (Dunning Charges) sont des coûts supplémentaires que l'on impute au client pour couvrir les frais administratifs liés au processus de relance. Ces frais sont définis au niveau de la **Procédure de Relance** et sont paramétrés pour dépendre du **Niveau de Relance** atteint (B). Il est possible de définir un **montant minimum** (E) pour que les frais ne soient pas trop faibles. Enfin, les fonctions de traitement de texte (Word processing, via des formulaires SAP) sont utilisées pour inclure ces frais dans l'avis de relance imprimé ou envoyé (C). (Accounts Receivable Configuration)"
+},
+{
+    question: "77-What is true for the cost assignment object in overhead cost accounting? (2 correct answers)",
+    type: "multiple",
+    options: ["A. Cost centers are used to collect costs that can be assigned directly to a product.", "B. WBS elements collect costs that occur during a certain project.", "C. Cost centers are used to collect overhead costs.", "D. Internal orders can be used in SAP S/4HANA Cloud, public edition"],
+    correct: ["B. WBS elements collect costs that occur during a certain project.", "C. Cost centers are used to collect overhead costs."],
+    explanation: "En **Comptabilité Analytique des Frais Généraux** (Overhead Cost Accounting), les objets d'imputation servent à collecter les coûts. Les **Centres de Coûts** (Cost Centers) (C) sont les objets principaux pour collecter les frais généraux (Overhead Costs) qui ne peuvent pas être directement attribués à un produit. Les **Éléments d'Organigramme Technique de Projet** (WBS elements) (B) sont l'objet principal pour collecter les coûts spécifiques à un projet (ex : construction, développement). 'Cost centers' (A) ne collectent pas les coûts directs de produit, mais les frais généraux. 'Internal Orders' (D) ne sont généralement pas utilisés dans l'édition Public Cloud standard, on utilise plutôt des **WBS Elements** ou des **Cost Centers** selon le besoin. (Overhead Cost Accounting)"
+},
+{
+    question: "78-Which of the following statements are correct about the posting of primary costs to a cost center? (2 correct answers)",
+    type: "multiple",
+    options: ["A. When posting costs, you can enter multiple account assignment objects and statistic objects.", "B. The posting in FI creates a document and leads to data being derived in CO.", "C. The corresponding profit center (transferred from the master data of the cost center) is charged automatically in any case.", "D. A real posting means that the data can only be used for information purposes.", "E. When posting costs, you must enter exactly one account assignment object. Optionally, you can use objects."],
+    correct: ["B. The posting in FI creates a document and leads to data being derived in CO.", "E. When posting costs, you must enter exactly one account assignment object. Optionally, you can use objects."],
+    explanation: "La comptabilisation des **coûts primaires** (Primary Costs) est au cœur de l'intégration entre la Comptabilité Financière (FI) et la Comptabilité Analytique (CO). Une dépense doit toujours être comptabilisée d'une manière qui assure la traçabilité. (B) C'est le principe de l'intégration en **temps réel** (real-time integration) : chaque écriture FI sur un compte de coût primaire génère une donnée analytique dans CO. (E) La règle fondamentale est qu'un coût réel (Real Cost) doit toujours avoir **exactement un objet d'imputation réel** (Real Account Assignment Object), tel que le **Centre de Coûts** (Cost Center), permettant la réaffectation (Allocation) et le règlement (Settlement) ultérieurs. Vous pouvez lui ajouter des objets dits 'statistiques' (Statistical Objects) pour un reporting additionnel, mais pas un second objet réel. (Controlling, FI-CO Integration)"
+},
+//test blanc 1
+{
+    question: "4-A company wants to use the automatic payment program in SAP S/4HANA and ensure that the system uses a specific document type for the generated postings during the payment run. Which configuration setting controls the document type used for payment postings?",
+    type: "single",
+    options: ["A. The bank determination settings, specifically the paying company codes section.", "B. The payment method settings, specifically the note to payee by origin section.", "C. The payment method setting, specifically the posting details section.", "D. The payment medium format settings, specifically the format output section."],
+    correct: ["C. The payment method setting, specifically the posting details section."],
+    explanation: "Le **Programme de Paiement Automatique** (APP) crée des pièces comptables (Journal Entries) pour enregistrer les paiements. Pour que le système sache quel type de document utiliser (par exemple, 'ZP' pour les paiements sortants), cette information est définie dans la configuration de la **Méthode de Paiement** (Payment Method), précisément dans la section des **Détails de Comptabilisation** (Posting Details). C'est à cet endroit que le **Type de Document** (Document Type) est spécifié pour les pièces générées par l'APP. (Accounts Payable, Payment Program Configuration)"
+},
+{
+    question: "6-Which tasks are mandatory before you can migrate data for a specific object? (2 correct answers)",
+    type: "multiple",
+    options: ["A. Predecessor objects have been migrated", "B. You select the same migration method previously used for other objects", "C. All previous migration projects are in the 'Finished' status", "D. Permission to migrate the data has been assigned"],
+    correct: ["A. Predecessor objects have been migrated", "D. Permission to migrate the data has been assigned"],
+    explanation: "La migration des données dans SAP S/4HANA Public Cloud (via l'outil **Migrate Your Data** / Migration Cockpit) est régie par des règles d'ordre et d'autorisation. (A) L'ordre est strict : vous devez migrer les objets **précurseurs** (Predecessor objects) — comme le plan comptable avant les comptes G/L, ou le partenaire commercial avant les factures — car l'objet actuel dépend de leur existence. (D) L'accès et l'exécution de la migration sont des fonctions sensibles et nécessitent une **autorisation spécifique** (Permission/Authorization) d'un rôle utilisateur pour pouvoir être effectués. (Data Migration, Security)"
+},
+{
+    question: "16-Where can you access the Cloud Integration Automation Service (CIAS)? (2 correct answers)",
+    type: "multiple",
+    options: ["A. SAP Cloud ALM", "B. SAP for Me", "C. SAP Signavio Process Navigator", "D. SAP Discovery Center"],
+    correct: ["A. SAP Cloud ALM", "B. SAP for Me"],
+    explanation: "Le **Cloud Integration Automation Service (CIAS)** est un outil essentiel pour simplifier et automatiser l'intégration technique entre les différentes solutions cloud de SAP (comme l'intégration entre SAP S/4HANA Cloud et SAP SuccessFactors). L'accès principal à ce service se fait via deux plateformes : **SAP Cloud ALM** (Application Lifecycle Management) (A), qui est la solution de gestion du cycle de vie des applications cloud de SAP, et **SAP for Me** (B), qui est le portail central pour interagir avec SAP, y compris les licences, les contrats et les services d'automatisation. (Cloud Operations, Integration)"
+},
+{
+    question: "18-Which editing options are available in the dunning proposal list? (3 correct answers)",
+    type: "multiple",
+    options: ["A. Change the dunning charges", "B. Editing the dunning texts", "C. Edit dunning blocks at account level", "D. Edit dunning blocks at line item level", "E. Change the dunning level of an open item"],
+    correct: ["A. Change the dunning charges", "C. Edit dunning blocks at account level", "D. Edit dunning blocks at line item level"],
+    explanation: "Une fois que le **Programme de Relance** (Dunning Program) génère une **proposition de relance** (Dunning Proposal) via l'application **Manage Dunning Proposals**, l'utilisateur a la possibilité de la modifier avant l'impression finale. Les options d'édition permettent d'ajuster des éléments précis : (A) Modifier les **frais de relance** (Dunning Charges) calculés. (C et D) Ajouter ou supprimer un **blocage de relance** (Dunning Block), soit pour le compte client complet (Account Level), soit pour une seule ligne de facture (Line Item Level). (B) Modifier le texte de relance est une tâche de configuration, non d'édition de proposition. (E) Le niveau de relance de la ligne est déterminé par le système et n'est pas modifiable à ce stade. (Accounts Receivable, Dunning)"
+},
+{
+    question: "24-You migrated data from a legacy DB to the target SAP S/4HANA Cloud using a remote HANA DB. Which data migration procedure did you use? (2 correct answers)",
+    type: "multiple",
+    options: ["A. Local SAP S/4HANA Database Schema", "B. Remote SAP HANA Database Schema", "C. Direct connection to an SAP system", "D. Migration using staging tables"],
+    correct: ["B. Remote SAP HANA Database Schema", "D. Migration using staging tables"],
+    explanation: "Le **SAP S/4HANA Migration Cockpit** (Migrate Your Data) offre deux approches principales. L'approche la plus avancée et recommandée pour les gros volumes de données est l'utilisation de **tables de staging** (D). Lorsque ces tables de staging ne se trouvent pas dans la base de données de S/4HANA Cloud elle-même, mais sur une instance externe (Legacy DB), elles sont mises à disposition via un **schéma de base de données HANA distant** (Remote SAP HANA Database Schema) (B). Ces deux options décrivent en fait le même scénario technique : l'utilisation d'une base de données intermédiaire (staging tables) accessible à distance pour préparer les données avant l'importation. (Data Migration)"
+},
+{
+    question: "28-What can be transported with the Export Software Collection app? (3 correct answers)",
+    type: "multiple",
+    options: ["A. A custom form template", "B. A business configuration value", "C. A customer-specific CDS view", "D. A new organizational entity", "E. An adapted Fiori UI"],
+    correct: ["A. A custom form template", "C. A customer-specific CDS view", "E. An adapted Fiori UI"],
+    explanation: "Dans SAP S/4HANA Public Cloud, l'application **Export Software Collection** est utilisée pour transporter les objets de **développement client** (Customizing et Extensions) entre les environnements (par exemple, de Q (Quality) à P (Production)). Ces objets incluent : (A) Les **gabarits de formulaires personnalisés** (Custom form templates). (C) Les objets d'extension comme les **vues CDS spécifiques au client** (Customer-specific CDS views). (E) Les adaptations de l'interface utilisateur Fiori (Adaptations de l'UI Fiori). Les valeurs de configuration (B) et les entités organisationnelles (D) sont transportées avec l'application **Export Customizing Transports** (ou gérées via **Manage Your Solution**). (Cloud Extensibility, Transport Management)"
+},
+{
+    question: "36-If you cannot find a prepackaged solution process that addresses integration requirements, where would you look?",
+    type: "single",
+    options: ["A. SAP Signavio Process", "B. SAP Business Accelerator Hub", "C. SAP Business Technology Platform", "D. SAP Discovery Center", "E. SAP Cloud ALM"],
+    correct: ["B. SAP Business Accelerator Hub"],
+    explanation: "Lorsqu'un processus d'intégration prédéfini (prepackaged) est introuvable, il faut se tourner vers la source de documentation et de spécification technique pour construire l'intégration soi-même. Le **SAP Business Accelerator Hub** (B) (anciennement SAP API Business Hub) est la plateforme centrale où SAP publie la documentation technique pour ses produits, y compris les **API** (Application Programming Interfaces) des applications Cloud, les **événements métier** (Business Events) et les **modèles d'intégration** (Integration Templates). C'est la référence pour identifier les points d'entrée et de sortie nécessaires à la construction d'une intégration spécifique ou d'une extension. (Integration, Cloud Architecture)"
+},
+//test blanc 2
+{
+    question: "10-What is the role of the valuation method in the foreign currency valuation of accounts payable? (3 correct answers)",
+    type: "multiple",
+    options: ["A. Define the posting and reversal date for the valuation posting", "B. Define the document type for the valuation posting", "C. Define the valuation procedure", "D. Define the exchange rate type", "E. Determine the G/L accounts for the valuation posting"],
+    correct: ["B. Define the document type for the valuation posting", "C. Define the valuation procedure", "D. Define the exchange rate type"],
+    explanation: "La **Méthode d'Évaluation** (Valuation Method) est l'ensemble des règles qui dictent comment l'évaluation des devises étrangères doit être effectuée. Elle est configurée via l'application **Configure Valuation Methods**. Elle contrôle directement : (C) La **Procédure d'Évaluation** (Valuation Procedure) (ex: Principe du Coût le Plus Bas ou Perte Imminente). (D) Le **Type de Taux de Change** (Exchange Rate Type) à utiliser (ex: taux moyen, taux de vente). (B) Le **Type de Document** (Document Type) que le programme d'évaluation (Foreign Currency Valuation) doit utiliser pour enregistrer les gains/pertes latents (ex: 'UE' pour l'évaluation). L'option (E) est fausse car la détermination des comptes G/L (Gains/Pertes) est gérée par une étape de configuration distincte (Configuration des Substitutions) liée aux groupes de préparation de bilan (Balance Sheet Preparation Group). L'option (A) est fausse car les dates sont saisies lors de l'exécution (Run) de l'application **Perform Foreign Currency Valuation**. (Period End Closing, Accounts Payable)"
+},
+{
+    question: "14-How do you capture a value, error message, or label that is static on the screen when recording new actions? (Test Automation)",
+    type: "single",
+    options: ["A. Capture button", "B. Read button", "C. Check button", "D. Copy button"],
+    correct: ["C. Check button"],
+    explanation: "Dans le **Test Automation Tool** (Manage Automated Tests), lorsque vous enregistrez un script de test, la fonction 'Check' (Vérifier) est utilisée pour capturer et valider l'existence ou la valeur d'un élément **statique** à l'écran, comme un message d'erreur spécifique, un libellé fixe ou une valeur calculée. Cela permet de s'assurer que l'exécution du test (Test Execution) confirme le résultat attendu. Ce 'Check' est fondamental pour l'étape de validation d'un scénario de test automatisé. (Test Automation)"
+},
+{
+    question: "15-What does the asset class determine? (3 correct answers)",
+    type: "multiple",
+    options: ["A. The G/L accounts for asset transactions", "B. The inventory number", "C. The default depreciation key", "D. The balance sheet structure", "E. The asset number"],
+    correct: ["A. The G/L accounts for asset transactions", "C. The default depreciation key", "D. The balance sheet structure"],
+    explanation: "La **Classe d'Immobilisation** (Asset Class) est le critère d'organisation le plus important dans la comptabilité des immobilisations (Asset Accounting). Elle contrôle la structure : (A) Elle lie l'immobilisation aux **Comptes du Grand Livre** (G/L accounts) pour toutes les transactions (acquisition, amortissement, cession) via le **Compte de Bilan** (Balance Sheet Account). (C) Elle fournit la **Clé d'Amortissement** (Depreciation Key) par défaut pour les différents domaines d'évaluation. (D) Elle dicte la classification de l'immobilisation dans le **Bilan** (Balance Sheet Structure), car une classe est toujours liée à un unique compte de bilan. L'option (E) est fausse, car la numérotation des immobilisations est gérée par la détermination des numéros (Number Range) et non par la classe elle-même. (Asset Accounting, Master Data)"
+},
+{
+    question: "24-In SAP Central Business Configuration, which activities can you perform in the Product-Specific Configuration Phase? (3 correct answers)",
+    type: "multiple",
+    options: ["A. Create new scope items", "B. Add new sales organizations", "C. Add blocking reasons for billing", "D. Modify building blocks", "E. Change approval thresholds"],
+    correct: ["B. Add new sales organizations", "C. Add blocking reasons for billing", "E. Change approval thresholds"],
+    explanation: "Le processus d'implémentation dans le **SAP Central Business Configuration (CBC)** est divisé en plusieurs phases. La phase **Product-Specific Configuration** (Configuration Spécifique au Produit) est l'endroit où le travail de configuration fonctionnelle détaillé est effectué, en utilisant l'application **Manage Your Solution** pour peaufiner les paramètres. Les activités typiques à ce stade incluent : (B) La création de nouvelles entités organisationnelles (comme les **Sales Organizations** ou les **Centres de Coûts**). (C) La définition des paramètres fonctionnels de base (comme les **raisons de blocage** pour la facturation). (E) Le réglage des paramètres métier comme les **seuils d'approbation** (Approval Thresholds) pour les workflows. 'Create new scope items' (A) est une activité de la phase **Scope and Organizational Structure**. 'Modify building blocks' (D) est faux, car les *Building Blocks* sont des composants de la méthodologie non modifiables par l'utilisateur. (SAP Central Business Configuration, Implementation)"
+},
+{
+    question: "26-How can you process recurring entries? (3 correct answers)",
+    type: "multiple",
+    options: ["A. You can create a recurring entry without defining a recurrence start date", "B. You can post recurring entries only through the recurring entry program", "C. You can schedule recurring entries to start automatically", "D. You can post recurring entries in standard posting apps selecting the document type RE", "E. You can create a recurring invoice entry based on a template invoice"],
+    correct: ["B. You can post recurring entries only through the recurring entry program", "C. You can schedule recurring entries to start automatically", "E. You can create a recurring invoice entry based on a template invoice"],
+    explanation: "Les **Écritures Récurrentes** (Recurring Entries) sont gérées dans l'application **Manage Recurring Journal Entries** pour créer des pièces comptables automatiques. (B) Elles ne peuvent être générées et comptabilisées que par le **Programme d'Écriture Récurrente** (Recurring Entry Program) (ou une tâche planifiée correspondante), car le système doit gérer la récurrence, les dates, et le dernier cycle. (C) Le programme peut être configuré pour s'exécuter de façon **automatique** (Scheduled) selon la fréquence définie. (E) Un modèle d'écriture récurrente est basé sur une **pièce comptable existante** (template invoice/journal entry) pour assurer l'exactitude des imputations. L'option (D) est fausse car vous ne créez que le **modèle** (document type 'RE') dans l'application standard, mais c'est le **programme** qui crée la pièce comptable finale (document type 'SA', 'KR', etc.). (General Ledger Accounting, Period End Closing)"
+},
+{
+    question: "35-What is the result of an automatic payment run? (3 correct answers)",
+    type: "multiple",
+    options: ["A. Payment plan", "B. Payment blocks", "C. Payment log", "D. Payment documents", "E. Payment media"],
+    correct: ["C. Payment log", "D. Payment documents", "E. Payment media"],
+    explanation: "Une fois que le **Programme de Paiement Automatique** (APP) est exécuté via l'application **Manage Automatic Payments** et que la phase de paiement est lancée, il génère les trois résultats suivants : (C) Un **Journal des Paiements** (Payment log) détaillé pour la traçabilité. (D) Les **Pièces Comptables de Paiement** (Payment documents) (ou Journal Entries) pour enregistrer les sorties de trésorerie en FI. (E) Le **Support de Paiement** (Payment media) (le fichier) qui est transmis à la banque pour exécuter le virement réel. 'Payment plan' (A) et 'Payment blocks' (B) sont des étapes ou des données d'entrée, pas le résultat final de l'exécution. (Accounts Payable, Treasury)"
+},
+{
+    question: "40-Which editing options are available in the dunning proposal list? (3 correct answers)",
+    type: "multiple",
+    options: ["A. Change the dunning charges", "B. Editing the dunning texts", "C. Edit dunning blocks at account level", "D. Edit dunning blocks at line item level", "E. Change the dunning level of an open item"],
+    correct: ["A. Change the dunning charges", "C. Edit dunning blocks at account level", "D. Edit dunning blocks at line item level"],
+    explanation: "Une fois que le Programme de Relance (Dunning Program) génère la proposition de relance (Dunning Proposal) via l'application **Manage Dunning Proposals**, l'utilisateur doit la valider. Les options d'édition permettent un ajustement humain avant la génération des avis : (A) Modifier les **frais de relance** (Dunning Charges) calculés, par exemple pour les annuler en cas de bonne relation client. (C) Ajouter un **blocage de relance** (Dunning Block) au niveau du **compte client** (Account Level) si un litige global est en cours. (D) Ajouter un **blocage** uniquement sur une **ligne de facture** (Line Item Level) si le litige ne concerne qu'un seul poste non soldé. (Accounts Receivable, Dunning)"
+}
+    ];
+}
+
+
+        // =====================================================================================
+        // FONCTIONS DE GESTION DE VUES ET DE DONNÉES
+        // =====================================================================================
+
+        function switchView(viewId) {
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('admin-view').classList.add('hidden');
+
+            document.getElementById(viewId).classList.remove('hidden');
+
+            if (viewId === 'admin-view') {
+                renderAdminPanel();
+            }
+        }
+
+        // Utility function to shuffle an array
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Chargement du QuizData et du progrès utilisateur
+        function loadQuizData() {
+            // 1. Charger les questions
+            const storedData = localStorage.getItem('quizData');
+            if (storedData) {
+                try {
+                    quizData = JSON.parse(storedData);
+                } catch (e) {
+                    console.error("Erreur lors du chargement de localStorage (quizData). Utilisation des données par défaut.", e);
+                    quizData = getInitialQuizData();
+                }
+            } else {
+                quizData = getInitialQuizData();
+            }
+
+            // Randomize options for each question
+            quizData.forEach(question => {
+                if (question.options && Array.isArray(question.options)) {
+                    shuffleArray(question.options);
+                }
+            });
+
+            totalQuestions = quizData.length;
+
+            // 2. Charger la progression utilisateur
+            const storedProgress = localStorage.getItem('userProgress');
+            if (storedProgress) {
+                try {
+                    userProgress = JSON.parse(storedProgress);
+                } catch (e) {
+                    console.error("Erreur lors du chargement de localStorage (userProgress). Réinitialisation de la progression.", e);
+                    userProgress = {};
+                }
+            } else {
+                userProgress = {};
+            }
+        }
+
+        // Sauvegarde de la progression utilisateur
+        function saveUserProgress() {
+            localStorage.setItem('userProgress', JSON.stringify(userProgress));
+        }
+
+        // NOUVEAU: Fonction déclenchée par le bouton de réinitialisation pour afficher la confirmation
+        function promptResetQuiz() {
+            // Réinitialise la modal pour le contenu de confirmation
+            const modalContentText = document.getElementById('modal-content-text');
+            modalContentText.innerHTML = `
+        <p class="text-lg font-semibold text-gray-800">Êtes-vous sûr de vouloir réinitialiser tout l'historique de vos réponses ?</p>
+        <p class="text-red-600 mt-2">Cette action est <span class="font-bold">irréversible</span> et votre progression actuelle sera perdue.</p>
+        <div id="modal-button-container" class="flex justify-end space-x-3 mt-6">
+            <button onclick="closeMessageModal()" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition font-medium">
+                Annuler
+            </button>
+            <button onclick="resetQuizProgress()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium">
+                Confirmer la Réinitialisation
+            </button>
+        </div>
+    `;
+            showMessageModal("Confirmation de Réinitialisation", modalContentText.innerHTML, false);
+        }
+
+        // NOUVEAU: Logique de réinitialisation après confirmation
+        function resetQuizProgress() {
+            closeMessageModal(); // Ferme la modal de confirmation
+
+            localStorage.removeItem('userProgress');
+            userProgress = {};
+            currentScore = 0;
+
+            // Redessine le quiz pour appliquer l'état initial
+            renderQuiz();
+
+            // Affiche une modal de succès
+            showMessageModal(
+                "Réinitialisation Effectuée",
+                '<p class="text-green-600 font-semibold">L\'historique du quiz a été réinitialisé avec succès !</p>',
+                true // Afficher le bouton de fermeture par défaut
+            );
+        }
+
+        // =====================================================================================
+        // LOGIQUE DU QUIZ
+        // =====================================================================================
+
+        function calculateScore() {
+            let score = 0;
+            quizData.forEach((q, qIndex) => {
+                const progress = userProgress[qIndex];
+                if (progress && progress.isCorrect) {
+                    score++;
+                }
+            });
+            return score;
+        }
+
+        function updateScoreDisplay() {
+            currentScore = calculateScore();
+            const scoreEl = document.getElementById('score-display');
+            if (scoreEl) {
+                scoreEl.textContent = `Score: ${currentScore} / ${totalQuestions}`;
+            }
+        }
+
+        function renderChapterNav() {
+            const navContainer = document.getElementById('nav-links-container');
+            if (!navContainer) return;
+
+            navContainer.innerHTML = '';
+
+            chapterBreaks.forEach(chapter => {
+                const link = document.createElement('a');
+                link.href = `#${chapter.anchor}`;
+                link.textContent = chapter.title.split(': ')[0];
+                link.title = chapter.title;
+                link.className = 'nav-link bg-indigo-50 text-indigo-700 font-semibold text-center shadow-sm';
+                navContainer.appendChild(link);
+            });
+        }
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+
+            loadQuizData();
+            updateScoreDisplay();
+            renderChapterNav();
+
+            let currentChapterIndex = 0;
+
+            quizData.forEach((q, qIndex) => {
+                const progress = userProgress[qIndex] || { answered: false, userSelections: [], isCorrect: false };
+
+                // Ajouter le titre du chapitre si c'est le début d'un nouveau chapitre
+                if (currentChapterIndex < chapterBreaks.length && chapterBreaks[currentChapterIndex].start === qIndex) {
+                    const chapter = chapterBreaks[currentChapterIndex];
+                    const chapterTitleHtml = `
+                <h2 id="${chapter.anchor}" class="text-3xl font-extrabold text-indigo-700 mt-10 mb-4 pt-4 border-b-2 border-indigo-300">
+                    ${chapter.title}
+                </h2>
+            `;
+                    container.innerHTML += chapterTitleHtml;
+                    currentChapterIndex++;
+                }
+
+                const questionHtml = `
+            <div id="q-${qIndex}" class="question-card p-4 md:p-6 bg-white rounded-xl border border-gray-200 ${progress.answered ? (progress.isCorrect ? 'bg-custom-green border-custom-green' : 'bg-custom-red border-custom-red') : ''}">
+                <p class="font-semibold text-gray-700 mb-4 text-lg">
+                    ${qIndex + 1}. ${q.question}
+                    ${q.type === 'multiple' ? '<span class="text-sm font-normal text-indigo-500 italic">(Plusieurs réponses possibles)</span>' : ''}
+                </p>
+                <div class="options-container space-y-3">
+                    ${q.options.map((option, oIndex) => {
+                    const isSelected = progress.userSelections.includes(option.trim());
+                    const isDisabled = progress.answered;
+                    const isCorrectOption = q.correct.includes(option.trim());
+
+                    let labelClasses = 'option-label flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors duration-150 bg-white';
+
+                    if (progress.answered) {
+                        if (isSelected) {
+                            labelClasses = isCorrectOption
+                                ? 'bg-custom-green border-custom-green flex items-center p-3 rounded-lg border'
+                                : 'bg-custom-red border-custom-red flex items-center p-3 rounded-lg border';
+                        } else if (isCorrectOption) {
+                            // Afficher la bonne réponse manquée
+                            labelClasses = 'bg-custom-green border-dashed border-2 border-green-400 flex items-center p-3 rounded-lg border';
+                        } else {
+                            labelClasses = 'bg-white flex items-center p-3 rounded-lg border border-gray-200';
+                        }
+                    }
+
+                    return `
+                            <label for="q${qIndex}o${oIndex}" class="${labelClasses}">
+                                <input 
+                                    type="${q.type === 'single' ? 'radio' : 'checkbox'}" 
+                                    id="q${qIndex}o${oIndex}" 
+                                    name="q${qIndex}" 
+                                    value="${option.trim()}" 
+                                    class="form-${q.type === 'single' ? 'radio' : 'checkbox'} text-indigo-600 focus:ring-indigo-500 h-4 w-4"
+                                    ${isSelected ? 'checked' : ''}
+                                    ${isDisabled ? 'disabled' : ''}
+                                >
+                                <span class="ml-3 text-gray-800">${option}</span>
+                            </label>
+                        `;
+                }).join('')}
+                </div>
+                <div class="flex flex-wrap gap-3 mt-4">
+                    <button 
+                        onclick="checkAnswer(${qIndex})" 
+                        id="btn-${qIndex}" 
+                        class="px-6 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition duration-150 shadow-md disabled:opacity-50"
+                        ${progress.answered ? 'disabled' : ''}
+                    >
+                        Vérifier la réponse
+                    </button>
+                    <button 
+                        onclick="showExplanation(${qIndex})" 
+                        id="exp-btn-${qIndex}" 
+                        class="px-6 py-2 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition duration-150 shadow-md"
+                    >
+                        Explication
+                    </button>
+                </div>
+                <div id="feedback-${qIndex}" class="mt-3 text-sm font-medium ${progress.answered ? '' : 'hidden'}">
+                    ${progress.answered ? (progress.isCorrect ? '<span class="text-green-600">Correct !</span>' : generateFeedbackHtml(qIndex, q, progress.userSelections)) : ''}
+                </div>
+            </div>
+        `;
+                container.innerHTML += questionHtml;
+            });
+        }
+
+        function generateFeedbackHtml(qIndex, question, userSelections) {
+            if (userProgress[qIndex] && userProgress[qIndex].isCorrect) {
+                return '<span class="text-green-600">Correct !</span>';
+            }
+
+            const correctAnswersHtml = question.correct.map(answer =>
+                `<span class="font-bold">${answer}</span>`
+            ).join(' <span class="mx-1">&bull;</span> ');
+
+            return `
+        <span class="text-red-600">Faux. Veuillez revoir la réponse.</span>
+        <div class="mt-2 p-2 bg-red-100 rounded-lg border border-red-300">
+            <span class="font-semibold text-gray-800">Réponse(s) correcte(s) :</span>
+            <p class="text-red-700">${correctAnswersHtml}</p>
+        </div>
+    `;
+        }
+
+        function checkAnswer(qIndex) {
+            const question = quizData[qIndex];
+            const questionEl = document.getElementById(`q-${qIndex}`);
+            const optionsContainer = questionEl.querySelector('.options-container');
+            const options = Array.from(optionsContainer.querySelectorAll(`input[name="q${qIndex}"]`));
+            const checkButton = document.getElementById(`btn-${qIndex}`);
+
+            if (checkButton.disabled) return;
+
+            let userSelections = options
+                .filter(input => input.checked)
+                .map(input => input.value);
+
+            // Vérification de la correction
+            const isCorrect = question.correct.length === userSelections.length &&
+                question.correct.every(val => userSelections.includes(val));
+
+            // Mise à jour et sauvegarde de la progression
+            userProgress[qIndex] = {
+                answered: true,
+                userSelections: userSelections,
+                isCorrect: isCorrect
+            };
+            saveUserProgress();
+
+            // Redessiner uniquement la question pour appliquer les classes et le feedback
+            renderQuestion(qIndex);
+            updateScoreDisplay();
+        }
+
+        // Fonction pour rendre une seule question (utilisée après la vérification)
+        function renderQuestion(qIndex) {
+            const question = quizData[qIndex];
+            const progress = userProgress[qIndex] || { answered: false, userSelections: [], isCorrect: false };
+            const questionEl = document.getElementById(`q-${qIndex}`);
+            const checkButton = document.getElementById(`btn-${qIndex}`);
+            const feedbackEl = document.getElementById(`feedback-${qIndex}`);
+
+            // Appliquer les styles de carte
+            questionEl.classList.remove('bg-custom-green', 'border-custom-green', 'bg-custom-red', 'border-custom-red', 'bg-white');
+            questionEl.classList.add(progress.isCorrect ? 'bg-custom-green' : 'bg-custom-red');
+            questionEl.classList.add(progress.isCorrect ? 'border-custom-green' : 'border-custom-red');
+
+            // Afficher le feedback
+            feedbackEl.innerHTML = generateFeedbackHtml(qIndex, question, progress.userSelections);
+            feedbackEl.classList.remove('hidden');
+
+            // Désactiver le bouton de vérification
+            checkButton.disabled = true;
+
+            // Mise à jour des options dans le DOM (pour les classes et désactivation)
+            const optionsContainer = questionEl.querySelector('.options-container');
+            const options = Array.from(optionsContainer.querySelectorAll(`input[name="q${qIndex}"]`));
+
+            options.forEach(input => {
+                const optionValue = input.value;
+                const isCorrectOption = question.correct.includes(optionValue);
+                const isSelected = input.checked;
+                const label = input.closest('label');
+
+                // Nettoyer les classes non persistantes
+                label.classList.remove('bg-custom-green', 'border-custom-green', 'bg-custom-red', 'border-custom-red', 'bg-gray-50', 'bg-white', 'border-dashed', 'border-2', 'border-green-400');
+
+                input.disabled = true;
+
+                if (isSelected) {
+                    label.classList.add(isCorrectOption ? 'bg-custom-green' : 'bg-custom-red');
+                    label.classList.add(isCorrectOption ? 'border-custom-green' : 'border-custom-red');
+                } else if (isCorrectOption) {
+                    // Afficher la bonne réponse non sélectionnée si la réponse globale est fausse
+                    if (!progress.isCorrect) {
+                        label.classList.add('bg-custom-green', 'border-dashed', 'border-2', 'border-green-400');
+                    }
+                }
+                if (!label.classList.contains('bg-custom-green') && !label.classList.contains('bg-custom-red')) {
+                    label.classList.add('bg-white');
+                }
+            });
+
+        }
+
+        // =====================================================================================
+        // LOGIQUE DE L'ADMINISTRATION
+        // =====================================================================================
+
+        function renderAdminPanel() {
+            const adminContent = document.getElementById('admin-content');
+            adminContent.innerHTML = `
+        <h3 class="text-2xl font-bold text-gray-700 mb-6 border-b pb-2">Liste des Questions</h3>
+        <ul id="question-list" class="space-y-2 max-h-[60vh] overflow-y-auto p-2 bg-gray-50 rounded-lg">
+            ${quizData.map((q, index) => `
+                <li class="p-3 bg-white rounded-lg border border-gray-200 flex justify-between items-center hover:bg-indigo-50 cursor-pointer transition-colors duration-150">
+                    <span class="text-sm font-medium text-gray-800 truncate">${index + 1}. ${q.question}</span>
+                    <button 
+                        class="text-xs px-3 py-1 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 font-semibold ml-4"
+                        onclick="editQuestionExplanation(${index})"
+                    >
+                        Éditer
+                    </button>
+                </li>
+            `).join('')}
+        </ul>
+        
+        <div id="explanation-editor" class="mt-8 hidden">
+            <!-- Le contenu de l'éditeur sera injecté ici lors de l'édition -->
+        </div>
+    `;
+            // Assure que l'éditeur est caché initialement
+            document.getElementById('explanation-editor').innerHTML = '';
+        }
+
+        function editQuestionExplanation(qIndex) {
+            currentlyEditingIndex = qIndex;
+            const question = quizData[qIndex];
+
+            const editorHtml = `
+        <h3 class="text-xl font-bold text-gray-700 mb-4">Éditer l'Explication de la Question ${qIndex + 1}</h3>
+        <p id="editor-q-text" class="italic text-gray-600 mb-4 bg-gray-100 p-3 rounded-lg border border-gray-200">${question.question}</p>
+        
+        <label for="explanation-textarea" class="block text-sm font-medium text-gray-700 mb-2">Nouvelle Explication (Markdown accepté)</label>
+        <textarea id="explanation-textarea" rows="8" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">${question.explanation || ''}</textarea>
+        
+        <div class="flex flex-wrap gap-4 mt-4">
+            <button 
+                onclick="saveExplanation()" 
+                id="save-exp-btn" 
+                class="px-6 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition duration-150 shadow-md"
+            >
+                Sauvegarder
+            </button>
+            <button 
+                onclick="renderAdminPanel()" 
+                class="px-6 py-2 bg-gray-400 text-white font-medium rounded-lg hover:bg-gray-500 transition duration-150 shadow-md"
+            >
+                Annuler
+            </button>
+        </div>
+    `;
+
+            document.getElementById('explanation-editor').innerHTML = editorHtml;
+            document.getElementById('explanation-editor').classList.remove('hidden');
+            document.getElementById('question-list').classList.add('hidden');
+            document.getElementById('admin-view').scrollTop = 0;
+        }
+
+        function saveExplanation() {
+            if (currentlyEditingIndex === -1) {
+                console.error("Aucune question sélectionnée pour la sauvegarde.");
+                return;
+            }
+
+            const newExplanation = document.getElementById('explanation-textarea').value.trim();
+
+            quizData[currentlyEditingIndex].explanation = newExplanation;
+
+            // Persistance des questions mises à jour 
+            localStorage.setItem('quizData', JSON.stringify(quizData));
+
+            // Remplacement de window.alert() par une modal de succès
+            showMessageModal(
+                "Sauvegarde Effectuée",
+                `<p class="text-green-600 font-semibold">Explication de la Question ${currentlyEditingIndex + 1} sauvegardée avec succès !</p>`,
+                true
+            );
+
+            // Retour à la liste des questions
+            currentlyEditingIndex = -1;
+            renderAdminPanel();
+            document.getElementById('question-list').classList.remove('hidden');
+        }
+
+
+        // =====================================================================================
+        // LOGIQUE DE LA MODAL (UNIFIÉE POUR MESSAGES ET EXPLICATIONS)
+        // =====================================================================================
+
+        // NOUVEAU: Fonction pour afficher un message/explication dans la modal
+        function showMessageModal(title, content, showCloseButton = true) {
+            const modal = document.getElementById('message-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalContentText = document.getElementById('modal-content-text');
+            const closeBtn = modal.querySelector('.close-btn');
+
+            modalTitle.textContent = title;
+            modalContentText.innerHTML = content;
+
+            // Gère l'affichage du bouton de fermeture (utile pour les confirmations)
+            closeBtn.style.display = showCloseButton ? 'block' : 'none';
+
+            // S'assurer que le bouton de fermeture par défaut est retiré s'il y a des boutons personnalisés
+            if (modalContentText.querySelector('#modal-button-container')) {
+                closeBtn.style.display = 'none';
+            }
+
+            modal.style.display = 'block';
+        }
+
+        // NOUVEAU: Fonction pour fermer la modal
+        function closeMessageModal() {
+            document.getElementById('message-modal').style.display = 'none';
+            // Nettoyer les boutons de confirmation après fermeture
+            const buttonContainer = document.getElementById('modal-content-text').querySelector('#modal-button-container');
+            if (buttonContainer) buttonContainer.remove();
+        }
+
+        // Ancienne fonction showExplanation, mise à jour pour utiliser showMessageModal
+        function showExplanation(qIndex) {
+            const question = quizData[qIndex];
+            const title = `Explication de la Question ${qIndex + 1}`;
+            const content = `
+        <p class="font-semibold text-lg text-gray-800 mb-2">${question.question}</p>
+        <div class="bg-gray-100 p-3 rounded-lg border border-gray-200">
+            <h5 class="font-bold text-indigo-600 mb-1">Détails:</h5>
+            <p>${question.explanation ? question.explanation.replace(/\n/g, '<br>') : 'Aucune explication n\'est encore disponible pour cette question.'}</p>
+        </div>
+    `;
+            showMessageModal(title, content);
+        }
+
+
+        // =====================================================================================
+        // INITIALISATION
+        // =====================================================================================
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Lie la fonction de fermeture de la modal au clic sur le bouton de fermeture
+            document.getElementById('message-modal').querySelector('.close-btn').onclick = closeMessageModal;
+
+            // Lie la fonction de fermeture de la modal au clic en dehors de la modal
+            window.onclick = function (event) {
+                const modal = document.getElementById('message-modal');
+                if (event.target == modal) {
+                    closeMessageModal();
+                }
+            }
+
+            loadQuizData();
+            renderQuiz();
+            switchView('quiz-view');
+        });
+    </script>
+
+</body>
+
+</html>
