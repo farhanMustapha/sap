@@ -181,17 +181,34 @@ function resetHistory() {
 
 // --- UI Logic ---
 
+// --- UI Logic ---
+
 function initUI() {
     // Navigation
-    document.getElementById('btn-global').addEventListener('click', () => setMode('global'));
-    document.getElementById('btn-incorrect').addEventListener('click', () => setMode('incorrect'));
+    document.getElementById('btn-global').addEventListener('click', () => { setMode('global'); closeSidebar(); });
+    document.getElementById('btn-incorrect').addEventListener('click', () => { setMode('incorrect'); closeSidebar(); });
     document.getElementById('btn-reset-data').addEventListener('click', resetHistory);
     document.getElementById('btn-back-global').addEventListener('click', () => setMode('global'));
+
+    // Mobile Sidebar
+    document.getElementById('menu-toggle').addEventListener('click', openSidebar);
+    document.getElementById('menu-close').addEventListener('click', closeSidebar);
+    document.getElementById('sidebar-overlay').addEventListener('click', closeSidebar);
 
     // Quiz Navigation
     document.getElementById('btn-prev').addEventListener('click', prevQuestion);
     document.getElementById('btn-next').addEventListener('click', nextQuestion);
     document.getElementById('btn-validate').addEventListener('click', validateCurrent);
+}
+
+function openSidebar() {
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('sidebar-overlay').classList.add('open');
+}
+
+function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebar-overlay').classList.remove('open');
 }
 
 function renderSidebar() {
@@ -202,7 +219,7 @@ function renderSidebar() {
         const btn = document.createElement('button');
         btn.className = 'nav-btn';
         btn.innerHTML = `<span class="material-icons">library_books</span> ${ch.name}`;
-        btn.onclick = () => setMode('chapter', ch.id);
+        btn.onclick = () => { setMode('chapter', ch.id); closeSidebar(); };
         list.appendChild(btn);
     });
 
@@ -230,9 +247,17 @@ function setMode(mode, chapterId = null) {
             return h && !h.isCorrect;
         });
         document.getElementById('btn-incorrect').classList.add('active');
+
+        // RETRY LOGIC: Clear user answers for these questions to allow re-practice
+        STATE.filteredQuestions.forEach(q => {
+            if (STATE.userAnswers[q.uid]) {
+                delete STATE.userAnswers[q.uid];
+            }
+        });
+
     } else if (mode === 'chapter') {
         STATE.filteredQuestions = STATE.chapters.find(c => c.id === chapterId).questions;
-        // Highlight chapter btn? (Need ref to element, skip for now complexity)
+        // Highlight chapter btn? (Skip complex DOM finding for now)
     }
 
     renderQuestion();
@@ -260,6 +285,15 @@ function renderQuestion() {
     // Update Header
     document.getElementById('q-chapter-tag').textContent = `Chapitre ${q.chapterId}`;
     document.getElementById('q-number').textContent = `Question ${STATE.currentIndex + 1} / ${STATE.filteredQuestions.length}`;
+
+    // Multi-choice Badge
+    const multiBadge = document.getElementById('q-multi-badge');
+    if (q.multipleChoice) {
+        multiBadge.classList.remove('hidden');
+    } else {
+        multiBadge.classList.add('hidden');
+    }
+
     document.getElementById('global-progress').style.width = `${((STATE.currentIndex + 1) / STATE.filteredQuestions.length) * 100}%`;
     document.getElementById('progress-text').textContent = `${STATE.currentIndex + 1}/${STATE.filteredQuestions.length}`;
 

@@ -7,6 +7,7 @@
     --border-color: #e5e7eb;
     --success-color: #10b981;
     --error-color: #ef4444;
+    --warning-color: #f59e0b;
     --white: #ffffff;
     --sidebar-width: 280px;
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -17,6 +18,8 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    touch-action: manipulation;
+    /* Improves touch response */
 }
 
 body {
@@ -25,11 +28,49 @@ body {
     color: var(--text-main);
     height: 100vh;
     overflow: hidden;
+    /* Prevent body scroll, manage in containers */
 }
 
+/* Layout */
 .app-container {
     display: flex;
     height: 100vh;
+    position: relative;
+}
+
+/* Mobile Header */
+.mobile-header {
+    display: none;
+    align-items: center;
+    padding: 1rem;
+    background: white;
+    border-bottom: 1px solid var(--border-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    z-index: 20;
+}
+
+.mobile-header h1 {
+    font-size: 1.25rem;
+    margin-left: 1rem;
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-main);
+    padding: 0.5rem;
+    border-radius: 50%;
+}
+
+.icon-btn:hover {
+    background-color: var(--secondary-bg);
 }
 
 /* Sidebar */
@@ -40,15 +81,26 @@ body {
     display: flex;
     flex-direction: column;
     padding: 1.5rem;
-    transition: transform 0.3s ease;
+    height: 100vh;
+    overflow-y: auto;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 30;
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
 }
 
 .sidebar-header h2 {
     color: var(--primary-color);
     font-weight: 700;
-    margin-bottom: 2rem;
+    font-size: 1.5rem;
 }
 
+/* Navigation */
 .nav-section {
     margin-bottom: 2rem;
 }
@@ -76,6 +128,7 @@ body {
     font-weight: 500;
     margin-bottom: 0.25rem;
     transition: all 0.2s;
+    text-align: left;
 }
 
 .nav-btn .material-icons {
@@ -102,13 +155,29 @@ body {
     background-color: var(--error-color);
     color: white;
     font-size: 0.75rem;
-    padding: 0.1rem 0.4rem;
+    padding: 0.15rem 0.5rem;
     border-radius: 9999px;
+    font-weight: 600;
 }
 
-#chapter-list {
-    max-height: 400px;
-    overflow-y: auto;
+.danger-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #fef2f2;
+    color: var(--error-color);
+    border: 1px solid #fecaca;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    margin-top: auto;
+}
+
+.danger-btn:hover {
+    background-color: #fee2e2;
 }
 
 /* Main Content */
@@ -119,67 +188,69 @@ body {
     padding: 2rem;
     overflow-y: auto;
     background-color: #f9fafb;
-}
-
-.top-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 2rem;
-}
-
-.progress-container {
-    flex: 1;
-    max-width: 600px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    font-weight: 500;
-}
-
-.progress-bar-wrapper {
-    flex: 1;
-    height: 8px;
-    background-color: var(--border-color);
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.progress-bar {
-    height: 100%;
-    background-color: var(--primary-color);
-    transition: width 0.3s ease;
-}
-
-/* Quiz Area */
-.quiz-container {
-    max-width: 800px;
-    width: 100%;
-    margin: 0 auto;
-}
-
-.question-card {
-    background: var(--white);
-    border-radius: 1rem;
-    padding: 2.5rem;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border-color);
+    height: 100vh;
 }
 
 .question-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 1.5rem;
-    color: var(--text-muted);
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tag {
+    background-color: #e5e7eb;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
     font-size: 0.875rem;
+    color: var(--text-muted);
     font-weight: 500;
 }
 
-.q-tag {
-    background-color: #f3f4f6;
-    padding: 0.25rem 0.75rem;
+.tag.multi-choice {
+    background-color: #fffbeb;
+    color: #b45309;
+    border: 1px solid #fcd34d;
+}
+
+.counter {
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+/* Progress Bar */
+.progress-bar-container {
+    width: 100%;
+    height: 8px;
+    background-color: var(--border-color);
     border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: var(--primary-color);
+    transition: width 0.3s ease;
+}
+
+.progress-label {
+    text-align: right;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+}
+
+/* Question Card */
+.question-card {
+    background: var(--white);
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    margin-bottom: 2rem;
 }
 
 .question-text {
@@ -187,13 +258,13 @@ body {
     line-height: 1.6;
     margin-bottom: 2rem;
     color: #111827;
+    font-weight: 500;
 }
 
 /* Options */
-.options-grid {
+.options-list {
     display: grid;
     gap: 1rem;
-    margin-bottom: 2rem;
 }
 
 .option-item {
@@ -204,6 +275,7 @@ body {
     border-radius: 0.75rem;
     cursor: pointer;
     transition: all 0.2s;
+    background-color: white;
 }
 
 .option-item:hover {
@@ -229,6 +301,7 @@ body {
 .option-marker {
     font-weight: 600;
     margin-right: 1rem;
+    min-width: 1.5rem;
     color: var(--text-muted);
 }
 
@@ -236,105 +309,167 @@ body {
     flex: 1;
 }
 
+.status-icon {
+    margin-left: 0.5rem;
+}
+
 /* Feedback */
 .feedback-area {
-    margin-top: 1.5rem;
-    margin-bottom: 1.5rem;
-    padding: 1rem;
-    border-radius: 0.5rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    background-color: #f8fafc;
+    border: 1px solid var(--border-color);
 }
 
 .feedback-area.correct {
     background-color: #ecfdf5;
-    color: #065f46;
-    border: 1px solid #a7f3d0;
+    border-color: #a7f3d0;
+    color: #064e3b;
 }
 
 .feedback-area.incorrect {
     background-color: #fef2f2;
+    border-color: #fecaca;
     color: #991b1b;
-    border: 1px solid #fecaca;
 }
 
-.hidden {
-    display: none !important;
+.feedback-area h4 {
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
 }
 
-/* Actions */
+/* Buttons */
 .action-bar {
     display: flex;
     justify-content: space-between;
     gap: 1rem;
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border-color);
+    margin-top: auto;
 }
 
-.btn {
+button {
+    font-family: inherit;
+}
+
+.primary-btn,
+.secondary-btn {
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
     border: none;
     font-size: 1rem;
+    transition: all 0.2s;
 }
 
-.btn:disabled {
+.primary-btn {
+    background-color: var(--primary-color);
+    color: white;
+    flex: 2;
+    /* Validate button takes more space on mobile */
+}
+
+.primary-btn:hover {
+    background-color: var(--primary-hover);
+}
+
+.secondary-btn {
+    background-color: white;
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    flex: 1;
+}
+
+.secondary-btn:hover:not(:disabled) {
+    background-color: var(--secondary-bg);
+}
+
+.secondary-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
 
-.btn.primary {
-    background-color: var(--primary-color);
-    color: white;
+/* Utilities */
+.hidden {
+    display: none !important;
 }
 
-.btn.primary:hover:not(:disabled) {
-    background-color: var(--primary-hover);
-}
-
-.btn.secondary {
-    background-color: var(--white);
-    color: var(--text-main);
-    border: 1px solid var(--border-color);
-}
-
-.btn.secondary:hover:not(:disabled) {
-    background-color: var(--secondary-bg);
-}
-
-/* Empty State */
-.empty-state {
-    text-align: center;
-    padding: 4rem;
-    color: var(--text-muted);
-}
-
-.large-icon {
-    font-size: 4rem;
-    color: var(--success-color);
-    margin-bottom: 1rem;
-}
-
-/* Mobile */
 .mobile-only {
     display: none;
 }
 
+/* Overlay */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 25;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+/* RESPONSIVE DESIGN */
 @media (max-width: 768px) {
     .app-container {
         flex-direction: column;
+        padding-top: 60px;
+        /* Space for mobile header */
     }
-    
+
+    .mobile-header {
+        display: flex;
+    }
+
     .sidebar {
-        display: none; /* In v1, just hide sidebar on mobile unless toggled - for simplicity let's stick to simple layout */
         position: fixed;
-        height: 100%;
-        z-index: 100;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        transform: translateX(-100%);
+        /* Hidden by default */
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
     }
-    
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .sidebar-overlay.open {
+        display: block;
+        opacity: 1;
+    }
+
     .mobile-only {
         display: block;
+    }
+
+    .main-content {
+        padding: 1rem;
+        height: auto;
+        /* Allow scroll */
+        min-height: calc(100vh - 60px);
+    }
+
+    .question-card {
+        padding: 1.5rem;
+    }
+
+    .question-text {
+        font-size: 1.1rem;
+    }
+
+    .action-bar {
+        position: sticky;
+        bottom: 0;
+        background: white;
+        padding: 1rem;
+        border-top: 1px solid var(--border-color);
+        margin: 0 -1rem -1rem -1rem;
+        /* Negative margin to stick to edges */
+        box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
     }
 }

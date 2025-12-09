@@ -1,104 +1,113 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QCM Training - SAP</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Font for icons -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>QCM Practice App</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
     <div class="app-container">
+        <!-- Mobile Header -->
+        <header class="mobile-header">
+            <button id="menu-toggle" class="icon-btn"><span class="material-icons">menu</span></button>
+            <h1>QCM App</h1>
+        </header>
+
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <h2>QCM Master</h2>
+                <h2>QCM App</h2>
+                <button id="menu-close" class="icon-btn mobile-only"><span class="material-icons">close</span></button>
             </div>
-            
-            <nav class="sidebar-nav">
-                <div class="nav-section">
-                    <h3>Général</h3>
-                    <button class="nav-btn active" data-mode="global" id="btn-global">
-                        <span class="material-icons">public</span> Global
-                    </button>
-                    <button class="nav-btn" data-mode="incorrect" id="btn-incorrect">
-                        <span class="material-icons">error_outline</span> Incorrects 
-                        <span class="badge" id="incorrect-count">0</span>
-                    </button>
-                    <button class="nav-btn" id="btn-reset-data">
+
+            <div class="nav-section">
+                <h3>Modes</h3>
+                <button id="btn-global" class="nav-btn active">
+                    <span class="material-icons">public</span> Global
+                </button>
+                <button id="btn-incorrect" class="nav-btn">
+                    <span class="material-icons">error_outline</span> Incorrectes
+                    <span id="incorrect-count" class="badge">0</span>
+                </button>
+
+
+                <div class="sidebar-footer">
+                    <button id="btn-reset-data" class="danger-btn">
                         <span class="material-icons">delete_sweep</span> Réinitialiser
                     </button>
                 </div>
 
-                <div class="nav-section">
-                    <h3>Chapitres</h3>
-                    <div id="chapter-list">
-                        <!-- Dynamically populated -->
-                    </div>
+
+            </div>
+
+            <div class="nav-section">
+                <h3>Chapitres</h3>
+                <div id="chapter-list" class="chapter-list">
+                    <!-- Chapters injected here -->
                 </div>
-            </nav>
+            </div>
+
+
         </aside>
+
+        <!-- Overlay for mobile sidebar -->
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
         <!-- Main Content -->
         <main class="main-content">
-            <header class="top-bar">
-                <button id="toggle-sidebar" class="icon-btn mobile-only">
-                    <span class="material-icons">menu</span>
-                </button>
-                <div class="progress-container">
-                    <span>Progression</span>
-                    <div class="progress-bar-wrapper">
-                        <div class="progress-bar" id="global-progress" style="width: 0%"></div>
-                    </div>
-                    <span id="progress-text">0/0</span>
+            <div id="quiz-area">
+                <div class="question-header">
+                    <span id="q-chapter-tag" class="tag">Chapitre 1</span>
+                    <span id="q-number" class="counter">Question 1 / 100</span>
+                    <span id="q-multi-badge" class="tag multi-choice hidden">Plusieurs choix possibles</span>
                 </div>
-            </header>
 
-            <div id="quiz-area" class="quiz-container">
+                <div class="progress-bar-container">
+                    <div id="global-progress" class="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="progress-label">
+                    <span id="progress-text">0/100</span>
+                </div>
+
                 <div class="question-card">
-                    <div class="question-header">
-                        <span class="q-tag" id="q-chapter-tag">Chapitre 1</span>
-                        <span class="q-number" id="q-number">Question 1/50</span>
-                    </div>
-                    
-                    <h2 id="question-text" class="question-text">Loading...</h2>
-                    
-                    <div id="options-container" class="options-grid">
+                    <p id="question-text" class="question-text">Loading...</p>
+
+                    <div id="options-container" class="options-list">
                         <!-- Options injected here -->
                     </div>
+                </div>
 
-                    <div id="feedback-area" class="feedback-area hidden">
-                        <div class="feedback-content">
-                            <h4 id="feedback-title">Réponse Correcte!</h4>
-                            <p id="feedback-explanation">Explanation text goes here.</p>
-                        </div>
-                    </div>
+                <div id="feedback-area" class="feedback-area hidden">
+                    <h4 id="feedback-title">Correct !</h4>
+                    <p id="feedback-explanation">Explication ici...</p>
+                </div>
 
-                    <div class="action-bar">
-                        <button id="btn-prev" class="btn secondary" disabled>Précédent</button>
-                        <button id="btn-validate" class="btn primary">Valider</button>
-                        <button id="btn-next" class="btn secondary">Suivant</button>
-                    </div>
+                <div class="action-bar">
+                    <button id="btn-prev" class="secondary-btn" disabled>Précédent</button>
+                    <button id="btn-validate" class="primary-btn">Valider</button>
+                    <button id="btn-next" class="secondary-btn">Suivant</button>
                 </div>
             </div>
-            
-            <!-- Empty State for Incorrect Mode -->
+
+            <!-- Empty State -->
             <div id="empty-state" class="empty-state hidden">
                 <span class="material-icons large-icon">check_circle</span>
-                <h3>Tout est correct !</h3>
-                <p>Aucune réponse fausse enregistrée pour le moment.</p>
-                <button class="btn primary" id="btn-back-global">Retour au Global</button>
+                <h3>Tout est à jour !</h3>
+                <p>Aucune question incorrecte trouvée ou sélection vide.</p>
+                <button id="btn-back-global" class="primary-btn">Retour au Global</button>
             </div>
-
         </main>
     </div>
 
-    <!-- Data Source -->
+    <!-- Scripts -->
     <script src="tout_les_questions.js"></script>
-    <!-- App Logic -->
     <script src="script.js"></script>
 </body>
+
 </html>
