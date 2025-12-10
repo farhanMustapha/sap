@@ -45,7 +45,7 @@ function loadData() {
     });
 
     keys.forEach(key => {
-        const rawData = window[key];
+        let rawData = window[key];
         // Guess chapter name from variable name
         let name = key.replace('test_', '').replace(/_/g, ' ');
         // Capitalize first letter
@@ -54,6 +54,13 @@ function loadData() {
         // If it ends with number, maybe "Blanc 1"
         if (/\d+$/.test(name)) {
             name = name.replace(/(\d+)$/, ' $1');
+        }
+
+        // DETECT NESTED STRUCTURE (e.g. test_implementation)
+        // Check if the first item has a 'questions' array
+        if (rawData.length > 0 && Array.isArray(rawData[0].questions)) {
+            // Flatten: define rawData as the concatenation of all 'questions' arrays from the sub-chapters
+            rawData = rawData.flatMap(section => section.questions || []);
         }
 
         const normalized = normalizeQuestions(rawData, chapterIndex);
