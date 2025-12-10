@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Blanc 1:40 questions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .progress-container {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            height: 30px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #4CAF50 0%, #8BC34A 100%);
+            height: 100%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .question-number {
+            background: #667eea;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .question-type {
+            background: #ff6b6b;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+
+        .question-text {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateX(5px);
+        }
+
+        .option input[type="checkbox"],
+        .option input[type="radio"] {
+            margin-right: 12px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .option.selected {
+            background: #e3f2fd;
+            border-color: #2196F3;
+        }
+
+        .option.correct {
+            background: #e8f5e9;
+            border-color: #4CAF50;
+        }
+
+        .option.incorrect {
+            background: #ffebee;
+            border-color: #f44336;
+        }
+
+        .explanation-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .explanation-section.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .explanation-header {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .explanation-header::before {
+            content: "💡";
+            margin-right: 8px;
+        }
+
+        .explanation-text {
+            color: #856404;
+            line-height: 1.5;
+        }
+
+        .add-explanation-btn {
+            background: #ffc107;
+            color: #856404;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .add-explanation-btn:hover {
+            background: #ffb300;
+            transform: scale(1.05);
+        }
+
+        .validate-question-btn {
+            background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95em;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .validate-question-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .validate-question-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .validation-status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .validation-status.correct {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .validation-status.incorrect {
+            background: #f44336;
+            color: white;
+        }
+
+        .explanation-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ffc107;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .save-explanation-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .save-explanation-btn:hover {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
+            color: white;
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #2196F3 0%, #03A9F4 100%);
+            color: white;
+        }
+
+        .results-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .results-modal.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .results-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            animation: scaleIn 0.3s ease;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .results-content h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .score-display {
+            font-size: 3em;
+            font-weight: bold;
+            color: #4CAF50;
+            margin: 20px 0;
+        }
+
+        .score-display.fail {
+            color: #f44336;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .question-text {
+                font-size: 1em;
+            }
+
+            .stat-value {
+                font-size: 1.4em;
+            }
+
+            .content {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 Test Blanc SAP S/4HANA</h1>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill">0%</div>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="answeredCount">0</div>
+                        <div class="stat-label">Répondues</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="correctCount">0</div>
+                        <div class="stat-label">Correctes</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalCount">40</div>
+                        <div class="stat-label">Total</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content" id="questionsContainer"></div>
+
+        <div class="action-buttons">
+            <button class="btn btn-success" onclick="validateAnswers()">✓ Valider toutes les réponses</button>
+            <button class="btn btn-warning" onclick="resetQuiz()">↻ Recommencer</button>
+            <button class="btn btn-info" onclick="showResults()">📊 Voir les résultats</button>
+        </div>
+    </div>
+
+    <div class="results-modal" id="resultsModal">
+        <div class="results-content">
+            <h2>Résultats du Test</h2>
+            <div class="score-display" id="scoreDisplay"></div>
+            <p id="scoreMessage"></p>
+            <button class="btn btn-primary" onclick="closeResults()" style="margin-top: 20px;">Fermer</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+        id: 1,
+        text: "You have a bank account in foreign currency. During the period you have posted various deposits to and withdrawals from the account. After the foreign currency valuation run, how does the system evaluate the balance of this account?",
+        options: [
+            { id: "A", text: "In local currency, with the exchange rate valid on the last day of the period." },
+            { id: "B", text: "In foreign currency, with no need for conversion." },
+            { id: "C", text: "In local currency, with the exchange rate valid for each transaction." },
+            { id: "D", text: "In foreign currency, converted to local currency on a statistical ledger." }
+        ],
+        correctAnswers: ["A"],
+        multipleChoice: false
+    },
+    {
+        id: 2,
+        text: "As a pre-closing activity, selected suppliers are to confirm their balances. Which confirmation procedure do you use when a response is expected 'only' in case of discrepancies?",
+        options: [
+            { id: "A", text: "Balance confirmation" },
+            { id: "B", text: "Balance request" },
+            { id: "C", text: "Account statement" },
+            { id: "D", text: "Balance notification" }
+        ],
+        correctAnswers: ["D"],
+        multipleChoice: false
+    },
+    {
+        id: 3,
+        text: "Who should the customer IT Contact provide with administrator authorization when creating use for the SAP S/4HANA Cloud starter system? Note: There are 2 correct answers to this question.",
+        options: [
+            { id: "A", text: "Lead configuration expert" },
+            { id: "B", text: "LoB configuration experts" },
+            { id: "C", text: "Project manager" },
+            { id: "D", text: "Customer LoB experts" }
+        ],
+        correctAnswers: ["A", "B"],
+        multipleChoice: true
+    },
+    {
+        id: 4,
+        text: "How can you identify an asset number as a main asset number?",
+        options: [
+            { id: "A", text: "By the suffix -0 after the asset number" },
+            { id: "B", text: "By the description of the asset" },
+            { id: "C", text: "By the suffix -1 after the asset number" },
+            { id: "D", text: "By the lack of suffix for the asset" }
+        ],
+        correctAnswers: ["A"],
+        multipleChoice: false
+    },
+    {
+        id: 5,
+        text: "What does the valuation area control when you execute a foreign currency valuation run? Note: There are 3 correct answers to this question.",
+        options: [
+            { id: "A", text: "The document type of the valuation posting" },
+            { id: "B", text: "The exchange rate type to calculate the valuation differences" },
+            { id: "C", text: "The valuation procedure" },
+            { id: "D", text: "The posting period of the valuation posting" },
+            { id: "E", text: "The posting mode of the valuation run" }
+        ],
+        correctAnswers: ["A", "B", "C"],
+        multipleChoice: true
+    },
+    {
+        id: 6,
+        text: "Which function in SAP S/4HANA makes it possible to provide segmented financial reporting?",
+        options: [
+            { id: "A", text: "Ledger" },
+            { id: "B", text: "Currency conversion" },
+            { id: "C", text: "Functional area" },
+            { id: "D", text: "Document splitting" }
+        ],
+        correctAnswers: ["D"],
+        multipleChoice: false
+    },
+    {
+        id: 7,
+        text: "If the headquarter organization runs a line of business spin-off in SAP S/4HANA Cloud Public Edition, which two-tier ERP scenario is being used?",
+        options: [
+            { id: "A", text: "Central Services" },
+            { id: "B", text: "Headquarter and Subsidiary" },
+            { id: "C", text: "Supply Chain Ecosystem" },
+            { id: "D", text: "Selective Data Transition" }
+        ],
+        correctAnswers: ["A"],
+        multipleChoice: false
+    },
+    {
+        id: 8,
+        text: "To which object is the posting period variant assigned?",
+        options: [
+            { id: "A", text: "Account type" },
+            { id: "B", text: "Fiscal year variant" },
+            { id: "C", text: "Company Code" },
+            { id: "D", text: "Plant" }
+        ],
+        correctAnswers: ["C"],
+        multipleChoice: false
+    },
+    {
+        id: 9,
+        text: "What are the available methods through which you can fill staging tables in the SAP HANA database of the target system? Note: There are 3 correct answers to this question.",
+        options: [
+            { id: "A", text: "SAP Smart Data Access" },
+            { id: "B", text: "SAP SQL Anywhere" },
+            { id: "C", text: "SAP Data Services" },
+            { id: "D", text: "Customer's ETL tools" },
+            { id: "E", text: "XML or CSV templates" }
+        ],
+        correctAnswers: ["C", "D", "E"],
+        multipleChoice: true
+    },
+    {
+        id: 10,
+        text: "What are some reasons you cannot remove a test process automate from a test plan? Note: There are 2 correct answers to this question.",
+        options: [
+            { id: "A", text: "The test process automate has not been made visible." },
+            { id: "B", text: "The test plan has already been executed." },
+            { id: "C", text: "The test plan user does not have the necessary permission." },
+            { id: "D", text: "Data binding exists with another test process automate." }
+        ],
+        correctAnswers: ["B", "D"],
+        multipleChoice: true
+    }
+            
+        ];
+
+        let userAnswers = {};
+        let userExplanations = {};
+        let validated = false;
+
+        // Load saved data from localStorage
+        function loadProgress() {
+            const savedAnswers = localStorage.getItem('quizAnswers');
+            const savedExplanations = localStorage.getItem('quizExplanations');
+            const savedValidated = localStorage.getItem('quizValidated');
+
+            if (savedAnswers) {
+                userAnswers = JSON.parse(savedAnswers);
+            }
+            if (savedExplanations) {
+                userExplanations = JSON.parse(savedExplanations);
+            }
+            if (savedValidated) {
+                validated = JSON.parse(savedValidated);
+            }
+        }
+
+        // Save progress to localStorage
+        function saveProgress() {
+            localStorage.setItem('quizAnswers', JSON.stringify(userAnswers));
+            localStorage.setItem('quizExplanations', JSON.stringify(userExplanations));
+            localStorage.setItem('quizValidated', JSON.stringify(validated));
+        }
+
+        // Initialize quiz
+        function initQuiz() {
+            loadProgress();
+            renderQuestions();
+            updateProgress();
+        }
+
+        // Render all questions
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            questions.forEach(question => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                questionCard.id = `question-${question.id}`;
+                renderSingleQuestion(question, questionCard);
+                container.appendChild(questionCard);
+            });
+        }
+
+        // Render a single question
+        function renderSingleQuestion(question, questionCard) {
+            const inputType = question.multipleChoice ? 'checkbox' : 'radio';
+            const isValidated = userAnswers[question.id] && userAnswers[question.id].validated;
+            const answers = userAnswers[question.id] && userAnswers[question.id].answers ? userAnswers[question.id].answers : [];
+
+            const optionsHTML = question.options.map(option => {
+                const isChecked = answers.includes(option.id);
+                const optionClass = isValidated || validated ? getOptionClass(question, option.id) : (isChecked ? 'selected' : '');
+
+                return `
+                    <label class="option ${optionClass}">
+                        <input type="${inputType}" 
+                               name="question-${question.id}" 
+                               value="${option.id}"
+                               ${isChecked ? 'checked' : ''}
+                               ${isValidated || validated ? 'disabled' : ''}
+                               onchange="handleAnswer(${question.id}, '${option.id}', ${question.multipleChoice})">
+                        <span>${option.id}. ${option.text}</span>
+                    </label>
+                `;
+            }).join('');
+
+            const typeLabel = question.multipleChoice ? 'Choix Multiple' : 'Choix Unique';
+            const explanation = userExplanations[question.id] || '';
+            const showExplanation = explanation || isValidated || validated;
+
+            // Check if question is answered
+            const hasAnswer = answers.length > 0;
+
+            // Validation status
+            let validationStatusHTML = '';
+            if (isValidated || validated) {
+                const isCorrect = arraysEqual(
+                    answers.slice().sort(),
+                    question.correctAnswers.slice().sort()
+                );
+                validationStatusHTML = `<span class="validation-status ${isCorrect ? 'correct' : 'incorrect'}">
+                    ${isCorrect ? '✓ Correct' : '✗ Incorrect'}
+                </span>`;
+            }
+
+            questionCard.innerHTML = `
+                <div class="question-header">
+                    <div>
+                        <span class="question-number">Question ${question.id}</span>
+                        <span class="question-type">${typeLabel}</span>
+                        ${validationStatusHTML}
+                    </div>
+                </div>
+                <div class="question-text">${question.text}</div>
+                <div class="options">${optionsHTML}</div>
+                ${!isValidated && !validated ? `
+                    <button class="validate-question-btn" 
+                            onclick="validateQuestion(${question.id})"
+                            ${!hasAnswer ? 'disabled' : ''}>
+                        ✓ Valider cette question
+                    </button>
+                ` : ''}
+                <div class="explanation-section ${showExplanation ? 'show' : ''}" id="explanation-${question.id}">
+                    <div class="explanation-header">Explication</div>
+                    <div class="explanation-text" id="explanation-text-${question.id}">
+                        ${explanation || (isValidated || validated ? 'Aucune explication ajoutée.' : '')}
+                    </div>
+                    ${!isValidated && !validated ? `
+                        <button class="add-explanation-btn" onclick="toggleExplanationInput(${question.id})">
+                            ${explanation ? '✏️ Modifier' : '➕ Ajouter une explication'}
+                        </button>
+                        <div id="explanation-input-${question.id}" style="display: none;">
+                            <textarea class="explanation-input" id="textarea-${question.id}" placeholder="Entrez votre explication ici...">${explanation}</textarea>
+                            <button class="save-explanation-btn" onclick="saveExplanation(${question.id})">💾 Enregistrer</button>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        // Handle answer selection
+        function handleAnswer(questionId, optionId, isMultiple) {
+            // Check if question is validated or global validation is done
+            const questionData = userAnswers[questionId];
+            if (validated || (questionData && questionData.validated)) return;
+
+            if (!userAnswers[questionId]) {
+                userAnswers[questionId] = { answers: [], validated: false };
+            }
+
+            if (isMultiple) {
+                const index = userAnswers[questionId].answers.indexOf(optionId);
+                if (index > -1) {
+                    userAnswers[questionId].answers.splice(index, 1);
+                } else {
+                    userAnswers[questionId].answers.push(optionId);
+                }
+            } else {
+                userAnswers[questionId].answers = [optionId];
+            }
+
+            saveProgress();
+            updateProgress();
+            updateOptionStyles(questionId);
+
+            // Enable/disable validate button
+            const validateBtn = document.querySelector(`#question-${questionId} .validate-question-btn`);
+            if (validateBtn) {
+                validateBtn.disabled = userAnswers[questionId].answers.length === 0;
+            }
+        }
+
+        // Update option styles
+        function updateOptionStyles(questionId) {
+            const question = questions.find(q => q.id === questionId);
+            const options = document.querySelectorAll(`#question-${questionId} .option`);
+            const isValidated = validated || (userAnswers[questionId] && userAnswers[questionId].validated);
+
+            options.forEach(option => {
+                const input = option.querySelector('input');
+                if (isValidated) {
+                    option.className = 'option ' + getOptionClass(question, input.value);
+                } else {
+                    option.className = input.checked ? 'option selected' : 'option';
+                }
+            });
+        }
+
+        // Get option class for validation
+        function getOptionClass(question, optionId) {
+            const isCorrect = question.correctAnswers.includes(optionId);
+            const answers = userAnswers[question.id] && userAnswers[question.id].answers ? userAnswers[question.id].answers : [];
+            const isSelected = answers.includes(optionId);
+
+            if (isSelected && isCorrect) return 'correct';
+            if (isSelected && !isCorrect) return 'incorrect';
+            if (!isSelected && isCorrect) return 'correct';
+            return '';
+        }
+
+        // Validate individual question
+        function validateQuestion(questionId) {
+            if (!userAnswers[questionId] || userAnswers[questionId].answers.length === 0) return;
+
+            userAnswers[questionId].validated = true;
+            saveProgress();
+            updateProgress();
+
+            // Re-render just this question
+            const question = questions.find(q => q.id === questionId);
+            const questionCard = document.getElementById(`question-${questionId}`);
+            if (questionCard && question) {
+                renderSingleQuestion(question, questionCard);
+            }
+        }
+
+        // Toggle explanation input
+        function toggleExplanationInput(questionId) {
+            const inputDiv = document.getElementById(`explanation-input-${questionId}`);
+            inputDiv.style.display = inputDiv.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Save explanation
+        function saveExplanation(questionId) {
+            const textarea = document.getElementById(`textarea-${questionId}`);
+            const explanation = textarea.value.trim();
+
+            if (explanation) {
+                userExplanations[questionId] = explanation;
+                document.getElementById(`explanation-text-${questionId}`).textContent = explanation;
+                document.getElementById(`explanation-${questionId}`).classList.add('show');
+                document.getElementById(`explanation-input-${questionId}`).style.display = 'none';
+                saveProgress();
+            }
+        }
+
+        // Update progress bar and stats
+        function updateProgress() {
+            const answeredCount = Object.keys(userAnswers).filter(key =>
+                userAnswers[key].answers && userAnswers[key].answers.length > 0
+            ).length;
+            const correctCount = calculateCorrectAnswers();
+            const totalCount = questions.length;
+            const percentage = Math.round((answeredCount / totalCount) * 100);
+
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressFill').textContent = percentage + '%';
+            document.getElementById('answeredCount').textContent = answeredCount;
+
+            // Show correct count if any question is validated
+            const anyValidated = Object.values(userAnswers).some(q => q.validated) || validated;
+            document.getElementById('correctCount').textContent = anyValidated ? correctCount : '-';
+            document.getElementById('totalCount').textContent = totalCount;
+        }
+
+        // Calculate correct answers
+        function calculateCorrectAnswers() {
+            let correct = 0;
+            questions.forEach(question => {
+                const answers = userAnswers[question.id] && userAnswers[question.id].answers ? userAnswers[question.id].answers : [];
+                if (arraysEqual(answers.slice().sort(), question.correctAnswers.slice().sort())) {
+                    correct++;
+                }
+            });
+            return correct;
+        }
+
+        // Check if arrays are equal
+        function arraysEqual(a, b) {
+            if (a.length !== b.length) return false;
+            for (let i = 0; i < a.length; i++) {
+                if (a[i] !== b[i]) return false;
+            }
+            return true;
+        }
+
+        // Validate all answers
+        function validateAnswers() {
+            validated = true;
+            saveProgress();
+            renderQuestions();
+            updateProgress();
+
+            // Show all explanations
+            questions.forEach(question => {
+                const explSection = document.getElementById(`explanation-${question.id}`);
+                if (explSection) {
+                    explSection.classList.add('show');
+                }
+            });
+        }
+
+        // Reset quiz
+        function resetQuiz() {
+            if (confirm('Êtes-vous sûr de vouloir recommencer le test ? Toutes vos réponses seront effacées.')) {
+                userAnswers = {};
+                userExplanations = {};
+                validated = false;
+                saveProgress();
+                renderQuestions();
+                updateProgress();
+            }
+        }
+
+        // Show results
+        function showResults() {
+            const correctCount = calculateCorrectAnswers();
+            const totalCount = questions.length;
+            const percentage = Math.round((correctCount / totalCount) * 100);
+
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            scoreDisplay.textContent = `${correctCount}/${totalCount} (${percentage}%)`;
+            scoreDisplay.className = percentage >= 50 ? 'score-display' : 'score-display fail';
+
+            const message = percentage >= 80 ? '🎉 Excellent travail !' :
+                percentage >= 60 ? '👍 Bon travail !' :
+                    percentage >= 50 ? '✓ Passable' :
+                        '❌ Besoin de réviser';
+
+            document.getElementById('scoreMessage').textContent = message;
+            document.getElementById('resultsModal').classList.add('show');
+        }
+
+        // Close results modal
+        function closeResults() {
+            document.getElementById('resultsModal').classList.remove('show');
+        }
+
+        // Initialize on page load
+        window.onload = initQuiz;
+    </script>
+</body>
+
+</html>

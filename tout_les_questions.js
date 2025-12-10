@@ -1,7 +1,7 @@
 var test_blanc_1 = [
   {
     id: 1,
-    text: "Which financial statement nodes are part of the calculation for net profit/loss? Note: There are 2 correct answers to this question.",
+    text: "1-Which financial statement nodes are part of the calculation for net profit/loss? Note: There are 2 correct answers to this question.",
     options: [
       { id: "A", text: "Financial Statement Notes" },
       { id: "B", text: "Assets" },
@@ -13,7 +13,7 @@ var test_blanc_1 = [
   },
   {
     id: 2,
-    text: "Why do you create a down-payment request for a customer?",
+    text: "2-Why do you create a down-payment request for a customer?",
     options: [
       { id: "A", text: "To inform the bank of a pending payment." },
       { id: "B", text: "To post the down-payment automatically." },
@@ -25,7 +25,7 @@ var test_blanc_1 = [
   },
   {
     id: 3,
-    text: "The credit profile is used to store which information in the customer master data? Note: There are 2 correct answers to this question.",
+    text: "3-The credit profile is used to store which information in the customer master data? Note: There are 2 correct answers to this question.",
     options: [
       { id: "A", text: "The credit exposure" },
       { id: "B", text: "The scoring rules" },
@@ -37,7 +37,7 @@ var test_blanc_1 = [
   },
   {
     id: 4,
-    text: "A company wants to use the automatic payment program in SAP S/4HANA and ensure that the system uses a specific document type for the generated postings during the payment run. Which configuration setting controls the document type used for payment postings?",
+    text: "4-A company wants to use the automatic payment program in SAP S/4HANA and ensure that the system uses a specific document type for the generated postings during the payment run. Which configuration setting controls the document type used for payment postings?",
     options: [
       { id: "A", text: "The bank determination settings, specifically the paying company codes section." },
       { id: "B", text: "The payment method settings, specifically the note to payee by origin section." },
@@ -49,7 +49,7 @@ var test_blanc_1 = [
   },
   {
     id: 5,
-    text: "A fixed asset you ordered is delivered but is not activated. What could be the reason?",
+    text: "5-A fixed asset you ordered is delivered but is not activated. What could be the reason?",
     options: [
       { id: "A", text: "The asset is only activated upon payment. It is a valuated goods receipt." },
       { id: "B", text: "The asset accountant did not enter the activation date in the asset master record" },
@@ -5033,7 +5033,7 @@ var test_explore = [
       "Form templates",
       "Task tutorial"
     ],
-    correctAnswers: [0, 1, 2],
+    correctAnswers: [1, 2, 4],
     multipleChoice: true
   },
   {
@@ -5236,7 +5236,7 @@ var test_explore = [
   },
   {
     id: 68,
-    chapter: "Chapitre 5: Preparation for Implementation - Cloud Mindset",
+    chapter: "68-Chapitre 5: Preparation for Implementation - Cloud Mindset",
     question: "Which OCM dimension measures user adoption, readiness, and satisfaction post go-live?",
     answers: [
       "Change Effectiveness",
@@ -5249,7 +5249,7 @@ var test_explore = [
   },
   {
     id: 69,
-    chapter: "Chapitre 5: Preparation for Implementation - Cloud Mindset",
+    chapter: "69-Chapitre 5: Preparation for Implementation - Cloud Mindset",
     question: "What is the purpose of a premortem analysis in project management?",
     answers: [
       "To analyze failures after go-live",
@@ -5261,6 +5261,7 @@ var test_explore = [
     multipleChoice: false
   }
 ];
+
 var test_finance = [
   {
     question: "SAP S/4HANA runs on which database?",
@@ -7689,6 +7690,158 @@ var test_implementation = [
     ]
   }
 ];
+
+
+var test_demo_cbc = [
+  {
+    question: "1-You have a bank account in foreign currency. During the period you have posted various deposits to and withdrawals from the account.\nAfter the foreign currency valuation run, how does the system evaluate the balance of this account?",
+    type: "single",
+    options: [
+      "In local currency, with the exchange rate valid on the last day of the period.",
+      "In foreign currency, with no need for conversion.",
+      "In local currency, with the exchange rate valid for each transaction.",
+      "In foreign currency, converted to local currency on a statistical ledger."
+    ],
+    correct: [
+      "In local currency, with the exchange rate valid on the last day of the period."
+    ],
+    explanation: "La valorisation en devise étrangère (Foreign Currency Valuation) est une activité de clôture qui met à jour le solde du compte bancaire (qui est un poste G/L) au taux de change du jour de la clôture pour refléter sa valeur réelle dans la devise locale."
+  },
+  {
+    question: "2-As a pre-closing activity, selected suppliers are to confirm their balances.\nWhich confirmation procedure do you use when a response is expected 'only' in case of discrepancies?",
+    type: "single",
+    options: [
+      "Balance confirmation",
+      "Balance request",
+      "Account statement",
+      "Balance notification"
+    ],
+    correct: [
+      "Balance notification"
+    ],
+    explanation: "La notification de solde est une 'confirmation positive silencieuse' : le fournisseur ne répond que s'il y a un désaccord (discrepancy) avec le solde que nous lui avons envoyé. C'est la méthode la plus efficace pour les grands volumes."
+  },
+  {
+    question: "3-Who should the customer IT Contact provide with administrator authorization when creating use for the SAP S/4HANA Cloud starter system?\nNote: There are 2 correct answers to this question.",
+    type: "multiple",
+    options: [
+      "Lead configuration expert",
+      "LoB configuration experts",
+      "Project manager",
+      "Customer LoB experts"
+    ],
+    correct: [
+      "Lead configuration expert",
+      "LoB configuration experts"
+    ],
+    explanation: "Les experts en configuration (principal et LoB) sont les rôles clés pour réaliser la configuration initiale dans le système de démarrage (Starter System). Ils ont besoin de droits d'administration pour créer et ajuster les paramètres de l'application (Configure Your Solution)."
+  },
+  {
+    question: "4-How can you identify an asset number as a main asset number?",
+    type: "single",
+    options: [
+      "By the suffix -0 after the asset number",
+      "By the description of the asset",
+      "By the suffix -1 after the asset number",
+      "By the lack of suffix for the asset"
+    ],
+    correct: [
+      "By the suffix -0 after the asset number"
+    ],
+    explanation: "Dans la comptabilité des immobilisations (Asset Accounting), le numéro principal (ou immobilisation parente) porte toujours le sous-numéro '0' (ex: 100000-0). Les acquisitions ultérieures ou les composants sont gérés avec des sous-numéros à partir de '-1' (ex: 100000-1)."
+  },
+  {
+    question: "5-What does the valuation area control when you execute a foreign currency valuation run?\nNote: There are 3 correct answers to this question.",
+    type: "multiple",
+    options: [
+      "The document type of the valuation posting",
+      "The exchange rate type to calculate the valuation differences",
+      "The valuation procedure",
+      "The posting period of the valuation posting",
+      "The posting mode of the valuation run"
+    ],
+    correct: [
+      "The valuation procedure",
+      "The document type of the valuation posting",
+      "The exchange rate type to calculate the valuation differences"
+    ],
+    explanation: "La zone de valorisation est au cœur de la configuration FCV. Elle définit la méthode de calcul (Procédure), le Taux de Change à utiliser (ex: M, B, etc.) et le Type de Document à générer pour l'écriture comptable."
+  },
+  {
+    question: "6-Which function in SAP S/4HANA makes it possible to provide segmented financial reporting?",
+    type: "single",
+    options: [
+      "Ledger",
+      "Currency conversion",
+      "Functional area",
+      "Document splitting"
+    ],
+    correct: [
+      "Document splitting"
+    ],
+    explanation: "La ventilation de document (Document Splitting) s'assure que toutes les écritures sont équilibrées pour des dimensions clés comme le Segment. C'est ce qui permet de générer des bilans et des comptes de résultat complets, même au niveau du segment."
+  },
+  {
+    question: "7-If the headquarter organization runs a line of business spin-off in SAP S/4HANA Cloud Public Edition, which two-tier ERP scenario is being used?",
+    type: "single",
+    options: [
+      "Central Services",
+      "Headquarter and Subsidiary",
+      "Supply Chain Ecosystem",
+      "Selective Data Transition"
+    ],
+    correct: [
+      "Central Services"
+    ],
+    explanation: "Le scénario 'Services Centraux' (Central Services) est spécifiquement conçu pour des transactions complexes de réorganisation d'entreprise comme les scissions (spin-offs) ou les cessions (carve-outs), où les données sont transférées vers un nouvel environnement Cloud."
+  },
+  {
+    question: "8-To which object is the posting period variant assigned?",
+    type: "single",
+    options: [
+      "Account type",
+      "Fiscal year variant",
+      "Company Code",
+      "Plant"
+    ],
+    correct: [
+      "Company Code"
+    ],
+    explanation: "La variante de période comptable (Posting Period Variant) contrôle quelles périodes sont ouvertes ou fermées pour la saisie de transactions. Elle est attribuée au Code Société (Company Code) car la gestion des périodes est une exigence comptable propre à chaque entité légale."
+  },
+  {
+    question: "9-What are the available methods through which you can fill staging tables in the SAP HANA database of the target system?\nNote: There are 3 correct answers to this question.",
+    type: "multiple",
+    options: [
+      "SAP Smart Data Access",
+      "SAP SQL Anywhere",
+      "SAP Data Services",
+      "Customer's ETL tools",
+      "XML or CSV templates"
+    ],
+    correct: [
+      "SAP Data Services",
+      "Customer's ETL tools",
+      "XML or CSV templates"
+    ],
+    explanation: "Dans le cadre de la migration de données (Migration Cockpit), les trois méthodes principales pour préparer les données dans les tables de staging sont l'utilisation des modèles pré-formatés (XML/CSV), ou l'intégration via des outils tiers comme SAP Data Services ou d'autres solutions ETL du client."
+  },
+  {
+    question: "10-What are some reasons you cannot remove a test process automate from a test plan?\nNote: There are 2 correct answers to this question.",
+    type: "multiple",
+    options: [
+      "The test process automate has not been made visible.",
+      "The test plan has already been executed.",
+      "The test plan user does not have the necessary permission.",
+      "Data binding exists with another test process automate."
+    ],
+    correct: [
+      "The test plan has already been executed.",
+      "Data binding exists with another test process automate."
+    ],
+    explanation: "Une fois qu'un plan de test est exécuté, il devient un document historique (preuve d'exécution) et ne peut être modifié. De plus, la suppression d'un test qui fournit des données (Data binding) à un autre test briserait la séquence d'exécution."
+  }
+]
 
 
 
