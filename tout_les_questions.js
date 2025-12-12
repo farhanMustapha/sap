@@ -893,7 +893,7 @@ var test_blanc_2 = [
       "D. Edit dunning blocks at line item level",
       "E. Change the dunning level of an open item"
     ],
-    correct: [0, 2, 3] // Block account, block item, change level.
+    correct: [0, 2, 3] // A, C, D
   }
 ];
 
@@ -1403,7 +1403,7 @@ var test_blanc_4 = [
     question: "To create a semantic tag, which element do you need to assign to it?",
     type: "single",
     options: ["A. FSV node", "B. G/L account", "C. Tag group", "D. Number range"],
-    correct: ["B. G/L account"],
+    correct: ["A. FSV node"],
     explanation: "Les 'Semantic Tags' sont des indicateurs sémantiques attribués à des comptes généraux (G/L Accounts) pour améliorer le reporting et l'analyse, notamment dans le contexte de la 'Cost of Sales Accounting' ou pour identifier le type d'une transaction. (General Ledger Accounting)"
   },
   {
@@ -1473,7 +1473,7 @@ var test_blanc_4 = [
     question: "You are recording actions for custom process steps in a test automate. When do you press the 'Read' button on the recording panel? Note: There are 2 correct answers to this question.",
     type: "multiple",
     options: ["A. To capture a static label on the screen that should be checked during test execution", "B. To capture a value in a text field that should be stored as a variable", "C. To capture an error message on the screen that can be used later", "D. To capture text in a message screen that can be used for data binding later"],
-    correct: ["B. To capture a value in a text field that should be stored as a variable", "C. To capture an error message on the screen that can be used later"],
+    correct: ["B. To capture a value in a text field that should be stored as a variable", "D. To capture text in a message screen that can be used for data binding later"],
     explanation: "Dans l'outil d'automatisation des tests (Test Automation Tool), l'action 'Read' est utilisée pour capturer dynamiquement une valeur affichée dans un champ (B) et la stocker comme variable, ou pour capturer un message affiché (y compris les messages d'erreur - C). (Test Automation)"
   },
   {
@@ -1508,7 +1508,7 @@ var test_blanc_4 = [
     question: "What can you do when executing a depreciation posting run? Note: There are 3 correct answers to this question.",
     type: "multiple",
     options: ["A. You can check the posted depreciation for each asset on the FI document", "B. You can reverse the FI posting documents of the depreciation run", "C. You can run depreciation separately for each ledger", "D. You can select to cancel the depreciation run if the program finds errors in individual assets", "E. You can process a depreciation test run for an individual asset"],
-    correct: ["A. You can check the posted depreciation for each asset on the FI document", "B. You can reverse the FI posting documents of the depreciation run", "C. You can run depreciation separately for each ledger"],
+    correct: ["A. You can check the posted depreciation for each asset on the FI document",  "C. You can run depreciation separately for each ledger","E. You can process a depreciation test run for an individual asset"],
     explanation: "Lors de la comptabilisation de l'amortissement (Depreciation Posting Run), vous pouvez vérifier les documents FI générés (A), inverser les documents comptabilisés si nécessaire (B) et lancer la procédure pour des ledgers spécifiques (C), ce qui est essentiel pour la comptabilité parallèle. Les erreurs n'annulent pas la procédure pour les autres actifs (D), et le test individuel est fait en dehors du run global (E). (Asset Accounting)"
   },
   {
@@ -1557,7 +1557,7 @@ var test_blanc_4 = [
     question: "How can you process recurring entries? Note: There are 3 correct answers to this question.",
     type: "multiple",
     options: ["A. You can create a recurring entry without defining a recurrence start date", "B. You can post recurring entries only through the recurring entry program", "C. You can schedule recurring entries to start automatically", "D. You can post recurring entries in standard posting apps selecting the document type RE", "E. You can create a recurring invoice entry based on a template invoice"],
-    correct: ["B. You can post recurring entries only through the recurring entry program", "C. You can schedule recurring entries to start automatically", "E. You can create a recurring invoice entry based on a template invoice"],
+    correct: ["B. You can post recurring entries only through the recurring entry program", "D. You can post recurring entries in standard posting apps selecting the document type RE", "E. You can create a recurring invoice entry based on a template invoice"],
     explanation: "Les écritures récurrentes (Recurring Entries) sont gérées par le programme d'écritures récurrentes (B), que vous pouvez planifier pour une exécution automatique (C). Ce programme utilise un document modèle (E) pour générer automatiquement des écritures régulières. Le document de base (A) doit avoir une date de début et (D) est faux, le document RE est le document modèle. (General Ledger Accounting)"
   },
   {
@@ -1627,7 +1627,7 @@ var test_blanc_4 = [
     question: "Which editing options are available in the dunning proposal list? Note: There are 3 correct answers to this question.",
     type: "multiple",
     options: ["A. Change the dunning charges", "B. Editing the dunning texts", "C. Edit dunning blocks at account level", "D. Edit dunning blocks at line item level", "E. Change the dunning level of an open item"],
-    correct: ["A. Change the dunning charges", "D. Edit dunning blocks at line item level", "E. Change the dunning level of an open item"],
+    correct: ["A. Change the dunning charges", "C. Edit dunning blocks at account level", "D. Edit dunning blocks at line item level"],
     explanation: "Avant d'imprimer l'avis de relance (Dunning Notice), la liste de proposition (Dunning Proposal List) permet d'ajuster les frais de relance (A), de bloquer la relance sur certains postes (D) ou de modifier le niveau de relance d'un poste (E). L'édition des textes (B) se fait dans la configuration, pas dans la proposition, et le blocage au niveau du compte (C) se fait dans la fiche client. (Accounts Receivable)"
   },
   {
