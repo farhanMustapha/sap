@@ -1760,7 +1760,7 @@ var test_blanc_4 = [
     question: "In which application can you see the available business context capacity remaining for extension items?",
     type: "single",
     options: ["A. Extensibility Cockpit app", "B. Extensibility Explorer app", "C. Extensibility Inventory app", "D. Custom Reusable Elements app"],
-    correct: ["C. Extensibility Inventory app"],
+    correct: ["A. Extensibility Cockpit app"],
     explanation: "L'(Extensibility Inventory app) (C) est l'outil permettant de visualiser l'utilisation et la capacité restante (Available Business Context Capacity) des contextes d'extension dans (SAP S/4HANA Cloud). (Extensibility)"
   },
   {
@@ -1781,7 +1781,7 @@ var test_blanc_4 = [
     question: "Which of the following are captured in a completed Digital Discovery Assessment? Note: There are 2 correct answers to this question.",
     type: "multiple",
     options: ["A. Known integration requirements", "B. Target customer go-live date", "C. SAP Fiori application extensions", "D. Business role permission requirements"],
-    correct: ["A. Known integration requirements", "D. Business role permission requirements"],
+    correct: ["A. Known integration requirements", "B. Target customer go-live date"],
     explanation: "Le (Digital Discovery Assessment) (DDA) capture les exigences initiales et les écarts, incluant les besoins d'intégration (A) et les exigences de rôles/autorisations (D). La date de Go-Live (B) est une décision du projet, et les extensions Fiori (C) sont des solutions, pas des exigences brutes. (SAP Activate)"
   },
   {
@@ -1802,7 +1802,7 @@ var test_blanc_4 = [
     question: "Based on the SAP Activate Methodology, which activities must you perform in the Explore phase? Note: There are 2 correct answers to this question.",
     type: "multiple",
     options: ["A. Conduct the Fit-to-Standard analysis to gather configuration values", "B. Conduct the Digital Discovery Assessment to identify extension requirements", "C. Use the Test system to demonstrate SAP Best Practices process", "D. Define the organizational structure and chart of accounts"],
-    correct: ["A. Conduct the Fit-to-Standard analysis to gather configuration values", "B. Conduct the Digital Discovery Assessment to identify extension requirements"],
+    correct: ["A. Conduct the Fit-to-Standard analysis to gather configuration values", "D. Define the organizational structure and chart of accounts"],
     explanation: "La phase **Explore** implique principalement l'analyse et la collecte d'informations : l'analyse 'Fit-to-Standard' pour identifier les écarts et collecter les valeurs de configuration (A), et le DDA pour identifier les besoins d'extension (B). (SAP Activate)"
   },
   {
@@ -1823,7 +1823,7 @@ var test_blanc_4 = [
     question: "Which asset accounting-relevant postings are made periodically, typically at the end of the month? Note: There are 2 correct answers to this question.",
     type: "multiple",
     options: ["A. Post transfer", "B. Settlement of the WBS element", "C. Depreciation posting", "D. Post asset acquisition via clearing account"],
-    correct: ["C. Depreciation posting", "D. Post asset acquisition via clearing account"],
+    correct: ["B. Settlement of the WBS element","C. Depreciation posting"],
     explanation: "La comptabilisation de l'amortissement (Depreciation Posting - C) et la comptabilisation des acquisitions via un compte de compensation (D) sont des processus effectués périodiquement, généralement à la fin du mois, via un programme de 'Run' (comme le Depreciation Run). (Asset Accounting)"
   },
   {
@@ -1865,7 +1865,7 @@ var test_blanc_4 = [
     question: "What is the correct release code for the second feature delivery in February 2025?",
     type: "single",
     options: ["A. 2522", "B. 2502.2", "C. 2025.2", "D. 2025.2.2"],
-    correct: ["C. 2025.2"],
+    correct: ["B. 2502.2"],
     explanation: "Le modèle de numérotation des versions de (SAP S/4HANA Cloud) utilise l'année (2025) suivie du mois de publication : **YYYY.MM**. Le deuxième 'Feature Delivery' de l'année 2025 (qui arrive en Février) est **2025.02**, ou plus communément **2025.2** (C). (Release Management)"
   },
   {
@@ -1921,7 +1921,7 @@ var test_blanc_4 = [
     question: "What are valid levels for entering payment blocks to ensure the automatic payment program takes these into account for payment runs? Note: There are 2 correct answers to this question.",
     type: "multiple",
     options: ["A. Bank key", "B. Invoice document", "C. Payment method", "D. Supplier master record"],
-    correct: ["B. Invoice document", "D. Supplier master record"],
+    correct: ["C. Payment method", "D. Supplier master record"],
     explanation: "Le blocage de paiement (Payment Block) peut être défini sur deux niveaux pour affecter le programme de paiement automatique : sur la fiche partenaire commercial/fournisseur (Supplier Master Record - D) pour toutes les transactions, et sur le document de facture (Invoice Document - B) pour bloquer une transaction spécifique. (Accounts Payable)"
   },
   {
@@ -1984,7 +1984,7 @@ var test_blanc_4 = [
     question: "Which of the following analyses can you create from the Manage KPIs and Reports app? Note: There are 3 correct answers to this question.",
     type: "multiple",
     options: ["A. Lumira Dashboards", "B. Multidimensional Reports", "C. Review Booklets", "D. SAC Stories", "E. Object Views"],
-    correct: ["B. Multidimensional Reports", "D. SAC Stories", "E. Object Views"],
+    correct: ["B. Multidimensional Reports","C. Review Booklets", "D. SAC Stories"],
     explanation: "L'application (Manage KPIs and Reports) est l'outil central de reporting et d'analyse dans (SAP S/4HANA Cloud). Elle permet de créer des rapports multidimensionnels (B), des vues d'objets (Object Views - E) et de lancer des histoires (SAC Stories - D). (Analytics)"
   },
   {
@@ -1998,7 +1998,7 @@ var test_blanc_4 = [
     question: "Which of the following categories are defined in the dunning program settings? Note: There are 3 correct answers to this question.",
     type: "multiple",
     options: ["A. Dunning levels", "B. Customer group", "C. Special G/L indicator", "D. Dunning clerk", "E. Minimum amounts"],
-    correct: ["A. Dunning levels", "D. Dunning clerk", "E. Minimum amounts"],
+    correct: ["A. Dunning levels", "C. Special G/L indicator", "E. Minimum amounts"],
     explanation: "La configuration du programme de relance (Dunning Program) inclut la définition des niveaux de relance (Dunning Levels - A), les montants minimums (Minimum Amounts - E) pour la relance, et le commis de relance (Dunning Clerk - D). (Accounts Receivable)"
   },
   {
@@ -2019,7 +2019,7 @@ var test_blanc_4 = [
     question: "What tasks make up the receivables line-item matching machine learning service of SAP Cash Application? Note: There are 2 correct answers to this question.",
     type: "multiple",
     options: ["A. Reprocess bank statement items", "B. Payment matching", "C. Schedule jobs", "D. Exception handling"],
-    correct: ["B. Payment matching", "D. Exception handling"],
+    correct: ["A. Reprocess bank statement items", "C. Schedule jobs"],
     explanation: "Le service d'(SAP Cash Application) utilise l'apprentissage automatique pour deux fonctions principales : l'appariement des paiements (Payment Matching - B) pour compenser les postes ouverts, et la gestion des exceptions (Exception Handling - D) lorsque l'appariement automatique échoue. (Cash Management / Machine Learning)"
   },
   {
