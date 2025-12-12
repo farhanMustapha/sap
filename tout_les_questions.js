@@ -1082,7 +1082,7 @@ var test_blanc_3 = [
       "C. Customer reconciliation account",
       "D. G/L account"
     ],
-    correct: [1, 3] // B & D (Account Intervals for specific account types)
+    correct: [2, 3] // B & D (Account Intervals for specific account types)
   },
   {
     q: "19-The VAT tax rate is changing... What options do you have to maintain the new tax rate? (2 answers)",
