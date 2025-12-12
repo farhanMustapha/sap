@@ -1082,7 +1082,7 @@ var test_blanc_3 = [
       "C. Customer reconciliation account",
       "D. G/L account"
     ],
-    correct: [2, 3] // B & D (Account Intervals for specific account types)
+    correct: [2, 3] // C & D (Account Intervals for specific account types)
   },
   {
     q: "19-The VAT tax rate is changing... What options do you have to maintain the new tax rate? (2 answers)",
@@ -1274,7 +1274,7 @@ var test_blanc_3 = [
       "C. Missing task assignments in folders",
       "D. Missing organizational unit assignments in folders"
     ],
-    correct: [0, 3] // A & D
+    correct: [1, 3] // A & D
   },
   {
     q: "39-Where are the manual test cases created for customer User Acceptance Testing?",
