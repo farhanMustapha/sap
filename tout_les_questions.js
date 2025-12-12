@@ -1956,7 +1956,7 @@ var test_blanc_4 = [
     question: "What have SAP S/4HANA Cloud Business Workflows been designed for? Note: There are 3 correct answers to this question.",
     type: "multiple",
     options: ["A. To create business processes with a high number of people involved in a pre-defined sequence", "B. To create complex, repeated work processes with iterative cycles", "C. To create standard procedures from SAP Signavio Process Navigator", "D. To create cross-product workflow procedures", "E. To create very simple release or approval procedures"],
-    correct: ["A. To create business processes with a high number of people involved in a pre-defined sequence", "C. To create standard procedures from SAP Signavio Process Navigator", "E. To create very simple release or approval procedures"],
+    correct: ["A. To create business processes with a high number of people involved in a pre-defined sequence", "D. To create cross-product workflow procedures", "E. To create very simple release or approval procedures"],
     explanation: "Les Workflows Métier (Business Workflows) de (SAP S/4HANA Cloud) sont destinés à l'automatisation de processus linéaires (A), souvent basés sur les procédures standard (C), et sont particulièrement adaptés aux scénarios d'approbation et de validation simples (E) (comme l'approbation de factures). (Workflow Management)"
   },
   {
@@ -7842,6 +7842,1603 @@ var test_demo_cbc = [
     explanation: "Une fois qu'un plan de test est exécuté, il devient un document historique (preuve d'exécution) et ne peut être modifié. De plus, la suppression d'un test qui fournit des données (Data binding) à un autre test briserait la séquence d'exécution."
   }
 ]
+
+// question fi rihana
+var test_rihana_fi=[
+                {
+                    question: "What is the best definition of a semantic tag?",
+                    options: [
+                        "Spreadsheet formula that can be imported into SAP.",
+                        "A textual identifier used to highlight key figures in financial statement versions (FSVs).",
+                        "A calculation logic that is always developed by the business to meet their individual requirement.",
+                        "A formula that can be manually embedded into SAP reports."
+                    ],
+                    correct: ["A textual identifier used to highlight key figures in financial statement versions (FSVs)."],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "Which of the following elements belong to the configuration of a financial statement version? (2 correct answers)",
+                    options: [
+                        "Currency",
+                        "FSV Item",
+                        "Accounts",
+                        "Profit Centers"
+                    ],
+                    correct: ["FSV Item", "Accounts"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "A new financial statement version must be created for each new company joining the group.",
+                    options: [
+                        "True",
+                        "False"
+                    ],
+                    correct: ["False"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "Which of the following statements applies to the Cash Flow Statement – Indirect method report, provided by SAP? (2 correct answers)",
+                    options: [
+                        "The basic semantic tags required to set up the cash flow statement are provided by SAP.",
+                        "Its setup requires specific ABAP development.",
+                        "The user must update the financial statement version with the semantic tags required by the cash flow statement report.",
+                        "The required formula can be imported/exported to a spreadsheet."
+                    ],
+                    correct: [
+                        "The basic semantic tags required to set up the cash flow statement are provided by SAP.",
+                        "The user must update the financial statement version with the semantic tags required by the cash flow statement report."
+                    ],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "The Balance Sheet/Income Statement report can be exported to a .xlsx or a .pdf format file.",
+                    options: [
+                        "True",
+                        "False"
+                    ],
+                    correct: ["False"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "The setup of the Statement of Changes in General Ledger report requires you to configure which of the following items? (2 correct answers)",
+                    options: [
+                        "Currency",
+                        "Transaction Type",
+                        "Chart of Accounts",
+                        "Semantic Tags"
+                    ],
+                    correct: ["Transaction Type", "Semantic Tags"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "The transfer and creation of accrual objects for a purchase order can be done by which two of the following? (2 correct answers)",
+                    options: [
+                        "Offline, using the SAP Fiori app, Schedule Accruals Job",
+                        "At month end, part of accruals posting job",
+                        "Online, when the purchase order is being created in materials management",
+                        "At creation of purchase requisition"
+                    ],
+                    correct: [
+                        "Offline, using the SAP Fiori app, Schedule Accruals Job",
+                        "Online, when the purchase order is being created in materials management"
+                    ],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "Before displaying simulated postings in a report, which of the following jobs should be scheduled?",
+                    options: [
+                        "Transfer purchase orders",
+                        "Propose periodic accruals",
+                        "Simulate accrual postings",
+                        "Infer Accruals from the Prediction Model"
+                    ],
+                    correct: ["Simulate accrual postings"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "Which of the following are use cases for purchase order accruals. (2 correct answers)",
+                    options: [
+                        "Fixed asset purchase",
+                        "Non-valuated consumables",
+                        "Materials",
+                        "Purchase of a service"
+                    ],
+                    correct: ["Non-valuated consumables", "Purchase of a service"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "Only service entry sheets with the following document statuses are considered for accruals. Which one of the following are considered?",
+                    options: [
+                        "Approved (30)",
+                        "In Process (10)",
+                        "In approval (20)",
+                        "Rejected (05)"
+                    ],
+                    correct: ["Approved (30)"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "Which of the following does the Accruals Management component enable? (2 correct answers)",
+                    options: [
+                        "Integrated with Sales and Distribution",
+                        "Fully integrated into the General Ledger",
+                        "Enables complex postings",
+                        "Updates asset accounting"
+                    ],
+                    correct: ["Fully integrated into the General Ledger", "Enables complex postings"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "Where is the field status determined from in accounting documents? (2 correct answers)",
+                    options: [
+                        "Posting key",
+                        "Company code",
+                        "G/L account",
+                        "Document type"
+                    ],
+                    correct: ["Posting key", "G/L account"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "What step is required to determine the threshold for the tolerance of automatic clearing of differences in open items?",
+                    options: [
+                        "Create any required additional tolerance groups with different thresholds.",
+                        "Set default tolerance value for each company code.",
+                        "Assign additional tolerance groups to the corresponding accounts in the G/L account master records."
+                    ],
+                    correct: ["Assign additional tolerance groups to the corresponding accounts in the G/L account master records."],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "If you want to enter your own document number and be able to potentially enter the same number to documents once every year, what document number range option is correct? Choose the correct answer.",
+                    options: [
+                        "Internal and continual",
+                        "External an continual",
+                        "Internal and annual",
+                        "External and annual"
+                    ],
+                    correct: ["External and annual"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "To better control the G/L accounts and assigned company codes, you use the Implementation Status feature in the system. What does this do?",
+                    options: [
+                        "This function allows you to delete G/L accounts from the production system even if postings exist.",
+                        "This function determines which G/L accounts are transferred to the production system, transporting only those with status P.",
+                        "This function sets a posting block for accounts with status P in the production system.",
+                        "This function ensures that all accounts created through content activation are set to P by default."
+                    ],
+                    correct: ["This function determines which G/L accounts are transferred to the production system, transporting only those with status P."],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "At which levels must negative postings for document reversals be allowed in order to perform them? (2 correct answers)",
+                    options: [
+                        "Ledger group",
+                        "Company code",
+                        "Reversal reason",
+                        "Accounting principle"
+                    ],
+                    correct: ["Company code", "Reversal reason"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "The VAT tax rate is changing on the 1st of July for the country your company code is in. What options to you have to maintain the new tax rate without disrupting the business? (2 correct answers)",
+                    options: [
+                        "Change the tax rate for the existing affected VAT tax codes.",
+                        "Use the time-dependent tax calculation for affected tax codes.",
+                        "Create new VAT tax codes to work in parallel with the old codes.",
+                        "Create new VAT tax codes with the new rate and delete the old ones."
+                    ],
+                    correct: [
+                        "Use the time-dependent tax calculation for affected tax codes.",
+                        "Create new VAT tax codes to work in parallel with the old codes."
+                    ],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "What is the particular characteristic of a negative posting?",
+                    options: [
+                        "It creates a one-sided posting.",
+                        "It deletes the erroneous posting.",
+                        "It corrects the debit or credit balance of the accounts."
+                    ],
+                    correct: ["It corrects the debit or credit balance of the accounts."],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What settings do document types control? (3 correct answers)",
+                    options: [
+                        "Document number range",
+                        "Reversal document type",
+                        "Company code allowed",
+                        "Negative postings allowed",
+                        "Posting keys for debit and credit"
+                    ],
+                    correct: ["Document number range", "Reversal document type", "Negative postings allowed"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "Which extension ledger type is used to perform simulation postings?",
+                    options: [
+                        "Standard Journal Entries",
+                        "P - Line Items with Technical Numbers (No Deletions Possible)",
+                        "S - Line Items with Technical Numbers (Deletions Possible)",
+                        "G - Journal Entries for G/L Adjustment Postings."
+                    ],
+                    correct: ["S - Line Items with Technical Numbers (Deletions Possible)"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "In which of the following scenarios would you recommend using an extension ledger? (3 correct answers)",
+                    options: [
+                        "Managing local GAAP accounting for a subsidiary in a new country.",
+                        "Simulate the impact in accounting of a new regulation on provisions accounting.",
+                        "Adjustments related to taxes, to calculate a tax-adjusted profit or loss.",
+                        "Manage commitments from purchase orders to facilitate the budget availability control."
+                    ],
+                    correct: [
+                        "Managing local GAAP accounting for a subsidiary in a new country.",
+                        "Simulate the impact in accounting of a new regulation on provisions accounting.",
+                        "Adjustments related to taxes, to calculate a tax-adjusted profit or loss."
+                    ],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "What are unique characteristics of extensions ledgers compared to standard ledgers? (2 correct answers)",
+                    options: [
+                        "They store considerably less data.",
+                        "They can be part of a ledger group.",
+                        "They must reference the leading ledger.",
+                        "They must reference an underlying ledger."
+                    ],
+                    correct: ["They store considerably less data.", "They must reference an underlying ledger."],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "To clear the down payment with the invoice, which options do they have? (2 correct answers)",
+                    options: [
+                        "Clearing can be performed manually with the Clear Outgoing Payments Manuel Clearingapp.",
+                        "Clearing takes place automatically when the invoice is posted.",
+                        "The clearing takes place automatically with the residual payment in the automatic payment run."
+                    ],
+                    correct: [
+                        "Clearing can be performed manually with the Clear Outgoing Payments Manuel Clearingapp.",
+                        "Clearing takes place automatically when the invoice is posted."
+                    ],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "To display the open item of the down payment request in the Manage Supplier Line Items app, which item type do you select?",
+                    options: [
+                        "Normal Item",
+                        "Special G/L Transaction",
+                        "Noted Items",
+                        "Parked Items",
+                        "Customer Items"
+                    ],
+                    correct: ["Noted Items"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "Why do we post a down payment request? (2 correct answers)",
+                    options: [
+                        "To generate invoices.",
+                        "To make the down payment automatically using the payment program.",
+                        "To post the down payment manually."
+                    ],
+                    correct: [
+                        "To make the down payment automatically using the payment program.",
+                        "To post the down payment manually."
+                    ],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "The alternative reconciliation account for down payment can be maintained at which levels?",
+                    options: [
+                        "Chart of account, account type, special G/L indicator, reconciliation account.",
+                        "Chart of account, special G/L indicator, reconciliation account.",
+                        "Chart of account, special G/L indicator."
+                    ],
+                    correct: ["Chart of account, account type, special G/L indicator, reconciliation account."],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "Down payments made must not be displayed together with payables for goods and services in the balance sheet. What do they need to do?",
+                    options: [
+                        "Maintain the master record of the supplier.",
+                        "Transfer reconciliation accounts.",
+                        "Use Special G/L Indicator A."
+                    ],
+                    correct: ["Transfer reconciliation accounts."],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What are work items in a flexible workflow?",
+                    options: [
+                        "Tasks assigned to team categories",
+                        "Tasks assigned to agents",
+                        "Tasks assigned to member functions",
+                        "Tasks assigned to teams"
+                    ],
+                    correct: ["Tasks assigned to agents"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What are flexible workflows used for?",
+                    options: [
+                        "For automatic creation of supplier invoices",
+                        "For defining approval processes of supplier invoices",
+                        "For transporting supplier invoices to other systems"
+                    ],
+                    correct: ["For defining approval processes of supplier invoices"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "Which of the following statements is true regarding Situation Handling in SAP S/4HANA and SAP S/4HANA Cloud?",
+                    options: [
+                        "Situation Handling is only applicable to financial operations.",
+                        "Situation Handling provides alerts for non-critical issues only.",
+                        "Situation Handling helps improve user efficiency by bringing critical issues to your attention at the right time.",
+                        "Situation Handling follows a manual approach for resolving issues."
+                    ],
+                    correct: ["Situation Handling helps improve user efficiency by bringing critical issues to your attention at the right time."],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "The Cash Discount at Risk situation template in SAP S/4HANA Cloud automatically unblocks supplier invoices to ensure cash discounts are not missed.",
+                    options: [
+                        "True",
+                        "False"
+                    ],
+                    correct: ["False"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What is the primary benefit of using the Due Date for Blocked Invoice Approaching situation template in SAP S/4HANA and SAP S/4HANA Cloud?",
+                    options: [
+                        "Automates the payment of supplier invoices when they are blocked.",
+                        "Notifies business users about approaching due dates for supplier invoices that are blocked for payment.",
+                        "Allows the due date of blocked invoices to be changed to avoid penalties.",
+                        "Sends an automatic report to suppliers about their payment status."
+                    ],
+                    correct: ["Notifies business users about approaching due dates for supplier invoices that are blocked for payment."],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "When posting a special G/L transaction, which account is changed from the standard?",
+                    options: [
+                        "Customer account",
+                        "Expense account",
+                        "Supplier reconciliation account",
+                        "Asset account"
+                    ],
+                    correct: ["Supplier reconciliation account"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What are the main characteristics of the offsetting entries for guarantees made? (2 correct answers)",
+                    options: [
+                        "They are automatic postings based on the special G/L indicator.",
+                        "They update the main customer reconciliation account with a special G/L indicator.",
+                        "They are statistical entries since they always balance with a specific clearing account.",
+                        "They give you the option to define the reconciliation account during posting."
+                    ],
+                    correct: [
+                        "They are automatic postings based on the special G/L indicator.",
+                        "They are statistical entries since they always balance with a specific clearing account."
+                    ],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "When posting a guarantee made, the result shows up as what in the financial statements?",
+                    options: [
+                        "Expense",
+                        "Liability",
+                        "Revenue",
+                        "Asset"
+                    ],
+                    correct: ["Liability"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What are the benefits of using alternative reconciliation accounts? (2 correct answers)",
+                    options: [
+                        "They enable you to comply with statutory obligations.",
+                        "They allow you to update each accounting principle separately.",
+                        "They help you keep track of all the relevant posting together."
+                    ],
+                    correct: [
+                        "They enable you to comply with statutory obligations.",
+                        "They help you keep track of all the relevant posting together."
+                    ],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "What is special about a noted item?",
+                    options: [
+                        "It creates no accounting document.",
+                        "It makes no accounting entry on the accounts.",
+                        "It creates a single line item."
+                    ],
+                    correct: ["It makes no accounting entry on the accounts."],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What kind of posting does the down payment process use? (2 correct answers)",
+                    options: [
+                        "Automatic offsetting entry",
+                        "Free offsetting entry",
+                        "Posting to customer main G/L account",
+                        "Posting to alternative reconciliation account"
+                    ],
+                    correct: ["Automatic offsetting entry", "Posting to alternative reconciliation account"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "What is the status of a down payment request in SD when it is settled?",
+                    options: [
+                        "Open",
+                        "Cleared",
+                        "Deleted"
+                    ],
+                    correct: ["Cleared"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What is the functions of the billing plan in relation to down payment processing in SAP S/4HANA Cloud? (2 correct answers)",
+                    options: [
+                        "It automatically posts billing documents on the designated dates.",
+                        "It stores one or more down payment agreements as a date.",
+                        "It assigns a down payment agreement directly to an item or to all items in the order.",
+                        "It clears down payment requests according to the planned dates."
+                    ],
+                    correct: [
+                        "It automatically posts billing documents on the designated dates.",
+                        "It stores one or more down payment agreements as a date."
+                    ],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "Which of the following functions are enabled by the SAP Fiori app Manage Incoming Payment Files? (2 correct answers)",
+                    options: [
+                        "Provides a platform for managing various payment file types, including lockbox, bank statements, payment rejections, and intraday statements.",
+                        "Gives a detailed overview of individual employee salary accounts.",
+                        "Acts as a stepping stone for cash position and liquidity analysis in SAP S/4HANA Cloud.",
+                        "Facilitates setting up of automated regular payments for utilities."
+                    ],
+                    correct: [
+                        "Provides a platform for managing various payment file types, including lockbox, bank statements, payment rejections, and intraday statements.",
+                        "Acts as a stepping stone for cash position and liquidity analysis in SAP S/4HANA Cloud."
+                    ],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "Which of the following features are offered by the SAP Multi-Bank Connectivity solution? (2 correct answers)",
+                    options: [
+                        "Enables the integration of payment and statement processes with the company's SAP system.",
+                        "Offers the ability to directly conduct business with customers through the SAP platform.",
+                        "Enables end-to-end visibility across the end-to-end bank communication.",
+                        "Provides a platform for executing stock trading operations."
+                    ],
+                    correct: [
+                        "Enables the integration of payment and statement processes with the company's SAP system.",
+                        "Enables end-to-end visibility across the end-to-end bank communication."
+                    ],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "What are the three different outbound connectors of SAP Multi-Bank Connectivity?",
+                    options: [
+                        "API, HTTPS, XML",
+                        "SWIFT, API, Host2Host",
+                        "SCTP, PPP, ARP",
+                        "SWIFT, UDP, TCP"
+                    ],
+                    correct: ["SWIFT, API, Host2Host"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What are some key benefits provided by SAP Multi-Bank Connectivity?",
+                    options: [
+                        "Elimination of physical banks and shift to virtual banking",
+                        "Complete integration and straight-through processing of payment and statement processes",
+                        "Low transaction fees and low cost of money transfer",
+                        "Exclusive deals and discounts for transactions",
+                        "Provision to open multiple bank accounts for a single user"
+                    ],
+                    correct: ["Complete integration and straight-through processing of payment and statement processes"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What is the primary function of the Bank Statement Monitor in SAP S/4HANA Public Cloud?",
+                    options: [
+                        "Facilitates the exchange of international currencies.",
+                        "Manages and analyzes bank statements to ensure accurate financial reporting.",
+                        "Tracks individual customer purchases and behaviors",
+                        "Assists in the digitization and automation of bank statement document management."
+                    ],
+                    correct: ["Manages and analyzes bank statements to ensure accurate financial reporting."],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "How does SAP S/4HANA Cloud process bank statements?",
+                    options: [
+                        "SAP S/4HANA Cloud only manually processes bank statements after they are uploaded using the Manage Incoming Payment Files app.",
+                        "The system imports bank statements directly from the bank's system with SAP Multi-Bank Connectivity and processes them based on predefined processing rules and interpretation algorithms.",
+                        "SAP S/4HANA Cloud forwards bank statements to third-party services for analysis and posting.",
+                        "The system requires user intervention at each step of the bank statement processing."
+                    ],
+                    correct: ["The system imports bank statements directly from the bank's system with SAP Multi-Bank Connectivity and processes them based on predefined processing rules and interpretation algorithms."],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "How does the Invoice Skipped in Payment Advice in SAP solution enhance the payment advice process?",
+                    options: [
+                        "By delaying payment reconciliations.",
+                        "By manually cross-referencing payment advices with invoices.",
+                        "By using AI to detect discrepancies and automate resolutions.",
+                        "By increasing the number of skipped invoices."
+                    ],
+                    correct: ["By using AI to detect discrepancies and automate resolutions."],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "In the proposed system, what is one role of SAP Business AI, regarding exception handling?",
+                    options: [
+                        "Increasing the number of exceptions handled manually",
+                        "Identifying discrepancies and providing suggestions for resolving minor exceptions",
+                        "Reducing the accuracy of payment matching",
+                        "Minimizing historical data usage"
+                    ],
+                    correct: ["Identifying discrepancies and providing suggestions for resolving minor exceptions"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What is the main purpose of the SAP Cash Application software solution?",
+                    options: [
+                        "Improve efficiencies, reduce days sales outstanding, and integrate with SAP S/4HANA Cloud",
+                        "It schedules jobs for the Receivables Line-Item Matching machine learning service.",
+                        "It is a machine learning service that analyzes incoming bank statement items.",
+                        "It is a data entry solution that inputs data into various sources like emails and scanned documents.",
+                        "It arranges bank statement items according to their SAP Cash Application status."
+                    ],
+                    correct: ["Improve efficiencies, reduce days sales outstanding, and integrate with SAP S/4HANA Cloud"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What is the purpose of the Receivables Line-Item Matching service in the SAP Cash Application?",
+                    options: [
+                        "To manually input data from multiple sources.",
+                        "To provide proposals for matching receivables with incoming bank statement items and automatically clear them.",
+                        "Assist in the automation of the process of scheduling jobs for Receivables Line-Item matching",
+                        "To generate a predicted payment behavior for prioritized collections.",
+                        "Act as a matching engine for SAP S/4HANA Cloud and SAP Business Technology Platform"
+                    ],
+                    correct: ["To provide proposals for matching receivables with incoming bank statement items and automatically clear them."],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What status do all bank statement items have after successful processing in the SAP Fiori app, Reprocess Bank Statement Items?",
+                    options: [
+                        "Not Completed",
+                        "Ongoing",
+                        "Completed",
+                        "Transfer Failed",
+                        "Processing"
+                    ],
+                    correct: ["Completed"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What role does SAP Multi-Bank Connectivity play in the process of bank statements upload in SAP S/4HANA Cloud?",
+                    options: [
+                        "It connects the user-interface to the database in the SAP system.",
+                        "It provides additional security to the SAP S/4HANA cloud system.",
+                        "It establishes the connection between house banks and the SAP S/4HANA Cloud system, importing bank statement data.",
+                        "It maintains the inventory of the house banks."
+                    ],
+                    correct: ["It establishes the connection between house banks and the SAP S/4HANA Cloud system, importing bank statement data."],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "Which actions are possible when all open items of a customer are identified to match the bank statement information? (2 correct answers)",
+                    options: [
+                        "Simulation of the posting",
+                        "Saving without posting",
+                        "Requesting more funds from the bank",
+                        "Sending notification emails to customers"
+                    ],
+                    correct: ["Simulation of the posting", "Saving without posting"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "How does the SAP Cash Application process received payments?",
+                    options: [
+                        "It manually categorizes and matches received payments to open invoices.",
+                        "It uses artificial intelligence to match received payments to open invoices and reconcile accounts.",
+                        "It sends them to a third-party service for processing and then updates the company's internal systems.",
+                        "It requires direct input from customers, who must indicate which invoice their payment relates to."
+                    ],
+                    correct: ["It uses artificial intelligence to match received payments to open invoices and reconcile accounts."],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "You are planning to utilize SAP Collections Management in SAP S/4HANA. The scope item BFC - Collections and Dispute Management provides the necessary technical basis for this. Which standard roles are provided with this functionality? (2 correct answers)",
+                    options: [
+                        "Collection Specialist",
+                        "Dispute Supervisor",
+                        "Collection Data Analyst",
+                        "Collection Manager"
+                    ],
+                    correct: ["Collection Specialist", "Collection Manager"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "As a collection manager, you need to analyze the performance of the collections process. Which application would you use to supervise the collections worklist and ensure efficient collections activities?",
+                    options: [
+                        "Manage Promises to Pay",
+                        "Process Receivables",
+                        "Supervise Collections Worklist",
+                        "Monitor Email Transmissions"
+                    ],
+                    correct: ["Supervise Collections Worklist"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "You are looking for a way to prioritize items in a collection worklist and specify the currency in which they are displayed in the worklist. Which configuration task will you use to perform this step?",
+                    options: [
+                        "Collection strategy",
+                        "Collection group",
+                        "Collection profile",
+                        "Collection segment"
+                    ],
+                    correct: ["Collection strategy"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "You are setting up the organizational structure in SAP Collections Management. You are using collection groups. To which entity are you assigning this collection group?",
+                    options: [
+                        "Collection Segment",
+                        "Collection Profile",
+                        "Collection Worklist",
+                        "Collection Strategy"
+                    ],
+                    correct: ["Collection Segment"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "You are considering the implementation of Intelligent Collections Management scenarios. The information about late payments would be beneficial to your business. What sort of data must you consider when implementing the feature?",
+                    options: [
+                        "Historical payment data",
+                        "Customer product return history",
+                        "Customer credit limit utilization",
+                        "Order frequency"
+                    ],
+                    correct: ["Historical payment data"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "You are working as the Collection Specialist in your company. What are the key tasks of this role? (2 correct answers)",
+                    options: [
+                        "Identify and follow up on overdue accounts and invoices.",
+                        "Negotiate payment plans and discounts with customers when necessary.",
+                        "Initiate payment of credit memos via SAP Bank Communication Management to customers.",
+                        "Discuss with logistics department the status of missing or damaged goods."
+                    ],
+                    correct: ["Identify and follow up on overdue accounts and invoices.", "Negotiate payment plans and discounts with customers when necessary."],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "Which key functionality of SAP Collections Management focuses on automatically creating and sending reminders, letters, and emails to customers regarding overdue payments?",
+                    options: [
+                        "Reporting and Analytics",
+                        "Automated Collections Processes",
+                        "Compliance and Regulation",
+                        "Dispute Management"
+                    ],
+                    correct: ["Automated Collections Processes"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What happens to worklist items that do not fulfill the collection rules of a collection strategy?",
+                    options: [
+                        "The worklist item is assigned to all collections specialists in the collection group.",
+                        "The worklist item is forwarded to an exception list for further processing.",
+                        "An automated job in the Schedule Collections Management app assigns the items to the Collection Manager.",
+                        "The collection specialist in the business partner master record is used to assign worklist items."
+                    ],
+                    correct: ["The worklist item is forwarded to an exception list for further processing."],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "Which Key Performance Indicator (KPI) can be positively influenced by the integration of SAP Financials and SAP Collections Management?",
+                    options: [
+                        "Days Sales Outstanding",
+                        "Inventory Turnover Rate",
+                        "Short-term Financing Rate",
+                        "Accounts Receivable Aging Percentage"
+                    ],
+                    correct: ["Days Sales Outstanding"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "You are implementing the relevant business catalogs from the scope item BFC - SAP Collections and Dispute Management. Which business catalogs will be at your disposal? (2 correct answers)",
+                    options: [
+                        "Dispute Management Analytics",
+                        "Periodic Activities for Dispute Management",
+                        "Late Payment Statistics",
+                        "Dunning Procedures for Receivables Items"
+                    ],
+                    correct: ["Dispute Management Analytics", "Periodic Activities for Dispute Management"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "What are some of the benefits you can reap from integrating SAP Financials Receivable Management and SAP Dispute Management? (2 correct answers)",
+                    options: [
+                        "Improve dispute resolution time",
+                        "Ensure accurate financial reporting",
+                        "Automate all communication with customers",
+                        "Eliminate the need for credit memo revisions"
+                    ],
+                    correct: ["Improve dispute resolution time", "Ensure accurate financial reporting"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "What are the two most frequently used ways a dispute case can be created? (2 correct answers)",
+                    options: [
+                        "From an Accounts Receivable dunning procedure",
+                        "Via a SAP Collections Management process",
+                        "Manually entered in SAP Dispute Management",
+                        "Via interface from external credit agencies"
+                    ],
+                    correct: ["Via a SAP Collections Management process", "Manually entered in SAP Dispute Management"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "Which process steps can be found in SAP Dispute Management?",
+                    options: [
+                        "Dispute identification",
+                        "Dispute logging",
+                        "Dispute handover to third-party agency",
+                        "Dispute escalation to legal department"
+                    ],
+                    correct: ["Dispute logging"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "Which of the following are analytical applications in SAP Dispute Management that specifically display KPIs related to dispute resolution speed? (2 correct answers)",
+                    options: [
+                        "Open disputes",
+                        "Solved disputes",
+                        "Processing days of open disputes",
+                        "New versus solved disputes"
+                    ],
+                    correct: ["Processing days of open disputes", "New versus solved disputes"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "How are users notified by the SAP Situation Handling framework? (2 correct answers)",
+                    options: [
+                        "By SAP Fiori notifications",
+                        "Via e-Mail",
+                        "Instant messaging services",
+                        "Through mobile phone calls"
+                    ],
+                    correct: ["By SAP Fiori notifications", "Via e-Mail"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "Your manager asked to provide an overview of the implementation activities for SAP Dispute Management. Which Central Business Configuration Settings will you state are mandatory during the procedure? (3 correct answers)",
+                    options: [
+                        "Default Values for dispute cases",
+                        "Defining the attributes to trigger document changes",
+                        "Assignment of escalation reasons to an attribute profile",
+                        "Defining automatic status changes",
+                        "Creating escalation reasons"
+                    ],
+                    correct: ["Default Values for dispute cases", "Defining automatic status changes", "Creating escalation reasons"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "Which of the following is a benefit of integrating SD and FI modules in SAP S/4HANA Cloud?",
+                    options: [
+                        "Enhanced decision-making in credit management, financial planning, and customer service",
+                        "To avoid enhancing credit risk analysis and customer management.",
+                        "To restrict access to financial data and hinder sales processes.",
+                        "Greater dependency on third-party software"
+                    ],
+                    correct: ["Enhanced decision-making in credit management, financial planning, and customer service"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "Which automated task ensures that sales orders are aligned with customer credit limits? Choose the correct answer.",
+                    options: [
+                        "Assign Credit Management Role",
+                        "Update Rule for Scoring and Credit Check",
+                        "Update Credit Limit for Business Partner",
+                        "Check Credit on SD Documents"
+                    ],
+                    correct: ["Check Credit on SD Documents"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "In SAP Credit Management, describe the process of activating/deactivating the Credit Management module, defining credit segments to establish business partner credit limits, and selecting relevant currencies. Consider the implications of these steps for credit risk assessment and decision-making.",
+                    options: [
+                        "Credit Management activation/deactivation is a simple on/off switch, independent of other system configurations. Credit segments are created arbitrarily, and currency selection is optional; the system defaults to the company's primary currency.",
+                        "Activating Credit Management requires configuring various parameters and integrating it with other modules. Credit segments are carefully defined based on business criteria (e.g., industry, risk profile) to determine credit limits for business partners. Currency selection is crucial for accurate credit limit tracking and reporting in multiple currencies.",
+                        "The activation of Credit Management automatically creates default credit segments and assigns a default currency to all business partners. No further configuration is necessary.",
+                        "Deactivating Credit Management immediately removes all credit limits and related data. Credit segments are automatically deleted upon deactivation, and currency selection becomes irrelevant."
+                    ],
+                    correct: ["Activating Credit Management requires configuring various parameters and integrating it with other modules. Credit segments are carefully defined based on business criteria (e.g., industry, risk profile) to determine credit limits for business partners. Currency selection is crucial for accurate credit limit tracking and reporting in multiple currencies."],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "Which feature allows Advanced Credit Management to gain insights into credit exposures?",
+                    options: [
+                        "Manual Transaction Analysis",
+                        "Automated Data Deletion",
+                        "Predictive Coding Techniques",
+                        "Advanced Analytics and Reporting"
+                    ],
+                    correct: ["Advanced Analytics and Reporting"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What does the integration with external credit rating agencies in S/4HANA Cloud help with? Choose the correct answer.",
+                    options: [
+                        "Adjusting pricing strategies",
+                        "Configuring payment gateways",
+                        "Incorporating external credit data into credit risk assessments",
+                        "Processing supplier payments"
+                    ],
+                    correct: ["Incorporating external credit data into credit risk assessments"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "In SAP Credit Management, a company uses credit segments to manage area-specific credit limits. Consider a customer with sales across multiple regions (e.g., North America, Europe, Asia). Which of the following statements accurately reflects the functionality of credit segments and their role in managing credit limits within this context? Choose the correct answer.",
+                    options: [
+                        "Credit segments allow the company to set only one single, overall credit limit for the customer, regardless of the sales region.",
+                        "Credit segments enable the company to establish separate credit limits for each sales region (e.g., a different credit limit for North America, Europe, and Asia), while also maintaining a total credit limit across all regions.",
+                        "Credit segments are irrelevant to managing credit limits and are only used for tracking customer payment behavior.",
+                        "Credit segments function solely as a reporting mechanism, providing summaries of customer credit utilization but not impacting actual credit limit checks."
+                    ],
+                    correct: ["Credit segments enable the company to establish separate credit limits for each sales region (e.g., a different credit limit for North America, Europe, and Asia), while also maintaining a total credit limit across all regions."],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What technological advancement does the Advanced Credit Management in S/4HANA Cloud leverage during order processing? Choose the correct answer.",
+                    options: [
+                        "Predictive Coding",
+                        "Batch Credit Evaluations",
+                        "Real-Time Credit Checks",
+                        "Historical Data Analysis"
+                    ],
+                    correct: ["Real-Time Credit Checks"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "Which feature of the Credit Management Reporting app helps track and analyze overdue receivables? Choose the correct answer.",
+                    options: [
+                        "Credit Exposure Analysis",
+                        "Credit Limit Utilization",
+                        "Creditworthiness Scoring",
+                        "Aging Analysis"
+                    ],
+                    correct: ["Aging Analysis"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What is the purpose of the validation step in the migration process? Choose the correct answer.",
+                    options: [
+                        "Generate financial reports",
+                        "To ensure the credit management profiles align with business logic and policies",
+                        "Extract data from legacy systems",
+                        "Transform and cleanse data"
+                    ],
+                    correct: ["To ensure the credit management profiles align with business logic and policies"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "In SAP Credit Management, how are customer credit groups and risk classes utilized for categorizing and assessing business partners' creditworthiness? (2 correct answers)",
+                    options: [
+                        "Customer credit groups are used solely for reporting purposes and do not influence risk class assignments.",
+                        "Risk classes can be automatically assigned based on a business partner's creditworthiness score, and this automated assignment can be manually overridden.",
+                        "Customer credit groups define the currency used for all credit-related assessments for a given business partner.",
+                        "Customer credit groups can serve as selection criteria for generating reports and worklists, allowing for the categorization of business partners (e.g., domestic vs. foreign customers)."
+                    ],
+                    correct: [
+                        "Risk classes can be automatically assigned based on a business partner's creditworthiness score, and this automated assignment can be manually overridden.",
+                        "Customer credit groups can serve as selection criteria for generating reports and worklists, allowing for the categorization of business partners (e.g., domestic vs. foreign customers)."
+                    ],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "A sales order is being created in a system with automated credit checks. The order includes details such as Sold-to Party, Ship-to Party, Customer Reference, Customer Reference Date, Requested Delivery Date, Payment Terms, Material Number, and Quantity. The system performs an automatic credit check. If the credit check fails, a credit case is automatically assigned. Which of the following statements accurately describes aspects of this process? (2 correct answers)",
+                    options: [
+                        "The creation of a sales order requires the input of information such as Sold-to Party, Ship-to Party, and details about the ordered goods. The credit check is performed after all order details are entered and the order is saved.",
+                        "A failed credit check, resulting from exceeding the customer's credit limit, automatically assigns the order to a credit analyst for manual review and approval before the order can proceed.",
+                        "If the credit check fails, no action is taken, and the order is processed without any credit case assignment.",
+                        "A credit check is not performed automatically; it is manually reviewed by the sales team."
+                    ],
+                    correct: [
+                        "The creation of a sales order requires the input of information such as Sold-to Party, Ship-to Party, and details about the ordered goods. The credit check is performed after all order details are entered and the order is saved.",
+                        "A failed credit check, resulting from exceeding the customer's credit limit, automatically assigns the order to a credit analyst for manual review and approval before the order can proceed."
+                    ],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "In sap credit management, describe the process of activating/deactivating the credit management module, defining credit segments to establish business partner credit limits, and selecting relevant currencies. Consider the implications of these steps for credit risk assessment and decision-making.",
+                    options: [
+                        "Credit Management activation/deactivation is a simple on/off switch, independent of other system configurations. Credit segments are created arbitrarily, and currency selection is optional; the system defaults to the company's primary currency.",
+                        "Activating Credit Management requires configuring various parameters and integrating it with other modules. Credit segments are carefully defined based on business criteria (e.g., industry, risk profile) to determine credit limits for business partners. Currency selection is crucial for accurate credit limit tracking and reporting in multiple currencies.",
+                        "The activation of Credit Management automatically creates default credit segments and assigns a default currency to all business partners. No further configuration is necessary.",
+                        "Deactivating Credit Management immediately removes all credit limits and related data. Credit segments are automatically deleted upon deactivation, and currency selection becomes irrelevant."
+                    ],
+                    correct: ["Activating Credit Management requires configuring various parameters and integrating it with other modules. Credit segments are carefully defined based on business criteria (e.g., industry, risk profile) to determine credit limits for business partners. Currency selection is crucial for accurate credit limit tracking and reporting in multiple currencies."],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What is the maximum number of dunning levels possible? Choose the correct answer.",
+                    options: [
+                        "Ten",
+                        "Three",
+                        "Nine"
+                    ],
+                    correct: ["Nine"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What is the purpose of using minimum amounts in the dunning procedure?",
+                    options: [
+                        "To ensure that large amounts due are dunned immediately.",
+                        "To prevent small amounts due from triggering high dunning levels.",
+                        "To increase the number of dunning notices."
+                    ],
+                    correct: ["To prevent small amounts due from triggering high dunning levels."],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What determines the dunning level of an item?",
+                    options: [
+                        "The invoice amount.",
+                        "The number of past months.",
+                        "The number of days in arrears with respect to the net due date.",
+                        "The number of payments received."
+                    ],
+                    correct: ["The number of days in arrears with respect to the net due date."],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What are the characteristics of dunning charges? (3 correct answers)",
+                    options: [
+                        "You can define dunning charges for each company code.",
+                        "Dunning charges depend on the dunning level.",
+                        "You can use word processing functions to print these charges on the dunning notice.",
+                        "Dunning charges can be a fixed amount and, at the same time, a percentage of the dunned amount.",
+                        "You can define a minimum amount for dunning charges."
+                    ],
+                    correct: [
+                        "You can define dunning charges for each company code.",
+                        "Dunning charges depend on the dunning level.",
+                        "Dunning charges can be a fixed amount and, at the same time, a percentage of the dunned amount."
+                    ],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "Which dunning-related data do you maintain on the business partner master record? (3 correct answers)",
+                    options: [
+                        "Dunning interval",
+                        "Dunning block",
+                        "Dunning procedure",
+                        "Dunning notice",
+                        "Dunning level"
+                    ],
+                    correct: ["Dunning block", "Dunning procedure", "Dunning level"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "What happens if a dunning level does not reach the minimum amount for due items?",
+                    options: [
+                        "The items are set to the highest dunning level.",
+                        "The items are not dunned.",
+                        "The items are set to the next lower dunning level."
+                    ],
+                    correct: ["The items are not dunned."],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "Can down payment requests be dunned for customers?",
+                    options: [
+                        "Only overdue invoices can be dunned.",
+                        "Overdue down payment request and overdue invoices can be dunned."
+                    ],
+                    correct: ["Overdue down payment request and overdue invoices can be dunned."],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "For an open item to be considered for dunning, which of the following must NOT be true? (3 correct answers)",
+                    options: [
+                        "The item is blocked for dunning.",
+                        "The item is overdue based on the dunning date, payment terms, and grace days.",
+                        "The item has been paid in full.",
+                        "The item is within the grace days defined in the dunning procedure."
+                    ],
+                    correct: [
+                        "The item is blocked for dunning.",
+                        "The item has been paid in full.",
+                        "The item is within the grace days defined in the dunning procedure."
+                    ],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "Where is a changed dunning letter template assigned to the dunning procedure?",
+                    options: [
+                        "Adobe LiveCycle Designer",
+                        "Local host",
+                        "Output Parameter Determination App"
+                    ],
+                    correct: ["Output Parameter Determination App"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What is the name of the standard template for dunning notice that can be copied?",
+                    options: [
+                        "TEMPLATE_DUNN_NOTE",
+                        "ADOBE_DUNN_NOTE",
+                        "FIN_FO_DUNN_NOTE"
+                    ],
+                    correct: ["FIN_FO_DUNN_NOTE"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "Identify the data you can store in the definition of the asset class configuration step. (2 correct answers)",
+                    options: [
+                        "Unit of measure of the asset",
+                        "Master data layout",
+                        "Account determination",
+                        "Number range of FI-document number of the posting document"
+                    ],
+                    correct: ["Master data layout", "Account determination"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "Which accounts are reconciliation accounts of Asset Accounting? (2 correct answers)",
+                    options: [
+                        "Offsetting account for revaluation",
+                        "Balance Sheet Account: Acquisition and Product Costs",
+                        "G/L account for asset retirement gain",
+                        "Accumulated Depreciation Account for Ordinary Depreciation"
+                    ],
+                    correct: ["Balance Sheet Account: Acquisition and Product Costs", "Accumulated Depreciation Account for Ordinary Depreciation"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "Which elements are connected by the validation view?",
+                    options: [
+                        "The ledger with the accounting principle",
+                        "The accounting principle with depreciation area",
+                        "Ledger with depreciation area"
+                    ],
+                    correct: ["The accounting principle with depreciation area"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "In which configuration step can you define that a maximum amount check is to be made for an asset class?",
+                    options: [
+                        "Define asset class.",
+                        "Make Valuation View-Dependent Settings for Asset Class.",
+                        "Specify Amounts."
+                    ],
+                    correct: ["Specify Amounts."],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "Which statements regarding the asset class are correct? (3 correct answers)",
+                    options: [
+                        "New Asset Classes can create and assign a new account determination.",
+                        "New account determinations can be assigned to the asset classes are possible, even if postings exist.",
+                        "Changes to the accounts are possible, even if postings exist.",
+                        "The default values for useful lives and depreciation keys can be adjusted.",
+                        "The same account determinations can be assigned to different asset classes."
+                    ],
+                    correct: [
+                        "New Asset Classes can create and assign a new account determination.",
+                        "The default values for useful lives and depreciation keys can be adjusted.",
+                        "The same account determinations can be assigned to different asset classes."
+                    ],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "Which event must be selected to validate a cost center?",
+                    options: [
+                        "Fixed Assets: Time-independent data",
+                        "Fixed Assets: Time-dependent data",
+                        "Fixed assets: Time-independent valuation",
+                        "Fixed assets: Time-dependent valuation"
+                    ],
+                    correct: ["Fixed Assets: Time-dependent data"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What can be the reason for an error or warning message when creating or changing an asset master record? (2 correct answers)",
+                    options: [
+                        "A substitution is activated",
+                        "A mandatory field is not filled",
+                        "A validation is set",
+                        "Spelling error"
+                    ],
+                    correct: ["A mandatory field is not filled", "A validation is set"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "You want the depreciation key to be selected automatically depending on the country, overriding the default value from the asset class. Which event and rule type should you choose?",
+                    options: [
+                        "Fixed assets: Time-independent data – substitution rule",
+                        "Fixed assets: Time-dependent valuation - validation",
+                        "Fixed assets: Time-independent valuation substitution rule",
+                        "Fixed assets: Time-dependent valuation - substitution rule"
+                    ],
+                    correct: ["Fixed assets: Time-independent valuation substitution rule"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "Identify the settings you must configure to obtain a log for a substitution. (2 correct answers)",
+                    options: [
+                        "Substitution",
+                        "Each event",
+                        "Each rule execution user",
+                        "Logging start time",
+                        "Each field"
+                    ],
+                    correct: ["Each event", "Each field"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "For what purpose can a substitution of the asset master records be used? (2 correct answers)",
+                    options: [
+                        "Check asset master record fields",
+                        "Fill asset master record fields",
+                        "Overwrite asset master record fields",
+                        "Save asset master record fields"
+                    ],
+                    correct: ["Fill asset master record fields", "Overwrite asset master record fields"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "What is the effect of the payment of the asset under cash discount deduction?",
+                    options: [
+                        "No automatic change to the Acquisition and Production Costs (APC) of the asset.",
+                        "A reduction in the APC values of the asset.",
+                        "Increase in depreciation of the asset in the year of payment."
+                    ],
+                    correct: ["A reduction in the APC values of the asset."],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "Which field in the purchase order item must have the value Asset (A) so that you can enter an asset number in the account assignment?",
+                    options: [
+                        "Product Type Group:",
+                        "Material Group",
+                        "Account Assignment Category"
+                    ],
+                    correct: ["Account Assignment Category"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "Which of the following activities are part of the asset procurement process in materials management? (3 correct answers)",
+                    options: [
+                        "Purchase order",
+                        "Goods receipt",
+                        "Inventory receipt",
+                        "Invoice receipt"
+                    ],
+                    correct: ["Purchase order", "Goods receipt", "Invoice receipt"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "In the procurement process, when using a valuated goods receipt, when is a fixed asset capitalized at purchase order value?",
+                    options: [
+                        "Purchase order",
+                        "Goods receipt",
+                        "Invoice receipt",
+                        "Payment"
+                    ],
+                    correct: ["Goods receipt"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "When is the net book value adjusted?",
+                    options: [
+                        "Settlement after the invoice is posted",
+                        "Immediately after balance payment",
+                        "Settlement after the down payment has been cleared",
+                        "After goods receipt"
+                    ],
+                    correct: ["After goods receipt"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What is the sequence of the down payment process?",
+                    options: [
+                        "Purchase Order- Goods Receipt - Down Payment- Invoice Receipt – Payment",
+                        "Purchase Order- Invoice Receipt -Down Payment - Goods Receipt - Payment",
+                        "Purchase Order- Down Payment - Goods Receipt - Invoice Receipt – Payment"
+                    ],
+                    correct: ["Purchase Order- Down Payment - Goods Receipt - Invoice Receipt – Payment"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "Which characteristics must the asset class possess so that down payments for investment projects WBS elements can be settled to the corresponding Asset under Construction? (2 correct answers)",
+                    options: [
+                        "Depreciation Allowed",
+                        "Down Payment Allowed",
+                        "Investment Measure",
+                        "Maintenance"
+                    ],
+                    correct: ["Down Payment Allowed", "Investment Measure"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "When do we see the down payments made in the asset under construction?",
+                    options: [
+                        "Immediately after down payment",
+                        "After settlement",
+                        "After goods receipt"
+                    ],
+                    correct: ["Immediately after down payment"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "Which transaction type is used to post down payments in Asset Accounting?",
+                    options: [
+                        "100",
+                        "180",
+                        "210"
+                    ],
+                    correct: ["180"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "To be able to maintain ledger-specific settlement rules, the Ledger Specific Distribution Rules field must be maintained in which SSUI element?",
+                    options: [
+                        "Investment Profiles",
+                        "Settlement Profile",
+                        "Project Profile"
+                    ],
+                    correct: ["Settlement Profile"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What are write-ups used to adjust?",
+                    options: [
+                        "Asset Acquisition Values",
+                        "Too much ordinary depreciation posted in previous years",
+                        "Too little ordinary depreciation posted in previous years"
+                    ],
+                    correct: ["Too much ordinary depreciation posted in previous years"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What is the effect of year-end closing in Asset Accounting? (3 correct answers)",
+                    options: [
+                        "The calculation of depreciation for the closed fiscal year is fixed.",
+                        "The asset history sheet for the fiscal year to be closed can only be created for each asset class.",
+                        "No transactions can be carried out in the closed fiscal year.",
+                        "The changes to the asset master data record affect all fiscal years.",
+                        "The year-end closing of the general ledger can be performed for the fiscal year closed in Asset Accounting."
+                    ],
+                    correct: [
+                        "The calculation of depreciation for the closed fiscal year is fixed.",
+                        "No transactions can be carried out in the closed fiscal year.",
+                        "The year-end closing of the general ledger can be performed for the fiscal year closed in Asset Accounting."
+                    ],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "To enter assets with different valuation approaches, you can fill the following fields: (2 correct answers)",
+                    options: [
+                        "Posting Key",
+                        "Ledger",
+                        "Depreciation Area",
+                        "Transaction Type"
+                    ],
+                    correct: ["Ledger", "Depreciation Area"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "The asset portfolio was not completely entered in previous years. The missing assets can be entered subsequently with which transaction?",
+                    options: [
+                        "Post Write-up",
+                        "Post-Capitalization",
+                        "Post Valuation",
+                        "Post Acquisition"
+                    ],
+                    correct: ["Post-Capitalization"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "In addition to ordinary depreciation, you want to enter an unplanned depreciation for an asset that was acquired in previous years. Which transaction type do you use?",
+                    options: [
+                        "650 - Unplanned depreciation on current-year acquisition",
+                        "600 - Manual ordinary depreciation on prior-year",
+                        "610 - Manual ordinary depreciation on current-year acquisition",
+                        "640 - Unplanned Depreciation on Prior-Year"
+                    ],
+                    correct: ["640 - Unplanned Depreciation on Prior-Year"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "You want to create an asset history sheet according to planned values. What do you need to select? Choose the correct answer.",
+                    options: [
+                        "The planning horizon",
+                        "The Plan Version",
+                        "The key figure group"
+                    ],
+                    correct: ["The Plan Version"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "Under which prerequisites is year-end closing of Asset Accounting technically possible? (3 correct answers)",
+                    options: [
+                        "No errors occurred on any fixed asset during depreciation calculation.",
+                        "The planned depreciation has been posted completely to the general ledger.",
+                        "All AuCs are complete and a full settlement has been performed.",
+                        "All incomplete assets have been completed.",
+                        "Year-end closing has been performed in the general ledger."
+                    ],
+                    correct: [
+                        "No errors occurred on any fixed asset during depreciation calculation.",
+                        "The planned depreciation has been posted completely to the general ledger.",
+                        "All incomplete assets have been completed."
+                    ],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "Which of the following statements about the test run are correct? (2 correct answers)",
+                    options: [
+                        "Test run is optional.",
+                        "The test run must be performed for the entire company code.",
+                        "The test run displays an error log.",
+                        "The test run shows the future journal entries."
+                    ],
+                    correct: ["Test run is optional.", "The test run displays an error log."],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "What tasks make up the receivables line-item matching machine learning service of SAP Cash Application? (2 correct answers)",
+                    options: [
+                        "Reprocess bank statement items",
+                        "Payment matching",
+                        "Schedule jobs",
+                        "Exception handling"
+                    ],
+                    correct: ["Payment matching", "Schedule jobs"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "Which dimensions can be used to provide complete balance sheet reports? (2 correct answers)",
+                    options: [
+                        "Segment",
+                        "Cost center",
+                        "Functional area",
+                        "Profit center"
+                    ],
+                    correct: ["Segment", "Profit center"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "As a pre-closing activity, selected suppliers are to confirm their balances. Which confirmation procedure do you use when a response is expected 'only' in case of discrepancies?",
+                    options: [
+                        "Balance confirmation",
+                        "Balance request",
+                        "Account statement",
+                        "Balance notification"
+                    ],
+                    correct: ["Balance notification"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "Who should the customer IT Contact provide with administrator authorization when creating use for the SAP S/4HANA Cloud starter system? (2 correct answers)",
+                    options: [
+                        "Lead configuration expert",
+                        "LoB configuration experts",
+                        "Project manager",
+                        "Customer LoB experts"
+                    ],
+                    correct: ["Lead configuration expert", "LoB configuration experts"],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "Which function in SAP S/4HANA makes it possible to provide segmented financial reporting?",
+                    options: [
+                        "Ledger",
+                        "Currency conversion",
+                        "Functional area",
+                        "Document splitting"
+                    ],
+                    correct: ["Document splitting"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "To which object is the posting period variant assigned?",
+                    options: [
+                        "Account type",
+                        "Fiscal year variant",
+                        "Company Code",
+                        "Plant"
+                    ],
+                    correct: ["Company Code"],
+                    type: "single",
+                    explanation: ""
+                },
+                {
+                    question: "What are the available methods through which you can fill staging tables in the SAP HANA database of the target system? (3 correct answers)",
+                    options: [
+                        "SAP Smart Data Access",
+                        "SAP SQL Anywhere",
+                        "SAP Data Services",
+                        "Customer ETL tools",
+                        "XML or CSV templates"
+                    ],
+                    correct: [
+                        "SAP Data Services",
+                        "Customer ETL tools",
+                        "XML or CSV templates"
+                    ],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "What are some reasons you cannot remove a test process automate from a test plan? (2 correct answers)",
+                    options: [
+                        "The test process automate has not been made visible.",
+                        "The test plan has already been executed.",
+                        "The test plan user does not have the necessary permission.",
+                        "Data binding exists with another test process automate."
+                    ],
+                    correct: ["The test plan has already been executed.", "Data binding exists with another test process automate."],
+                    type: "multiple",
+                    explanation: ""
+                },
+                {
+                    question: "Which tasks are mandatory before you can migrate data for a specific object? (2 correct answers)",
+                    options: [
+                        "Predecessor objects have been migrated",
+                        "You select the same migration method previously used for other objects",
+                        "All previous migration projects are in the 'Finished' status",
+                        "Permission to migrate the data has been assigned"
+                    ],
+                    correct: ["Predecessor objects have been migrated", "Permission to migrate the data has been assigned"],
+                    type: "multiple",
+                    explanation: ""
+                }
+            ];
 
 
 

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lexique SAP S/4HANA Cloud - Outil de Révision</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        .sap-gradient {
+            background: linear-gradient(135deg, #003056 0%, #008FD3 100%);
+        }
+
+        /* Logic for Review Mode (Blurring) */
+        .review-mode .definition {
+            filter: blur(6px);
+            transition: filter 0.3s ease;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .review-mode .card:hover .definition {
+            filter: blur(0);
+        }
+
+        .review-mode .reveal-hint {
+            display: block;
+        }
+        
+        .reveal-hint {
+            display: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="sap-gradient text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center space-x-3 mb-4 md:mb-0">
+                <i class="fas fa-graduation-cap text-3xl"></i>
+                <div>
+                    <h1 class="text-xl font-bold leading-tight">SAP S/4HANA Cloud</h1>
+                    <p class="text-xs text-blue-100 opacity-90">Lexique & Outil de Révision Certif</p>
+                </div>
+            </div>
+            
+            <!-- Search Bar -->
+            <div class="relative w-full md:w-1/3">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                    <i class="fas fa-search text-blue-500"></i>
+                </span>
+                <input type="text" id="searchInput" placeholder="Rechercher un terme (anglais ou français)..." 
+                    class="w-full py-2 pl-10 pr-4 rounded-full text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-300 shadow-sm">
+            </div>
+        </div>
+    </header>
+
+    <!-- Controls & Filters -->
+    <div class="bg-white shadow-sm py-4">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                
+                <!-- Category Filters -->
+                <div class="flex flex-wrap gap-2 justify-center md:justify-start" id="categoryFilters">
+                    <button class="filter-btn active bg-blue-600 text-white px-4 py-1.5 rounded-full text-sm font-medium transition" data-category="all">Tout</button>
+                    <button class="filter-btn bg-gray-200 text-gray-700 hover:bg-gray-300 px-4 py-1.5 rounded-full text-sm font-medium transition" data-category="Concepts">Concepts Cloud</button>
+                    <button class="filter-btn bg-gray-200 text-gray-700 hover:bg-gray-300 px-4 py-1.5 rounded-full text-sm font-medium transition" data-category="Processus">Processus Métier</button>
+                    <button class="filter-btn bg-gray-200 text-gray-700 hover:bg-gray-300 px-4 py-1.5 rounded-full text-sm font-medium transition" data-category="Metho">Méthodologie</button>
+                    <button class="filter-btn bg-gray-200 text-gray-700 hover:bg-gray-300 px-4 py-1.5 rounded-full text-sm font-medium transition" data-category="Config">Config & Ext.</button>
+                    <button class="filter-btn bg-gray-200 text-gray-700 hover:bg-gray-300 px-4 py-1.5 rounded-full text-sm font-medium transition" data-category="Data">Tests & Data</button>
+                    <button class="filter-btn bg-gray-200 text-gray-700 hover:bg-gray-300 px-4 py-1.5 rounded-full text-sm font-medium transition" data-category="Verbes">Verbes Clés</button>
+                </div>
+
+                <!-- Review Mode Toggle -->
+                <div class="flex items-center space-x-2 bg-yellow-50 px-4 py-2 rounded-lg border border-yellow-200">
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="reviewModeToggle" class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-yellow-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-500"></div>
+                        <span class="ml-3 text-sm font-medium text-gray-800"><i class="fas fa-eye-slash mr-1"></i>Mode Révision</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <main class="container mx-auto px-4 py-8 flex-grow">
+        <div id="cardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Cards will be injected here via JS -->
+        </div>
+        
+        <!-- Empty State -->
+        <div id="noResults" class="hidden text-center py-20">
+            <i class="fas fa-folder-open text-6xl text-gray-300 mb-4"></i>
+            <p class="text-xl text-gray-500">Aucun terme trouvé pour cette recherche.</p>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-400 py-6 text-center text-sm">
+        <p>Outil de révision créé pour la certification SAP S/4HANA Cloud.</p>
+    </footer>
+
+    <!-- Data & Script -->
+    <script>
+        // Database of Terms
+        const vocabData = [
+            // Concepts Cloud & Généraux
+            { term: "Upfront investment", def: "Investissement initial (souvent lourd en CAPEX pour les systèmes sur site).", cat: "Concepts" },
+            { term: "Scalability", def: "Évolutivité (capacité du système à grandir).", cat: "Concepts" },
+            { term: "Elasticity", def: "Élasticité (capacité à augmenter ou réduire les ressources instantanément selon la demande).", cat: "Concepts" },
+            { term: "Expense reports", def: "Notes de frais.", cat: "Concepts" },
+            { term: "Predefined business processes", def: "Processus métier prédéfinis (le standard SAP).", cat: "Concepts" },
+            { term: "Backups", def: "Sauvegardes de données.", cat: "Concepts" },
+            { term: "Column-oriented", def: "Orienté colonne (architecture HANA optimisée pour l'analyse).", cat: "Concepts" },
+            { term: "Row-oriented", def: "Orienté ligne (BDD classique, optimisée pour l'écriture transactionnelle).", cat: "Concepts" },
+
+            // Processus Métier
+            { term: "Cross different applications", def: "À travers différentes applications (transversal).", cat: "Processus" },
+            { term: "End-to-end business process", def: "Processus de bout en bout (traverse plusieurs départements).", cat: "Processus" },
+            { term: "Lead to Cash", def: "Du prospect à l'encaissement (Processus de vente).", cat: "Processus" },
+            { term: "Source to Pay", def: "De la recherche fournisseur au paiement (Processus d'achat).", cat: "Processus" },
+            { term: "Record to Report (R2R)", def: "De l'enregistrement au reporting (Comptabilité/Finance).", cat: "Processus" },
+            { term: "Plan to Fulfill", def: "De la planification à la réalisation (Supply Chain).", cat: "Processus" },
+            { term: "Subsidiary", def: "Filiale d'une entreprise.", cat: "Processus" },
+            { term: "Headquarter", def: "Siège social / Maison mère.", cat: "Processus" },
+            { term: "Greenfield scenario", def: "Nouvelle implémentation (Terrain vierge, sans historique technique).", cat: "Processus" },
+            { term: "Brownfield", def: "Conversion de système existant (Non dispo en Public Cloud).", cat: "Processus" },
+            { term: "Warranty", def: "Garantie.", cat: "Processus" },
+            { term: "Claims", def: "Réclamations / Sinistres.", cat: "Processus" },
+            { term: "Sourcing and Procurement", def: "Approvisionnement et Achats.", cat: "Processus" },
+
+            // Méthodologie
+            { term: "Scope", def: "Le périmètre (fonctionnalités activées).", cat: "Metho" },
+            { term: "Scoping", def: "Définition du périmètre.", cat: "Metho" },
+            { term: "Line of Business (LoB)", def: "Ligne de métier / Service (ex: Finance, Vente, RH).", cat: "Metho" },
+            { term: "Provisioning", def: "Mise à disposition (création technique du système).", cat: "Metho" },
+            { term: "Granting access", def: "Octroyer / Donner des accès.", cat: "Metho" },
+            { term: "Decommissioned", def: "Mis hors service (arrêté définitivement).", cat: "Metho" },
+            { term: "Fit-to-Standard workshops", def: "Ateliers d'adéquation (validation du standard SAP).", cat: "Metho" },
+            { term: "Release", def: "Une version logicielle (mise à jour majeure).", cat: "Metho" },
+            { term: "Upgrade", def: "Mise à niveau (passage à la version supérieure).", cat: "Metho" },
+            { term: "Landscape", def: "Paysage système (Dev, Test, Prod).", cat: "Metho" },
+            { term: "Tenant", def: "Locataire (Environnement spécifique sur serveur partagé).", cat: "Metho" },
+            { term: "Output Management", def: "Gestion des sorties (impressions, emails).", cat: "Metho" },
+
+            // Configuration
+            { term: "Ledger", def: "Grand Livre (comptable).", cat: "Config" },
+            { term: "Leading Ledger", def: "Grand Livre principal (0L).", cat: "Config" },
+            { term: "Fiscal year variant", def: "Variante d'exercice comptable (dates début/fin).", cat: "Config" },
+            { term: "In-app extensibility", def: "Extensibilité in-app (Low-code, pour Key Users).", cat: "Config" },
+            { term: "Side-by-side extensibility", def: "Extensibilité côte-à-côte (Sur BTP, via API).", cat: "Config" },
+            { term: "Field-level access", def: "Accès au niveau du champ (précis).", cat: "Config" },
+            { term: "Value-level access", def: "Accès au niveau de la valeur (ex: Société 1010).", cat: "Config" },
+            { term: "Business Role", def: "Rôle professionnel (donne les droits).", cat: "Config" },
+            { term: "Business Catalog", def: "Catalogue pro (contient les applications).", cat: "Config" },
+            { term: "Customizing", def: "Paramétrage / Configuration.", cat: "Config" },
+            { term: "Transport", def: "Transfert (déplacement Dev -> Test -> Prod).", cat: "Config" },
+
+            // Tests & Data
+            { term: "Test script", def: "Scénario de test (document étape par étape).", cat: "Data" },
+            { term: "Static label", def: "Étiquette statique (texte fixe sur écran).", cat: "Data" },
+            { term: "Legacy DB", def: "Ancienne base de données (système hérité).", cat: "Data" },
+            { term: "Staging tables", def: "Tables de transit (nettoyage avant chargement).", cat: "Data" },
+            { term: "Mapping", def: "Correspondance (ex: Ancien Code A = Nouveau Code B).", cat: "Data" },
+            { term: "Predecessor object", def: "Objet prédécesseur (requis avant de créer le suivant).", cat: "Data" },
+            { term: "Inbound/Outbound services", def: "Services Entrants / Sortants.", cat: "Data" },
+            { term: "Communication Arrangement", def: "Accord de communication (lien technique entre systèmes).", cat: "Data" },
+
+            // Verbes
+            { term: "To Assess", def: "Évaluer.", cat: "Verbes" },
+            { term: "To Recommend", def: "Recommander.", cat: "Verbes" },
+            { term: "To Requirement", def: "Avoir besoin / Exiger.", cat: "Verbes" },
+            { term: "To Assign", def: "Assigner / Affecter.", cat: "Verbes" },
+            { term: "To Trigger", def: "Déclencher.", cat: "Verbes" },
+            { term: "To Monitor", def: "Surveiller / Piloter.", cat: "Verbes" },
+            { term: "To Handle", def: "Gérer / Traiter.", cat: "Verbes" },
+            { term: "To Depict", def: "Représenter / Décrire.", cat: "Verbes" },
+            { term: "To Retrieve", def: "Récupérer (de l'information).", cat: "Verbes" }
+        ];
+
+        // Colors per category for badges
+        const catColors = {
+            "Concepts": "bg-blue-100 text-blue-800",
+            "Processus": "bg-green-100 text-green-800",
+            "Metho": "bg-purple-100 text-purple-800",
+            "Config": "bg-orange-100 text-orange-800",
+            "Data": "bg-red-100 text-red-800",
+            "Verbes": "bg-gray-100 text-gray-800"
+        };
+
+        const container = document.getElementById('cardsContainer');
+        const searchInput = document.getElementById('searchInput');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const reviewToggle = document.getElementById('reviewModeToggle');
+        const noResults = document.getElementById('noResults');
+
+        let currentCategory = 'all';
+        let searchTerm = '';
+
+        // Initial Render
+        renderCards();
+
+        // Render Function
+        function renderCards() {
+            container.innerHTML = '';
+            
+            const filtered = vocabData.filter(item => {
+                const matchesCat = currentCategory === 'all' || item.cat === currentCategory;
+                const matchesSearch = item.term.toLowerCase().includes(searchTerm) || 
+                                      item.def.toLowerCase().includes(searchTerm);
+                return matchesCat && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+            }
+
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500 hover:shadow-lg transition transform hover:-translate-y-1';
+                
+                const badgeColor = catColors[item.cat] || "bg-gray-100 text-gray-800";
+                
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="text-xs font-semibold px-2 py-1 rounded ${badgeColor}">${item.cat}</span>
+                        <i class="fas fa-volume-up text-gray-300 hover:text-blue-500 cursor-pointer" onclick="speakText('${item.term}')" title="Prononcer"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">${item.term}</h3>
+                    <div class="relative">
+                        <p class="text-gray-600 definition leading-relaxed">${item.def}</p>
+                        <div class="reveal-hint absolute top-0 left-0 w-full h-full flex items-center justify-center text-sm font-bold text-gray-400 pointer-events-none">
+                            <i class="fas fa-eye mr-2"></i> Survoler pour révéler
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Event Listeners
+        searchInput.addEventListener('input', (e) => {
+            searchTerm = e.target.value.toLowerCase();
+            renderCards();
+        });
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // UI Update
+                filterBtns.forEach(b => {
+                    b.classList.remove('bg-blue-600', 'text-white');
+                    b.classList.add('bg-gray-200', 'text-gray-700');
+                });
+                btn.classList.remove('bg-gray-200', 'text-gray-700');
+                btn.classList.add('bg-blue-600', 'text-white');
+
+                // Logic Update
+                currentCategory = btn.getAttribute('data-category');
+                renderCards();
+            });
+        });
+
+        reviewToggle.addEventListener('change', (e) => {
+            const body = document.body;
+            if (e.target.checked) {
+                body.classList.add('review-mode');
+            } else {
+                body.classList.remove('review-mode');
+            }
+        });
+
+        // Simple Text to Speech (Browser API)
+        function speakText(text) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            window.speechSynthesis.speak(utterance);
+        }
+    </script>
+</body>
+</html>
