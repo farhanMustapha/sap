@@ -1147,7 +1147,7 @@ var test_blanc_3 = [
     correct: [0, 1, 2, 5] // A, B, C, F
   },
   {
-    q: "26-You're posting a supplier invoice... Which statements are correct? (2 answers)",
+    q: "26-You're posting a supplier invoice in the system. Which statements are correct? (2 answers)",
     options: [
       "A. Some data is transferred from the vendor master record for the posting.",
       "B. The tax amount must always be entered manually.",
@@ -1157,7 +1157,7 @@ var test_blanc_3 = [
     correct: [0, 3] // A & D
   },
   {
-    q: "27-Once that payment terms are set in the supplier master data... they will be automatically defaulted... and cannot be modified later.",
+    q: "27-Once that payment terms are set in the supplier master data at company code level, they will be automatically defaulted on the supplier invoices and cannot be modified later.",
     options: [
       "A. True",
       "B. False"
@@ -1195,7 +1195,7 @@ var test_blanc_3 = [
     correct: [0, 3] // A & D (Staging Tables in HANA DB & Files)
   },
   {
-    q: "31-In which of the following systems do you access your assigned process tasks from the SAP Activate Roadmap...?",
+    q: "31-In which of the following systems do you access your assigned process tasks from the SAP Activate Roadmap of SAP S/4HANA Cloud Public Edition (3- system landscape)?",
     options: [
       "A. SAP Cloud ALM for Operations",
       "B. SAP Central Business Configuration",
@@ -1225,7 +1225,7 @@ var test_blanc_3 = [
     correct: [2] // C
   },
   {
-    q: "34-An SAP Fiori app isn't displaying on the sap fiori launchpad even though the business role garanting permission to the app is correctly assigned to the user. How would you troubleshoot?",
+    q: "34-An SAP Fiori app isn't displaying on the sap fiori launchpad even though the business role garanting permission to the app is correctly assigned to the user. How would you troubleshoot? (3 correct answers)",
     options: [
       "A. Check the space and page(s) assigned to the role.",
       "B. Check the business catalogues assigned to the role.",
@@ -8039,7 +8039,7 @@ var test_rihana_fi=[
                     explanation: ""
                 },
                 {
-                    question: "The VAT tax rate is changing on the 1st of July for the country your company code is in. What options to you have to maintain the new tax rate without disrupting the business? (2 correct answers)",
+                    question: "The VAT tax rate is changing on the 1st of July for the country your company code is in. What options to you have to maintain the new tax rate without disrupting the business? ( 2 answers)",
                     options: [
                         "Change the tax rate for the existing affected VAT tax codes.",
                         "Use the time-dependent tax calculation for affected tax codes.",
