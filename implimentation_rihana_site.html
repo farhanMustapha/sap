@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test site RH - SAP FI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
+        }
+
+        .question-card {
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .option-label {
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        /* Custom colors for feedback */
+        .bg-custom-red {
+            background-color: #fcebeb;
+            border-color: #ef4444;
+        }
+
+        .bg-custom-green {
+            background-color: #ecfdf5;
+            border-color: #10b981;
+        }
+
+        .border-custom-red {
+            border-color: #ef4444;
+        }
+
+        .border-custom-green {
+            border-color: #10b981;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(2px);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 12px;
+            animation: slide-down 0.3s ease-out;
+        }
+
+        @keyframes slide-down {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-btn:hover { color: #000; }
+        .animate-pulse { animation: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    </style>
+</head>
+
+<body>
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-8 flex justify-between items-center flex-wrap">
+            <div>
+                <h1 class="text-4xl font-bold text-gray-800 border-b-4 border-indigo-500 pb-2 inline-block">Test SAP Finance</h1>
+            </div>
+            <div class="flex items-center space-x-4 mt-4 md:mt-0">
+                <button onclick="promptResetQuiz()"
+                    class="px-4 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition duration-150 shadow-md text-sm">
+                    <span class="font-bold">↻</span> Réinitialiser
+                </button>
+
+        
+                
+                <button onclick="switchView('admin-view')"
+                    class="px-4 py-2 bg-gray-700 text-white font-medium rounded-lg hover:bg-gray-800 transition duration-150 shadow-md text-sm">
+                    Ajouter une explication
+                </button>
+            </div>
+        </header>
+
+        <div id="quiz-view">
+            <div class="flex flex-wrap justify-center mb-6 gap-4">
+                <div id="score-display" class="bg-indigo-100 text-indigo-800 text-xl font-bold py-3 px-6 rounded-lg shadow-inner">
+                    Score: 0 / 0
+                </div>
+                <div id="timer-display" class="bg-red-100 text-red-800 text-xl font-bold py-3 px-6 rounded-lg shadow-inner">
+                    Temps restant : 00:00:00
+                </div>
+            </div>
+
+            <div id="quiz-container" class="space-y-6">
+                </div>
+        </div>
+
+        <div id="admin-view" class="hidden">
+            <h2 class="text-3xl font-extrabold text-gray-800 mt-4 mb-6 pb-2 border-b-2 border-gray-300">Panneau d'Administration</h2>
+            <button onclick="switchView('quiz-view')" class="mb-6 px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition duration-150 shadow-md">
+                &larr; Retour au Quiz
+            </button>
+            <div id="admin-content" class="p-6 bg-white rounded-xl shadow-lg border border-gray-200"></div>
+        </div>
+    </div>
+
+    <div id="message-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeMessageModal()">&times;</span>
+            <h4 id="modal-title" class="text-2xl font-bold text-indigo-700 mb-4">Message</h4>
+            <div id="modal-content-text" class="text-gray-700 space-y-3"></div>
+        </div>
+    </div>
+
+    <script>
+        // =====================================================================================
+        // VARIABLES ET DONNÉES GLOBALES
+        // =====================================================================================
+
+        let currentScore = 0;
+        let totalQuestions = 0;
+        let quizData = [];
+        let userProgress = {};
+        let currentlyEditingIndex = -1;
+
+        // Variables Timer
+        let maxTimeSeconds = 0;
+        let timeLeft = 0;
+        let timerInterval = null;
+        let isQuizFinished = false;
+
+        function calculateMaxTime(numQuestions) {
+            if (numQuestions <= 40) return 3600; 
+            if (numQuestions <= 100) return 7200; 
+            return 10800; 
+        }
+
+        function formatTime(seconds) {
+            const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
+            const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+            const s = Math.floor(seconds % 60).toString().padStart(2, '0');
+            return `${h}:${m}:${s}`;
+        }
+
+        // =====================================================================================
+        // DONNÉES INITIALES
+        // =====================================================================================
+        function getInitialQuizData() {
+    return [
+        {
+            question: "1-An organization designs and builds automobiles. What scope do they require? (2 correct answers)",
+            options: [
+                "A. Finance-led administrative ERP",
+                "B. Product-centric industries",
+                "C. Service-centric industries"
+            ],
+            correct: ["A", "B"],
+            type: "multiple",
+            explanation: "Pour une entreprise automobile (manufacturière), le périmètre 'Product-centric' est essentiel pour la gestion de la production. Le 'Finance-led administrative ERP' est souvent inclus comme base administrative."
+        },
+        {
+            question: "2-Which lines of business are included in Finance-led administrative ERP? (3 correct answers)",
+            options: [
+                "A. Supply Chain",
+                "B. Finance",
+                "C. Manufacturing",
+                "D. Sourcing and Procurement",
+                "E. Sales"
+            ],
+            correct: ["B", "D", "E"],
+            type: "multiple",
+            explanation: "Le périmètre administratif centré sur la finance inclut typiquement la Finance, les Achats (Sourcing & Procurement) et les Ventes (Sales) pour les processus de base. La Supply Chain et le Manufacturing sont spécifiques aux produits."
+        },
+        {
+            question: "3-Which line of business includes scheduling and running the production processes?",
+            options: [
+                "A. Asset Management",
+                "B. Manufacturing",
+                "C. R&D Engineering",
+                "D. Supply Chain"
+            ],
+            correct: ["B"],
+            type: "single",
+            explanation: "Le domaine 'Manufacturing' (Fabrication) est responsable de la planification et de l'exécution des processus de production."
+        },
+        {
+            question: "4-For which customers is SAP S/4HANA Cloud Public Edition the best fit? (2 correct answers)",
+            options: [
+                "A. Existing SAP customers with many customization requirements.",
+                "B. New customers with few customization requirements.",
+                "C. New customers with openness to adopting predelivered SAP Best Practices.",
+                "D. Existing SAP customers who want to convert their SAP ECC system."
+            ],
+            correct: ["B", "C"],
+            type: "multiple",
+            explanation: "L'édition publique est idéale pour les nouveaux clients (Greenfield) prêts à adopter les standards (Best Practices) et ayant peu de besoins de personnalisation complexe."
+        },
+        {
+            question: "5-An organization sends technicians to client homes to provide plumbing services. What scope do they require? (2 correct answers)",
+            options: [
+                "A. Finance-led administrative ERP",
+                "B. Product-centric industries",
+                "C. Service-centric industries"
+            ],
+            correct: ["A", "C"],
+            type: "multiple",
+            explanation: "Pour des services de plomberie, l'entreprise a besoin du périmètre 'Service-centric' pour gérer les interventions, en plus de la base administrative 'Finance-led'."
+        },
+        {
+            question: "6-Which line of business includes responding to claims and delivering the service guaranteed in the warranty?",
+            options: [
+                "A. Sales",
+                "B. Sourcing and Procurement",
+                "C. Finance",
+                "D. Service"
+            ],
+            correct: ["D"],
+            type: "single",
+            explanation: "Le domaine 'Service' gère le service après-vente, y compris les réclamations et les garanties."
+        },
+        {
+            question: "7-In which line of business does an organization receive orders from our customers, confirm the orders, and deliver goods to customers?",
+            options: [
+                "A. Finance",
+                "B. Sourcing and Procurement",
+                "C. Sales",
+                "D. Manufacturing"
+            ],
+            correct: ["C"],
+            type: "single",
+            explanation: "Le processus 'Order-to-Cash' (réception, confirmation, livraison) relève du domaine des Ventes (Sales)."
+        },
+        {
+            question: "8-In which task are the partner/SAP LoB configuration experts demonstrating each business process chosen on the Digital Discovery Assessment from start to finish in the SAP S/4HANA Cloud Starter System?",
+            options: [
+                "A. Design workshops",
+                "B. Fit-to-Standard Analysis workshops",
+                "C. User Acceptance Testing workshops",
+                "D. Customization workshops"
+            ],
+            correct: ["B"],
+            type: "single",
+            explanation: "C'est l'objectif principal des ateliers 'Fit-to-Standard' : démontrer les processus standards dans le système Starter pour valider l'adéquation."
+        },
+        {
+            question: "9-Who builds a business case for their organization to purchase SAP S/4HANA Cloud?",
+            options: [
+                "A. Customer IT Contact",
+                "B. Customer Project Team",
+                "C. Customer Executive Sponsor(s)",
+                "D. Partner Project Team"
+            ],
+            correct: ["C"],
+            type: "single",
+            explanation: "Les sponsors exécutifs du client sont responsables de la justification stratégique et financière (Business Case) de l'investissement."
+        },
+        {
+            question: "10-Who is responsible for setting up the implementation project in SAP Cloud ALM? (2 correct answers)",
+            options: [
+                "A. Customer IT Contact",
+                "B. Partner Lead Configuration Expert",
+                "C. Customer Project Manager",
+                "D. Partner Project Manager"
+            ],
+            correct: ["C", "D"],
+            type: "multiple",
+            explanation: "La configuration initiale du projet dans SAP Cloud ALM est généralement une responsabilité conjointe des chefs de projet client et partenaire."
+        },
+        {
+            question: "11-Which system is upgraded to the latest software release version first?",
+            options: [
+                "A. SAP Central Business Configuration",
+                "B. SAP S/4HANA Cloud Test System",
+                "C. SAP S/4HANA Cloud Development System, customizing tenant",
+                "D. SAP S/4HANA Cloud Development System, development tenant"
+            ],
+            correct: ["B"],
+            type: "single",
+            explanation: "Le système de Test est mis à jour en premier (environ 2 semaines avant la Prod) pour permettre les tests de régression post-upgrade."
+        },
+        {
+            question: "12-Which SAP S/4HANA Cloud system is preconfigured with all SAP Best Practice business processes active and existing master data?",
+            options: [
+                "A. Development System",
+                "B. Starter System",
+                "C. Production System",
+                "D. Test System"
+            ],
+            correct: ["B"],
+            type: "single",
+            explanation: "Le 'Starter System' est fourni pré-activé avec les Best Practices et des données de démonstration pour les ateliers Fit-to-Standard."
+        },
+        {
+            question: "13-Which tool is used to activate business process content in the SAP S/4HANA Cloud systems?",
+            options: [
+                "A. SAP Cloud Identity Services",
+                "B. SAP Cloud ALM",
+                "C. SAP Central Business Configuration",
+                "D. SAP Business Technology Platform"
+            ],
+            correct: ["C"],
+            type: "single",
+            explanation: "SAP Central Business Configuration (CBC) est l'outil central pour définir le périmètre (scope) et activer le contenu dans les systèmes S/4HANA Cloud."
+        },
+        {
+            question: "14-Which tool compares the release upgrade information against a customer's actual landscape to provide the 'day 1 impact' of a release?",
+            options: [
+                "A. What's New Viewer",
+                "B. SAP Road Map Explorer",
+                "C. Release Assessment Scope Dependency Tool",
+                "D. Release Navigator"
+            ],
+            correct: ["C"],
+            type: "single",
+            explanation: "Le 'Release Assessment and Scope Dependency Tool' (RASD) analyse l'utilisation spécifique du client pour prédire l'impact d'une mise à jour."
+        },
+        {
+            question: "15-In which months are upgrades released for SAP S/4HANA Cloud Public Edition? (2 correct answers)",
+            options: [
+                "A. February",
+                "B. May",
+                "C. August",
+                "D. November"
+            ],
+            correct: ["A", "C"],
+            type: "multiple",
+            explanation: "Les mises à jour majeures de l'édition publique ont lieu en Février (ex: 2402) et en Août (ex: 2408)."
+        },
+        {
+            question: "16-Which SAP S/4HANA Cloud tenant is the main project for business process configuration and key user extensibility?",
+            options: [
+                "A. Development Tenant",
+                "B. Customizing Tenant"
+            ],
+            correct: ["B"],
+            type: "single",
+            explanation: "Le 'Customizing Tenant' (Client 100 du système Dev) est l'endroit où l'on effectue la configuration métier (via CBC) et l'extensibilité Key User."
+        },
+        {
+            question: "17-In which system is the content upgrade released first?",
+            options: [
+                "A. SAP Central Business Configuration",
+                "B. SAP S/4HANA Cloud Test System",
+                "C. SAP S/4HANA Cloud Development System, customizing tenant",
+                "D. SAP S/4HANA Cloud Development System, development tenant"
+            ],
+            correct: ["B"],
+            type: "single",
+            explanation: "Comme pour la mise à jour logicielle, le système de Test reçoit les mises à jour de contenu en premier."
+        },
+        {
+            question: "18-How many workspaces need to be created in SAP Central Business Configuration for the Starter System?",
+            options: [
+                "A. 1 workspace",
+                "B. 2 workspaces",
+                "C. 3 workspaces",
+                "D. 4 workspaces"
+            ],
+            correct: ["A"],
+            type: "single",
+            explanation: "Un seul espace de travail (Workspace) est nécessaire dans CBC pour gérer le système Starter."
+        },
+        {
+            question: "19-How many people can be assigned the role of the IT Contact?",
+            options: [
+                "A. 1",
+                "B. 2",
+                "C. 3",
+                "D. Unlimited"
+            ],
+            correct: ["A"],
+            type: "single",
+            explanation: "Il n'y a qu'un seul contact IT principal désigné pour recevoir les emails de provisioning initiaux."
+        },
+        {
+            question: "20-What includes one or more business catalogs that grant access to data and/or applications?",
+            options: [
+                "A. Business User",
+                "B. Business Role",
+                "C. Launchpad Space",
+                "D. Launchpad Page"
+            ],
+            correct: ["B"],
+            type: "single",
+            explanation: "Un 'Business Role' regroupe plusieurs catalogues métier (Business Catalogs) pour définir les autorisations d'un utilisateur."
+        },
+        {
+            question: "21-Which systems need to be provisioned via SAP for Me? (2 correct answers)",
+            options: [
+                "A. SAP Cloud Identity Authentication",
+                "B. SAP Central Business Configuration",
+                "C. SAP S/4HANA Cloud Development system, development tenant",
+                "D. SAP S/4HANA Cloud Production System"
+            ],
+            correct: ["B", "D"],
+            type: "multiple",
+            explanation: "Le client doit déclencher le provisioning de CBC et des systèmes S/4HANA (Starter, Dev, Test, Prod) via SAP for Me. IAS est souvent automatique."
+        },
+        {
+            question: "22-When creating users in the SAP S/4HANA Cloud starter system, what needs to match with the Login Name in the Identity Authentication Service system?",
+            options: [
+                "A. Worker ID",
+                "B. First Name",
+                "C. User Name",
+                "D. Worker Type"
+            ],
+            correct: ["C"],
+            type: "single",
+            explanation: "Le champ 'User Name' dans S/4HANA doit correspondre exactement au 'Login Name' dans IAS pour que le SSO fonctionne."
+        },
+        {
+            question: "23-What does a deployment plan in SAP Cloud ALM contain? (2 correct answers)",
+            options: [
+                "A. Timeboxes",
+                "B. System Group",
+                "C. Scopes",
+                "D. Releases"
+            ],
+            correct: ["A", "D"],
+            type: "multiple",
+            explanation: "Un plan de déploiement dans ALM structure le projet avec des 'Timeboxes' (Phases/Sprints) et des 'Releases' (Jalons de mise en production)."
+        },
+        {
+            question: "24-Which scope bundle is automatically selected for the Evaluation workspace?",
+            options: [
+                "A. Baseline Accelerator",
+                "B. Service-Centric",
+                "C. Enterprise Management",
+                "D. Product-Centric"
+            ],
+            correct: ["A"],
+            type: "single",
+            explanation: "Le 'Baseline Accelerator' (anciennement Enterprise Management Layer light) est souvent le contenu par défaut pour l'évaluation rapide."
+        },
+        {
+            question: "25-What is populated in the Starter System after activating business process content in SAP Central Business Configuration? (2 correct answers)",
+            options: [
+                "A. Users",
+                "B. Master data",
+                "C. Business roles",
+                "D. Configuration values"
+            ],
+            correct: ["B", "D"],
+            type: "multiple",
+            explanation: "L'activation du contenu charge les valeurs de configuration (Best Practices) et des données de base (Master Data) de démonstration."
+        },
+        {
+            question: "26-What does the partner project manager align the scope in SAP Cloud ALM with?",
+            options: [
+                "A. The bill of materials",
+                "B. The Starter System",
+                "C. The Digital Discovery Assessment",
+                "D. The Process Navigator"
+            ],
+            correct: ["C"],
+            type: "single",
+            explanation: "Le périmètre dans ALM doit refléter ce qui a été convenu et validé lors du DDA (Digital Discovery Assessment)."
+        },
+        {
+            question: "27-Which role should the partner lead configuration expert be assigned in SAP Central Business Configuration?",
+            options: [
+                "A. SAP_CBC_CONSUMPTION_AUDITOR",
+                "B. SAP_CBC_CONSUMPTION_KEY_USER",
+                "C. SAP_CBC_CONSUMPTION_PROGRAM_LEAD"
+            ],
+            correct: ["C"],
+            type: "single",
+            explanation: "Le rôle de 'Program Lead' dans CBC donne les droits nécessaires pour créer des projets et gérer les espaces de travail."
+        },
+        {
+            question: "28-What should be demonstrated in SAP Signavio Process Navigator during Fit-to-Standard workshops? (3 correct answers)",
+            options: [
+                "A. Business Driven Configuration Questionnaire",
+                "B. Tutorial (if available)",
+                "C. Set-up instructions",
+                "D. Where to download Test Script",
+                "E. Process Flow diagram"
+            ],
+            correct: ["B", "D", "E"],
+            type: "multiple",
+            explanation: "On montre le flux de processus (Diagram), on explique où trouver le scénario de test (Test Script) et on utilise les tutoriels si disponibles pour illustrer le standard."
+        },
+        {
+            question: "29-Where are requirements documented in SAP Cloud ALM?",
+            options: [
+                "A. In the Requirements app",
+                "B. In the Processes app",
+                "C. In the Manage Scopes app",
+                "D. In the Features app"
+            ],
+            correct: ["A"],
+            type: "single",
+            explanation: "Les exigences (Requirements), notamment celles issues des ateliers Fit-to-Standard, sont gérées dans l'application 'Requirements'."
+        },
+        {
+            question: "30-What are some important activities the partner LoB configuration experts need to complete in the Realize phase? (2 correct answers)",
+            options: [
+                "A. Setting up manual test cases in SAP Cloud ALM.",
+                "B. Gathering perceived change impact feedback.",
+                "C. Entering configuration values in SAP Central Business Configuration.",
+                "D. Scheduling meetings with customer experts to gather BDCQ responses."
+            ],
+            correct: ["A", "C"],
+            type: "multiple",
+            explanation: "En phase Realize, on configure le système (via CBC) et on prépare les tests (création des cas de test)."
+        },
+        {
+            question: "31-What are some important activities the partner LoB configuration experts need to complete in the Explore phase? (2 correct answers)",
+            options: [
+                "A. Preparing a presentation deck for each Fit-to-Standard workshop.",
+                "B. Documenting formal UAT sign-off in SAP Cloud ALM.",
+                "C. Documenting customization requirements in SAP Cloud ALM.",
+                "D. Demonstrating where to find business process documentation."
+            ],
+            correct: ["A", "C"],
+            type: "multiple",
+            explanation: "La phase Explore se concentre sur les ateliers Fit-to-Standard : préparation des présentations et documentation des besoins (exigences/personnalisations)."
+        },
+        {
+            question: "32-What are some important activities the partner LoB configuration experts need to complete in the Prepare phase? (2 correct answers)",
+            options: [
+                "A. Providing test user and starter system login information to the customer LoB experts.",
+                "B. Gathering L2 BDCQ responses.",
+                "C. Gathering L3 BDCQ responses.",
+                "D. Identifying customer LoB experts to participate in Fit-to-Standard workshops."
+            ],
+            correct: ["A", "D"],
+            type: "multiple",
+            explanation: "En phase Prepare, on prépare l'équipe (identification des experts) et les outils (accès au système Starter)."
+        },
+        {
+            question: "33-How can you activate integration scenarios? (2 correct answers)",
+            options: [
+                "A. In SAP Central Business Configuration",
+                "B. In SAP Signavio Process Navigator",
+                "C. In SAP Cloud ALM through the Cloud Integration Automation Service",
+                "D. In SAP for Me by creating a support case"
+            ],
+            correct: ["C", "D"],
+            type: "multiple",
+            explanation: "Certaines intégrations peuvent être automatisées via CIAS (dans ALM ou BTP), d'autres nécessitent parfois une activation par SAP via un ticket (Support Case) si elles ne sont pas en libre-service."
+        },
+        {
+            question: "34-In which SAP Cloud ALM application do you see the finalized list of business processes and country/regions in which they should be implemented?",
+            options: [
+                "A. Manage Scopes",
+                "B. Requirements",
+                "C. Processes",
+                "D. Process Authoring"
+            ],
+            correct: ["A"],
+            type: "single",
+            explanation: "L'application 'Manage Scopes' permet de définir et visualiser le périmètre du projet (processus et pays)."
+        },
+        {
+            question: "35-Where can you find the Conflicts app to resolve a configuration conflict?",
+            options: [
+                "A. Main Line",
+                "B. Parallel Line"
+            ],
+            correct: ["B"],
+            type: "single",
+            explanation: "Les conflits surviennent généralement lors des activités de développement concurrent, gérées dans la 'Parallel Line' (Projet BTP ABAP Environment)."
+        },
+        {
+            question: "36-What determines the organizational entities that are required to create in SAP Central Business Configuration? (2 correct answers)",
+            options: [
+                "A. Business processes",
+                "B. Group currency",
+                "C. Country versions",
+                "D. Fiscal year variant"
+            ],
+            correct: ["A", "C"],
+            type: "multiple",
+            explanation: "Les processus métier activés (Scope) et les versions de pays sélectionnées dictent quelles entités organisationnelles (Sociétés, Divisions, etc.) doivent être créées."
+        },
+        {
+            question: "37-You need to send changes from the main line to the parallel line. Which operation do you choose?",
+            options: [
+                "A. Merge",
+                "B. Rebase"
+            ],
+            correct: ["B"],
+            type: "single",
+            explanation: "L'opération 'Rebase' sert à mettre à jour la branche parallèle avec les derniers changements de la branche principale (Main Line). 'Merge' fait l'inverse."
+        },
+        {
+            question: "38-Which of the following tenants do you receive with the Parallel Line? (2 correct answers)",
+            options: [
+                "A. Production tenant (Client 100)",
+                "B. Customizing tenant (Client 120)",
+                "C. Test tenant (Client 120)",
+                "D. Development tenant (Client 080)"
+            ],
+            correct: ["B", "D"],
+            type: "multiple",
+            explanation: "Une ligne parallèle reproduit l'environnement de développement, donc vous obtenez un tenant de Customizing et un tenant de Développement (souvent avec des numéros de client spécifiques)."
+        },
+        {
+            question: "39-Who is responsible for entering configuration values in SAP Central Business Configuration?",
+            options: [
+                "A. IT Contact",
+                "B. Lead configuration expert",
+                "C. LoB configuration experts",
+                "D. Project manager"
+            ],
+            correct: ["C"],
+            type: "single",
+            explanation: "Ce sont les experts configuration métier (LoB Config Experts) qui connaissent les détails spécifiques de leur domaine pour paramétrer CBC."
+        },
+        {
+            question: "40-Where do you maintain configuration values for 'current settings' configuration activities? (2 correct answers)",
+            options: [
+                "A. SAP Central Business Configuration",
+                "B. Manage Your Solution app in the Production system",
+                "C. Implementation Activities app in the Test system",
+                "D. Display Business Configuration Stagings in the Development system"
+            ],
+            correct: ["B", "C"],
+            type: "multiple",
+            explanation: "Les 'Current Settings' sont des paramétrages modifiables directement en système de Test ou Production (via des applis spécifiques), sans passer par CBC."
+        },
+        {
+            question: "41-How are customized business roles transferred from the customizing tenant of the Development system to the Test system?",
+            options: [
+                "A. With SAP Cloud Identity Authentication",
+                "B. In a customizing transport",
+                "C. With SAP Cloud Identity Provisioning",
+                "D. In a software collection"
+            ],
+            correct: ["D"],
+            type: "single",
+            explanation: "Les rôles métier personnalisés sont considérés comme des objets d'extension Key User et sont transportés via l'application 'Export Software Collection'."
+        },
+        {
+            question: "42-How many workspaces does the partner lead configuration expert create in SAP Central Business Configuration for the Development system?",
+            options: [
+                "A. 1",
+                "B. 2",
+                "C. 3",
+                "D. 4"
+            ],
+            correct: ["A"],
+            type: "single",
+            explanation: "Un seul Workspace principal est connecté au système de Développement pour gérer la configuration."
+        },
+        {
+            question: "43-How do you set up the SAP Mobile Start app for a customer?",
+            options: [
+                "A. In the SAP Fiori Launchpad",
+                "B. In Spaces & Pages",
+                "C. In SAP Build Work Zone",
+                "D. In SAP Build Apps"
+            ],
+            correct: ["C"],
+            type: "single",
+            explanation: "SAP Mobile Start se configure via SAP Build Work Zone (anciennement Launchpad Service) sur BTP."
+        },
+        {
+            question: "44-What provides a common set of domain-specific languages and services for defining and consuming semantically rich data models in SAP S/4HANA Cloud?",
+            options: [
+                "A. SAP Analytics Cloud",
+                "B. Virtual Data Model",
+                "C. Core Data Services",
+                "D. SAP Datasphere"
+            ],
+            correct: ["C"],
+            type: "single",
+            explanation: "Les Core Data Services (CDS) sont la technologie sous-jacente pour définir les modèles de données sémantiques dans S/4HANA."
+        },
+        {
+            question: "45-What is contained in a launchpad space?",
+            options: [
+                "A. One or more sections",
+                "B. One or more apps",
+                "C. One or more roles",
+                "D. One or more pages"
+            ],
+            correct: ["D"],
+            type: "single",
+            explanation: "Dans la nouvelle structure Fiori, un Espace (Space) contient une ou plusieurs Pages."
+        },
+        {
+            question: "46-Where can you find relevant simulations for an app you're currently working in on the launchpad?",
+            options: [
+                "A. Question mark icon",
+                "B. Diamond icon",
+                "C. Graduation cap icon",
+                "D. Megaphone icon"
+            ],
+            correct: ["A"],
+            type: "single",
+            explanation: "L'icône point d'interrogation ouvre l'aide contextuelle, qui peut inclure des simulations ou des visites guidées (Web Assistant)."
+        },
+        {
+            question: "47-What are work items in a flexible business workflow?",
+            options: [
+                "A. Tasks assigned to team categories",
+                "B. Tasks assigned to agents",
+                "C. Tasks assigned to member functions",
+                "D. Tasks assigned to teams"
+            ],
+            correct: ["B"],
+            type: "single",
+            explanation: "Les 'Work Items' sont les tâches d'approbation générées et assignées à des agents (utilisateurs spécifiques) pour traitement."
+        },
+        {
+            question: "48-What are some examples of Team Categories in Responsibility Management? (2 correct answers)",
+            options: [
+                "A. Operational Purchaser",
+                "B. Procurement",
+                "C. Purchasing Group",
+                "D. Distribution"
+            ],
+            correct: ["B", "D"],
+            type: "multiple",
+            explanation: "Les catégories d'équipe définissent le domaine fonctionnel, comme 'Procurement' (Approvisionnement) ou 'Distribution' (Vente/Distribution)."
+        },
+        {
+            question: "49-What is required to support automated situation resolution? (2 correct answers)",
+            options: [
+                "A. Integration with SAP Business Technology Platform",
+                "B. SAP Build Process Automation service",
+                "C. Robotic Process Automation service",
+                "D. Intelligent Situation Automation service"
+            ],
+            correct: ["A", "D"],
+            type: "multiple",
+            explanation: "La résolution automatisée des situations (Situation Handling) s'appuie sur BTP et le service 'Intelligent Situation Automation'."
+        },
+        {
+            question: "50-Where can you access Joule from the launchpad?",
+            options: [
+                "A. Question mark icon",
+                "B. Diamond icon",
+                "C. Graduation cap icon",
+                "D. Megaphone icon"
+            ],
+            correct: ["B"],
+            type: "single",
+            explanation: "Joule (l'assistant IA) est généralement représenté par une icône en forme de losange (Diamond) ou un avatar spécifique dans la barre d'en-tête."
+        },
+        {
+            question: "51-For which of the following can an analytical query be used as the data source input? (3 correct answers)",
+            options: [
+                "A. Generic drilldown reports",
+                "B. Multidimensional reports",
+                "C. Review booklets",
+                "D. Analysis Path Framework-based apps",
+                "E. SAP Analytical Cloud Stories"
+            ],
+            correct: ["B", "D", "E"],
+            type: "multiple",
+            explanation: "Les requêtes analytiques alimentent les rapports multidimensionnels, les applications APF et les histoires SAP Analytics Cloud (SAC)."
+        },
+        {
+            question: "52-What does a launchpad page include? (2 correct answers)",
+            options: [
+                "A. One or more apps",
+                "B. One or more spaces",
+                "C. One or more sections",
+                "D. One or more catalogs"
+            ],
+            correct: ["A", "C"],
+            type: "multiple",
+            explanation: "Une Page est structurée en Sections, et chaque section contient des Tuiles (Apps)."
+        },
+        {
+            question: "53-What can a business catalog include? (2 correct answers)",
+            options: [
+                "A. Access to data",
+                "B. Access to a launchpad space",
+                "C. Access to a business role",
+                "D. Access to one or more applications"
+            ],
+            correct: ["A", "D"],
+            type: "multiple",
+            explanation: "Un catalogue métier contient les assignations d'applications (Apps) et les restrictions d'accès aux données (Access to data)."
+        },
+        {
+            question: "54-You are limiting access for certain users to enter data in specific fields of an application. Which of the following business role access categories would you choose?",
+            options: [
+                "A. Read, Value Help: Restricted",
+                "B. Write, Read, Value Help: Restricted",
+                "C. Read, Value Help: Unrestricted",
+                "D. Write, Read, Value Help: Unrestricted"
+            ],
+            correct: ["B"],
+            type: "single",
+            explanation: "Pour limiter l'entrée de données (Write) sur des champs spécifiques, il faut choisir une catégorie qui inclut 'Write' et qui est 'Restricted'."
+        },
+        {
+            question: "55-Where do you change the recipients of a form template?",
+            options: [
+                "A. In the Maintain Form Templates app",
+                "B. In the Manage Texts app",
+                "C. In the Output Parameter Determination app",
+                "D. In the Monitor Form Transmissions app"
+            ],
+            correct: ["C"],
+            type: "single",
+            explanation: "L'application 'Output Parameter Determination' (BRF+) est l'endroit central pour définir les règles de sortie, y compris les destinataires."
+        },
+        {
+            question: "56-You've created a custom app UI from a custom business object. How to you make sure it displays for end-users on the launchpad? (2 correct answers)",
+            options: [
+                "A. Use the Custom Business Catalogs app to assign the app to a custom business catalog.",
+                "B. Use the Custom Catalog Extensions app to assign the app to an existing business catalog.",
+                "C. Use the Manage Launchpad Pages app to add the app to a launchpad page.",
+                "D. Use the Manage Launchpad Spaces app to add the app to a launchpad space."
+            ],
+            correct: ["A", "C"],
+            type: "multiple",
+            explanation: "Il faut d'abord assigner l'app à un catalogue (Custom Business Catalog), puis l'ajouter à une Page visible par l'utilisateur."
+        },
+        {
+            question: "57-Where is the master library of all key user in-app extensions that have been made in an SAP S/4HANA Cloud system?",
+            options: [
+                "A. Extensibility Cockpit app",
+                "B. Extensibility Explorer app",
+                "C. Extensibility Inventory app",
+                "D. Export Customizing Requests app"
+            ],
+            correct: ["C"],
+            type: "single",
+            explanation: "L'application 'Extensibility Inventory' offre une vue d'ensemble de toutes les extensions réalisées dans le système."
+        },
+        {
+            question: "58-You created a custom tile that links to a website relevant for all employees. What are your next steps to make sure the app is visible for everyone? (2 correct answers)",
+            options: [
+                "A. Assign the app to a relevant business role",
+                "B. Assign the app to a relevant business catalog",
+                "C. Add the app to an SAP Fiori Launchpad Page",
+                "D. Add the app to an SAP Fiori Launchpad Space"
+            ],
+            correct: ["B", "C"],
+            type: "multiple",
+            explanation: "Pour qu'une tuile soit visible : elle doit être dans un catalogue (assigné à un rôle que les employés ont) et posée sur une Page."
+        },
+        {
+            question: "59-What can be transported with the Export Software Collection app? (3 correct answers)",
+            options: [
+                "A. A custom form template",
+                "B. A business configuration value",
+                "C. A customer-specific CDS view",
+                "D. A new organizational entity",
+                "E. An adapted Fiori UI"
+            ],
+            correct: ["A", "C", "E"],
+            type: "multiple",
+            explanation: "L'outil 'Export Software Collection' gère les extensions Key User : formulaires, vues CDS custom, UI adaptées, champs custom, etc."
+        },
+        {
+            question: "60-Which tool do you use to add a field that already exists to an SAP Fiori app?",
+            options: [
+                "A. Custom Logic app",
+                "B. Adapt UI within an app",
+                "C. Custom Fields app",
+                "D. Custom Tiles app"
+            ],
+            correct: ["B"],
+            type: "single",
+            explanation: "Pour ajouter un champ existant (mais caché) à l'écran, on utilise la fonction 'Adapt UI' (Key User Extensibility)."
+        },
+        {
+            question: "61-Which of the following are examples of in-app key user extensibility? (2 correct answers)",
+            options: [
+                "A. An industry cloud app",
+                "B. A custom business object",
+                "C. A custom field",
+                "D. A custom mobile app"
+            ],
+            correct: ["B", "C"],
+            type: "multiple",
+            explanation: "Les 'Custom Business Objects' et 'Custom Fields' sont des exemples typiques d'extensibilité In-App réalisables par des Key Users."
+        },
+        {
+            question: "62-Which tools would a developer use to build a custom mobile application in JavaScript? (2 correct answers)",
+            options: [
+                "A. SAP Build Apps",
+                "B. SAP Business Application Studio",
+                "C. SAP Build Work Zone",
+                "D. SAP Software Developer Kits"
+            ],
+            correct: ["B", "D"],
+            type: "multiple",
+            explanation: "Pour du développement pro-code en JS, on utilise SAP Business Application Studio et les SDKs mobiles SAP."
+        },
+        {
+            question: "63-Where can you find sample code for a Business Add-In (BAdI)?",
+            options: [
+                "A. Custom Fields app",
+                "B. Custom Business Objects app",
+                "C. Extensibility Inventory",
+                "D. Custom Logic app"
+            ],
+            correct: ["D"],
+            type: "single",
+            explanation: "L'application 'Custom Logic' permet d'implémenter des BAdIs et fournit souvent des exemples de code."
+        },
+        {
+            question: "64-What is used to transport extensions built in the development tenant of the Development system to the Test system? (2 correct answers)",
+            options: [
+                "A. Export Software Collection app",
+                "B. Transport Organizer app",
+                "C. Export Customizing Transports app",
+                "D. Import Collection app"
+            ],
+            correct: ["A", "D"],
+            type: "multiple",
+            explanation: "On exporte via 'Export Software Collection' (dans Dev) et on importe via 'Import Collection' (dans Test)."
+        },
+        {
+            question: "65-What are some capabilities of SAP Cloud ALM for Operations? (2 correct answers)",
+            options: [
+                "A. Issues & Action Management",
+                "B. Integration & Exception Monitoring",
+                "C. Project Tracking & Traceability",
+                "D. Configuration & Security Analysis"
+            ],
+            correct: ["B", "D"],
+            type: "multiple",
+            explanation: "ALM for Operations inclut le monitoring des intégrations/exceptions et l'analyse de configuration/sécurité (Health Monitoring)."
+        },
+        {
+            question: "66-Where can you find out-of-the-box integration content from SAP? (2 correct answers)",
+            options: [
+                "A. SAP Discovery Center",
+                "B. SAP Signavio Process Navigator",
+                "C. SAP Business Accelerator Hub",
+                "D. SAP Roadmap Viewer"
+            ],
+            correct: ["B", "C"],
+            type: "multiple",
+            explanation: "Le contenu d'intégration standard se trouve sur le SAP Business Accelerator Hub (API Hub) et est documenté dans le Process Navigator."
+        },
+        {
+            question: "67-What is required to set up SAP Best Practices integrations in SAP S/4HANA Cloud Public Edition? (2 correct answers)",
+            options: [
+                "A. Communication Scenario",
+                "B. Communication Arrangement",
+                "C. Technical User",
+                "D. Communication System"
+            ],
+            correct: ["B", "D"],
+            type: "multiple",
+            explanation: "Pour activer une intégration, il faut définir un 'Communication System' (le partenaire) et un 'Communication Arrangement' (l'accord spécifique)."
+        },
+        {
+            question: "68-Which SAP Fiori app do you use to define inbound/outbound services that can be later used in a Communication Arrangement?",
+            options: [
+                "A. Maintain Extensions on SAP BTP",
+                "B. Custom Communication Scenarios",
+                "C. Enterprise Event Enablement",
+                "D. Custom Catalog Extensions"
+            ],
+            correct: ["B"],
+            type: "single",
+            explanation: "L'application 'Custom Communication Scenarios' permet de regrouper des services pour créer un scénario d'intégration personnalisé."
+        },
+        {
+            question: "69-In which principle of SAP's integration strategy is the Integration Solution Advisory Methodology?",
+            options: [
+                "A. Out-of-the-box integration",
+                "B. Open integration",
+                "C. Holistic integration",
+                "D. AI-driven integration"
+            ],
+            correct: ["C"],
+            type: "single",
+            explanation: "La méthodologie ISAM fait partie de l'approche 'Holistic integration' (Intégration holistique) pour guider le choix des technologies."
+        },
+        {
+            question: "70-A developer is building a custom integration scenario. Which website do you recommend for them to find an existing library of pre-built APIs and integration packages?",
+            options: [
+                "A. SAP Discovery Center",
+                "B. SAP Signavio Process Navigator",
+                "C. SAP Business Accelerator Hub",
+                "D. SAP Help Portal"
+            ],
+            correct: ["C"],
+            type: "single",
+            explanation: "Le SAP Business Accelerator Hub est la bibliothèque centrale pour les APIs et packages d'intégration pré-construits."
+        },
+        {
+            question: "71-Which capability of the SAP Integration Suite would you use to identify the most efficient integration interface for B2B scenarios?",
+            options: [
+                "A. Cloud Integration",
+                "B. Migration Assessment",
+                "C. API Management",
+                "D. Integration Advisor"
+            ],
+            correct: ["D"],
+            type: "single",
+            explanation: "L'Integration Advisor utilise l'IA pour suggérer les meilleurs mappings et interfaces pour les échanges B2B."
+        },
+        {
+            question: "72-Where can you find SAP Best Practices integration content? (3 correct answers)",
+            options: [
+                "A. SAP Best Practices Explorer",
+                "B. SAP Signavio Process Navigator",
+                "C. SAP Community",
+                "D. SAP Help Portal",
+                "E. Cloud Integration Automation Service"
+            ],
+            correct: ["B", "D", "E"],
+            type: "multiple",
+            explanation: "Le contenu est dans Process Navigator, la documentation sur Help Portal, et certains workflows automatisés via CIAS."
+        },
+        {
+            question: "73-Where can you access the Cloud Integration Automation Service (CIAS) tool? (2 correct answers)",
+            options: [
+                "A. Fiori Launchpad in SAP S/4HANA Cloud Public Edition",
+                "B. SAP Cloud ALM",
+                "C. SAP Discovery Center",
+                "D. SAP for Me"
+            ],
+            correct: ["B", "D"],
+            type: "multiple",
+            explanation: "CIAS est accessible via SAP Cloud ALM (pour la gestion de projet) et parfois via le Maintenance Planner (SAP for Me) pour la génération de workflows."
+        },
+        {
+            question: "74-Which functionality enables you to capture information including source values, target values after mapping, and target IDs that could be used to audit your migrated data?",
+            options: [
+                "A. SAP HANA Cloud Service",
+                "B. Migration Object Modeler",
+                "C. SAP Data Services",
+                "D. Extended Statistics"
+            ],
+            correct: ["D"],
+            type: "single",
+            explanation: "Les 'Extended Statistics' ou journaux d'audit de migration permettent de tracer la correspondance entre valeurs sources et cibles."
+        },
+        {
+            question: "75-How is data transferred between an existing SAP system and the target SAP S/4HANA Cloud Public Edition system?",
+            options: [
+                "A. OData APIs",
+                "B. Remote Function Call (RFC)",
+                "C. SOAP APIs"
+            ],
+            correct: ["B"],
+            type: "single",
+            explanation: "Pour la migration directe depuis un système SAP source, la connexion se fait souvent via RFC (Remote Function Call)."
+        },
+        {
+            question: "76-Which framework supports you to receive a notification when a migration object has completed the Migration step of the guided migration process?",
+            options: [
+                "A. Responsibility Management Framework",
+                "B. In-App Notification Framework",
+                "C. Situation Handling Framework",
+                "D. Extensibility Framework"
+            ],
+            correct: ["C"],
+            type: "single",
+            explanation: "Le 'Situation Handling Framework' peut être configuré pour alerter les utilisateurs lors d'événements comme la fin d'un job de migration."
+        },
+        {
+            question: "77-You need to add an additional field to a migration object template. What are your options? (2 correct answers)",
+            options: [
+                "A. Developer extensibility for any migration object",
+                "B. A custom field using the extensibility framework",
+                "C. Submit a case through SAP for Me for a special request",
+                "D. Migration Object Modeler for supported objects"
+            ],
+            correct: ["B", "D"],
+            type: "multiple",
+            explanation: "Vous pouvez ajouter un champ via l'application Custom Fields (Extensibility) ou utiliser le Migration Object Modeler (MOM) pour modifier la structure de l'objet de migration."
+        },
+        {
+            question: "78-You migrated data from the customer's legacy database to the target SAP S/4HANA Cloud system using a separate SAP HANA database. Which data migration procedure did you use? (2 correct answers)",
+            options: [
+                "A. Local SAP S/4HANA Database Schema",
+                "B. Remote SAP HANA Database Schema",
+                "C. Direct connection to an SAP system",
+                "D. Migration using staging tables"
+            ],
+            correct: ["B", "D"],
+            type: "multiple",
+            explanation: "L'utilisation de 'Staging Tables' remplies via une base HANA distante (Remote SAP HANA Database Schema) est une méthode standard."
+        },
+        {
+            question: "79-You tried to migrate data for a business object, but the migration failed. What are some reasons the migration could have failed? (2 correct answers)",
+            options: [
+                "A. You didn't simulate the migration before migrating the data.",
+                "B. A predecessor object wasn't migrated.",
+                "C. You don't have the required business role to migrate the data.",
+                "D. You assigned more than one migration object to the project."
+            ],
+            correct: ["B", "C"],
+            type: "multiple",
+            explanation: "Les échecs sont souvent dus à des dépendances manquantes (objet prédécesseur non migré) ou à des problèmes d'autorisation (rôle manquant)."
+        },
+        {
+            question: "80-What types of permission do you need to migrate data for a migration object? (2 correct answers)",
+            options: [
+                "A. Permission to migrate all data types in the customizing tenant of the development system.",
+                "B. Permission to access the Migrate Your Data app.",
+                "C. Permission to migrate all data types in the development tenant of the development system.",
+                "D. Permission to migrate data for the specific object."
+            ],
+            correct: ["B", "D"],
+            type: "multiple",
+            explanation: "Il faut l'accès à l'application 'Migrate Your Data' ET les droits spécifiques sur l'objet métier concerné."
+        },
+        {
+            question: "81-If a test plan isn't displaying in the Test Execution app in SAP Cloud ALM, what could be the issue?",
+            options: [
+                "A. The test plan isn't assigned to a test user.",
+                "B. The start and end dates have not been maintained for the test plan.",
+                "C. The test plan status is In Preparation.",
+                "D. The test plan status is In Testing."
+            ],
+            correct: ["C"],
+            type: "single",
+            explanation: "Si le plan de test est encore au statut 'In Preparation', il n'est pas visible pour l'exécution."
+        },
+        {
+            question: "82-What type of test user would you use in the Test Automation Tool for an integration scenario?",
+            options: [
+                "A. Business User",
+                "B. Communication User",
+                "C. Conditional Authentication User"
+            ],
+            correct: ["B"],
+            type: "single",
+            explanation: "Pour les scénarios d'intégration technique, on utilise un 'Communication User' (utilisateur technique)."
+        },
+        {
+            question: "83-What do the preconfigured test automates in the Manage Your Test Processes app correspond to?",
+            options: [
+                "A. Automated test scripts in SAP Cloud ALM",
+                "B. Manual test scripts in SAP Signavio Process Navigator",
+                "C. Manual test scripts in SAP Best Practices Explorer"
+            ],
+            correct: ["B"],
+            type: "single",
+            explanation: "Les automates de test préconfigurés correspondent aux scripts de test manuels standards définis dans le Process Navigator."
+        },
+        {
+            question: "84-Where can you customize the scope of a post-upgrade test?",
+            options: [
+                "A. Test Your Processes app",
+                "B. Manage Your Test Processes app",
+                "C. Analyze Automated Test Results app",
+                "D. Manage Upgrade Tests app"
+            ],
+            correct: ["D"],
+            type: "single",
+            explanation: "L'application 'Manage Upgrade Tests' est dédiée à la gestion et la personnalisation du périmètre des tests post-upgrade (PUT)."
+        },
+        {
+            question: "85-Where do you set-up Tricentis Test Automation?",
+            options: [
+                "A. SAP S/4HANA Cloud Public Edition",
+                "B. SAP Cloud Identity",
+                "C. SAP Cloud ALM"
+            ],
+            correct: ["C"],
+            type: "single",
+            explanation: "L'intégration avec Tricentis Test Automation se configure au niveau de SAP Cloud ALM."
+        },
+        {
+            question: "86-How do you capture a value, error message, or label that is static on the screen when recording new actions for a test automate?",
+            options: [
+                "A. Capture button",
+                "B. Read button",
+                "C. Check button",
+                "D. Copy button"
+            ],
+            correct: ["C"],
+            type: "single",
+            explanation: "L'action 'Check' permet de vérifier la présence ou le contenu d'un élément statique (message, libellé) lors de l'automatisation."
+        },
+        {
+            question: "87-What types of tests are displayed in the Analyze Automated Test Results app? (2 correct answers)",
+            options: [
+                "A. Tricentis tests",
+                "B. Customer-specific tests",
+                "C. Manual user acceptance tests",
+                "D. Post-upgrade tests"
+            ],
+            correct: ["B", "D"],
+            type: "multiple",
+            explanation: "Cette application affiche les résultats des tests automatisés, qu'ils soient standards post-upgrade ou spécifiques au client (custom)."
+        },
+        {
+            question: "88-Where can you change the default test user for a process step?",
+            options: [
+                "A. Test Your Processes app",
+                "B. Manage Your Test Processes app",
+                "C. Analyze Automated Test Results app",
+                "D. Manage Upgrade Tests app"
+            ],
+            correct: ["B"],
+            type: "single",
+            explanation: "Dans 'Manage Your Test Processes', on peut éditer les étapes du processus et assigner un utilisateur de test spécifique."
+        },
+        {
+            question: "89-Which type of test occurs in the Run phase to identify whether any changes in the latest release upgrade affect the customer's configurations or customizations?",
+            options: [
+                "A. Implementation tests",
+                "B. End-to-end business process tests",
+                "C. User acceptance tests",
+                "D. Regression tests"
+            ],
+            correct: ["D"],
+            type: "single",
+            explanation: "Ce sont les tests de régression, effectués après chaque upgrade pour s'assurer que rien n'a été cassé."
+        },
+        {
+            question: "90-Why type of test will SAP execute on behalf of a customer if consent is provided?",
+            options: [
+                "A. Standard tests",
+                "B. Custom tests",
+                "C. Post upgrade tests",
+                "D. Integration tests"
+            ],
+            correct: ["C"],
+            type: "single",
+            explanation: "SAP peut exécuter automatiquement les tests post-upgrade (Post Upgrade Tests - PUT) sur les processus standards si le client donne son consentement."
+        }
+    ];
+}
+
+        // =====================================================================================
+        // GESTION DE VUES ET DE DONNÉES
+        // =====================================================================================
+
+        function switchView(viewId) {
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('admin-view').classList.add('hidden');
+            document.getElementById(viewId).classList.remove('hidden');
+
+            if (viewId === 'admin-view') {
+                stopTimer();
+                renderAdminPanel();
+            } else if (viewId === 'quiz-view' && !isQuizFinished && !timerInterval) {
+                startTimer();
+            }
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function loadQuizData() {
+            const storedData = localStorage.getItem('quizData');
+            if (storedData) {
+                try { quizData = JSON.parse(storedData); } 
+                catch (e) { quizData = getInitialQuizData(); }
+            } else {
+                quizData = getInitialQuizData();
+            }
+
+            // Shuffle options (optional)
+            quizData.forEach(question => {
+                if (question.options && Array.isArray(question.options)) {
+                    // shuffleArray(question.options); // Décommenter si vous voulez mélanger l'affichage des options
+                }
+            });
+
+            totalQuestions = quizData.length;
+            maxTimeSeconds = calculateMaxTime(totalQuestions);
+
+            const storedProgress = localStorage.getItem('userProgress');
+            if (storedProgress) {
+                try { userProgress = JSON.parse(storedProgress); } 
+                catch (e) { userProgress = {}; }
+            } else { userProgress = {}; }
+
+            const storedTime = localStorage.getItem('timeLeft');
+            if (storedTime !== null) {
+                timeLeft = parseInt(storedTime);
+                if (timeLeft <= 0) { isQuizFinished = true; timeLeft = 0; }
+            } else {
+                timeLeft = maxTimeSeconds;
+            }
+        }
+
+        function saveUserProgress() {
+            localStorage.setItem('userProgress', JSON.stringify(userProgress));
+        }
+
+        function promptResetQuiz() {
+            stopTimer();
+            const modalContentText = document.getElementById('modal-content-text');
+            modalContentText.innerHTML = `
+                <p class="text-lg font-semibold text-gray-800">Réinitialiser tout l'historique ?</p>
+                <div id="modal-button-container" class="flex justify-end space-x-3 mt-6">
+                    <button onclick="closeMessageModal(); startTimer()" class="px-4 py-2 bg-gray-300 rounded-lg">Annuler</button>
+                    <button onclick="resetQuizProgress()" class="px-4 py-2 bg-red-600 text-white rounded-lg">Confirmer</button>
+                </div>`;
+            showMessageModal("Confirmation", modalContentText.innerHTML, false);
+        }
+
+        function resetQuizProgress() {
+            closeMessageModal();
+            stopTimer();
+            localStorage.removeItem('userProgress');
+            localStorage.removeItem('timeLeft');
+            userProgress = {};
+            currentScore = 0;
+            timeLeft = maxTimeSeconds;
+            isQuizFinished = false;
+            startTimer();
+            renderQuiz();
+            showMessageModal("Succès", '<p class="text-green-600">Quiz réinitialisé !</p>', true);
+        }
+
+        // =====================================================================================
+        // LOGIQUE DU TIMER
+        // =====================================================================================
+
+        function updateTimerDisplay() {
+            const timerEl = document.getElementById('timer-display');
+            if (timerEl) {
+                timerEl.textContent = `Temps restant : ${formatTime(timeLeft)}`;
+                timerEl.classList.remove('bg-red-100', 'text-red-800', 'bg-orange-100', 'text-orange-800', 'bg-yellow-100');
+                
+                if (timeLeft <= 600) timerEl.classList.add('bg-orange-100', 'text-orange-800');
+                else timerEl.classList.add('bg-red-100', 'text-red-800');
+                
+                if (timeLeft <= 0) timerEl.textContent = "Temps Écoulé !";
+            }
+        }
+
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            if (isQuizFinished || timeLeft <= 0) { handleTimeUp(); return; }
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    localStorage.setItem('timeLeft', timeLeft);
+                    updateTimerDisplay();
+                } else {
+                    stopTimer();
+                    handleTimeUp();
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+        }
+
+        function handleTimeUp() {
+            if (isQuizFinished) return;
+            isQuizFinished = true;
+            timeLeft = 0;
+            localStorage.setItem('timeLeft', 0);
+            updateTimerDisplay();
+            document.querySelectorAll('input').forEach(input => input.disabled = true);
+            document.querySelectorAll('button[id^="btn-"]').forEach(button => button.disabled = true);
+            showMessageModal("Fin du temps", "Le temps est écoulé. Score final : " + currentScore + "/" + totalQuestions, true);
+        }
+
+        // =====================================================================================
+        // LOGIQUE DU QUIZ (RENDU & VÉRIFICATION)
+        // =====================================================================================
+
+        function calculateScore() {
+            let score = 0;
+            quizData.forEach((q, qIndex) => {
+                const progress = userProgress[qIndex];
+                if (progress && progress.isCorrect) score++;
+            });
+            return score;
+        }
+
+        function updateScoreDisplay() {
+            currentScore = calculateScore();
+            const scoreEl = document.getElementById('score-display');
+            if (scoreEl) scoreEl.textContent = `Score: ${currentScore} / ${totalQuestions}`;
+        }
+
+        // --- OPTIMISATION : GESTION PAR CARTE UNIQUE ---
+
+        function createQuestionCardHTML(q, qIndex) {
+            const progress = userProgress[qIndex] || { answered: false, userSelections: [], isCorrect: false };
+            const isDisabled = progress.answered || isQuizFinished;
+
+            return `
+            <div id="q-${qIndex}" class="question-card p-4 md:p-6 bg-white rounded-xl border border-gray-200 ${progress.answered ? (progress.isCorrect ? 'bg-custom-green border-custom-green' : 'bg-custom-red border-custom-red') : ''}">
+                <p class="font-semibold text-gray-700 mb-4 text-lg">
+                    ${qIndex + 1}. ${q.question}
+                    ${q.type === 'multiple' ? '<span class="text-sm font-normal text-indigo-500 italic">(Plusieurs réponses)</span>' : ''}
+                </p>
+                <div class="options-container space-y-3">
+                    ${q.options.map((option, oIndex) => {
+                        // On extrait "A", "B", etc. de "A. Texte..." pour la valeur
+                        const optionCode = option.includes('.') ? option.split('.')[0].trim() : option.trim();
+                        const isSelected = progress.userSelections.includes(optionCode);
+                        const isCorrectOption = q.correct.includes(optionCode);
+
+                        let labelClasses = 'option-label flex items-start p-3 rounded-lg border border-gray-200 hover:bg-gray-50 bg-white';
+
+                        if (progress.answered) {
+                            if (isSelected) {
+                                labelClasses = isCorrectOption 
+                                    ? 'bg-custom-green border-custom-green flex items-start p-3 rounded-lg border' 
+                                    : 'bg-custom-red border-custom-red flex items-start p-3 rounded-lg border';
+                            } else if (isCorrectOption) {
+                                labelClasses = 'bg-custom-green border-dashed border-2 border-green-400 flex items-start p-3 rounded-lg border';
+                            }
+                        }
+
+                        return `
+                            <label class="${labelClasses}">
+                                <input 
+                                    type="${q.type === 'single' ? 'radio' : 'checkbox'}" 
+                                    name="q${qIndex}" 
+                                    value="${optionCode}" 
+                                    class="mt-1 mr-3 h-4 w-4 text-indigo-600 focus:ring-indigo-500"
+                                    ${isSelected ? 'checked' : ''}
+                                    ${isDisabled ? 'disabled' : ''}
+                                >
+                                <span class="text-gray-800">${option}</span>
+                            </label>
+                        `;
+                    }).join('')}
+                </div>
+                <div class="flex flex-wrap gap-3 mt-4">
+                    <button onclick="checkAnswer(${qIndex})" id="btn-${qIndex}" 
+                        class="px-6 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 shadow-md disabled:opacity-50"
+                        ${isDisabled ? 'disabled' : ''}>
+                        Vérifier
+                    </button>
+                    <button onclick="showExplanation(${qIndex})" class="px-6 py-2 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 shadow-md">
+                        Explication
+                    </button>
+                </div>
+                <div id="feedback-${qIndex}" class="mt-3 text-sm font-medium ${progress.answered ? '' : 'hidden'}">
+                    ${progress.answered ? (progress.isCorrect ? '<span class="text-green-600">Correct !</span>' : generateFeedbackHtml(q, progress.userSelections)) : ''}
+                </div>
+            </div>`;
+        }
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            // Optimisation : Utilisation de map et join au lieu de += dans une boucle
+            container.innerHTML = quizData.map((q, i) => createQuestionCardHTML(q, i)).join('');
+            updateScoreDisplay();
+            updateTimerDisplay();
+        }
+
+        function generateFeedbackHtml(question, userSelections) {
+            const correctAnswersHtml = question.correct.join(', ');
+            return `
+                <span class="text-red-600">Faux.</span>
+                <div class="mt-2 p-2 bg-red-100 rounded-lg border border-red-300">
+                    <span class="font-semibold text-gray-800">Réponse(s) correcte(s) :</span>
+                    <p class="text-red-700 font-bold">${correctAnswersHtml}</p>
+                </div>`;
+        }
+
+        function checkAnswer(qIndex) {
+            if (isQuizFinished) return;
+            const question = quizData[qIndex];
+            const questionEl = document.getElementById(`q-${qIndex}`);
+            const inputs = Array.from(questionEl.querySelectorAll(`input[name="q${qIndex}"]:checked`));
+            
+            // On récupère les valeurs
+            const userSelections = inputs.map(input => input.value);
+
+            // Vérification stricte
+            const isCorrect = question.correct.length === userSelections.length &&
+                              question.correct.every(val => userSelections.includes(val));
+
+            userProgress[qIndex] = { answered: true, userSelections: userSelections, isCorrect: isCorrect };
+            saveUserProgress();
+            
+            // OPTIMISATION : On ne met à jour QUE la carte concernée
+            renderQuestion(qIndex); 
+            updateScoreDisplay();
+        }
+
+        function renderQuestion(qIndex) {
+            const oldCard = document.getElementById(`q-${qIndex}`);
+            if (oldCard) {
+                // Remplacement optimisé via outerHTML
+                oldCard.outerHTML = createQuestionCardHTML(quizData[qIndex], qIndex);
+            }
+        }
+
+        // =====================================================================================
+        // ADMINISTRATION & MODALS
+        // =====================================================================================
+
+        function renderAdminPanel() {
+            const adminContent = document.getElementById('admin-content');
+            adminContent.innerHTML = `
+                <h3 class="text-2xl font-bold text-gray-700 mb-6">Liste des Questions</h3>
+                <ul class="space-y-2 max-h-[60vh] overflow-y-auto bg-gray-50 p-2 rounded">
+                    ${quizData.map((q, index) => `
+                        <li class="p-3 bg-white rounded border flex justify-between items-center">
+                            <span class="truncate w-3/4">${index + 1}. ${q.question}</span>
+                            <button class="text-xs px-3 py-1 bg-indigo-500 text-white rounded" onclick="editQuestionExplanation(${index})">Éditer</button>
+                        </li>`).join('')}
+                </ul>
+                <div id="explanation-editor" class="mt-8 hidden"></div>`;
+        }
+
+        function editQuestionExplanation(qIndex) {
+            currentlyEditingIndex = qIndex;
+            const q = quizData[qIndex];
+            document.getElementById('explanation-editor').innerHTML = `
+                <h3 class="text-xl font-bold mb-2">Éditer Explication Q${qIndex+1}</h3>
+                <p class="italic text-gray-600 mb-2 bg-gray-100 p-2 rounded">${q.question}</p>
+                <textarea id="explanation-textarea" rows="5" class="w-full p-2 border rounded">${q.explanation || ''}</textarea>
+                <div class="mt-4 flex gap-2">
+                    <button onclick="saveExplanation()" class="px-4 py-2 bg-green-600 text-white rounded">Sauvegarder</button>
+                    <button onclick="renderAdminPanel()" class="px-4 py-2 bg-gray-400 text-white rounded">Annuler</button>
+                </div>`;
+            document.getElementById('explanation-editor').classList.remove('hidden');
+        }
+
+        function saveExplanation() {
+            const txt = document.getElementById('explanation-textarea').value;
+            quizData[currentlyEditingIndex].explanation = txt;
+            localStorage.setItem('quizData', JSON.stringify(quizData));
+            showMessageModal("Succès", "Explication sauvegardée !", true);
+            renderAdminPanel();
+        }
+
+        function showMessageModal(title, content, showClose = true) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-content-text').innerHTML = content;
+            document.getElementById('message-modal').style.display = 'block';
+            document.querySelector('.close-btn').style.display = showClose ? 'block' : 'none';
+        }
+
+        function closeMessageModal() {
+            document.getElementById('message-modal').style.display = 'none';
+        }
+
+        function showExplanation(qIndex) {
+            const q = quizData[qIndex];
+            showMessageModal(`Explication Q${qIndex + 1}`, `
+                <p class="font-bold text-gray-800 mb-2">${q.question}</p>
+                <div class="bg-gray-100 p-3 rounded text-indigo-700">
+                    ${q.explanation || 'Pas d\'explication disponible.'}
+                </div>
+            `);
+        }
+
+        // INIT
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('.close-btn').onclick = closeMessageModal;
+            window.onclick = (e) => { if (e.target == document.getElementById('message-modal')) closeMessageModal(); };
+            
+            loadQuizData();
+            renderQuiz();
+            switchView('quiz-view');
+        });
+    </script>
+</body>
+</html>
