@@ -7692,7 +7692,7 @@ var test_implementation = [
 ];
 
 
-var test_demo_cbc = [
+var test_demo_cbc_rihana = [
   {
     question: "1-You have a bank account in foreign currency. During the period you have posted various deposits to and withdrawals from the account.\nAfter the foreign currency valuation run, how does the system evaluate the balance of this account?",
     type: "single",
@@ -7844,7 +7844,7 @@ var test_demo_cbc = [
 ]
 
 // question fi rihana
-var test_rihana_fi=[
+var test_rihana_finance=[
                 {
                     question: "What is the best definition of a semantic tag?",
                     options: [
@@ -9439,7 +9439,1078 @@ var test_rihana_fi=[
                     explanation: ""
                 }
             ];
-
-
-
-
+//----- implimentation de rihana------
+var test_rihana_implimentation = [
+  {
+    id: 1,
+    text: "1-An organization designs and builds automobiles. What scope do they require? (2 correct answers)",
+    options: [
+      { id: "A", text: "Finance-led administrative ERP" },
+      { id: "B", text: "Product-centric industries" },
+      { id: "C", text: "Service-centric industries" }
+    ],
+    correctAnswers: ["A", "B"],
+    multipleChoice: true
+  },
+  {
+    id: 2,
+    text: "2-Which lines of business are included in Finance-led administrative ERP? (3 correct answers)",
+    options: [
+      { id: "A", text: "Supply Chain" },
+      { id: "B", text: "Finance" },
+      { id: "C", text: "Manufacturing" },
+      { id: "D", text: "Sourcing and Procurement" },
+      { id: "E", text: "Sales" }
+    ],
+    correctAnswers: ["B", "D", "E"],
+    multipleChoice: true
+  },
+  {
+    id: 3,
+    text: "3-Which line of business includes scheduling and running the production processes?",
+    options: [
+      { id: "A", text: "Asset Management" },
+      { id: "B", text: "Manufacturing" },
+      { id: "C", text: "R&D Engineering" },
+      { id: "D", text: "Supply Chain" }
+    ],
+    correctAnswers: ["B"],
+    multipleChoice: false
+  },
+  {
+    id: 4,
+    text: "4-For which customers is SAP S/4HANA Cloud Public Edition the best fit? (2 correct answers)",
+    options: [
+      { id: "A", text: "Existing SAP customers with many customization requirements." },
+      { id: "B", text: "New customers with few customization requirements." },
+      { id: "C", text: "New customers with openness to adopting predelivered SAP Best Practices." },
+      { id: "D", text: "Existing SAP customers who want to convert their SAP ECC system." }
+    ],
+    correctAnswers: ["B", "C"],
+    multipleChoice: true
+  },
+  {
+    id: 5,
+    text: "5-An organization sends technicians to client homes to provide plumbing services. What scope do they require? (2 correct answers)",
+    options: [
+      { id: "A", text: "Finance-led administrative ERP" },
+      { id: "B", text: "Product-centric industries" },
+      { id: "C", text: "Service-centric industries" }
+    ],
+    correctAnswers: ["A", "C"],
+    multipleChoice: true
+  },
+  {
+    id: 6,
+    text: "6-Which line of business includes responding to claims and delivering the service guaranteed in the warranty?",
+    options: [
+      { id: "A", text: "Sales" },
+      { id: "B", text: "Sourcing and Procurement" },
+      { id: "C", text: "Finance" },
+      { id: "D", text: "Service" }
+    ],
+    correctAnswers: ["D"],
+    multipleChoice: false
+  },
+  {
+    id: 7,
+    text: "7-In which line of business does an organization receive orders from our customers, confirm the orders, and deliver goods to customers?",
+    options: [
+      { id: "A", text: "Finance" },
+      { id: "B", text: "Sourcing and Procurement" },
+      { id: "C", text: "Sales" },
+      { id: "D", text: "Manufacturing" }
+    ],
+    correctAnswers: ["C"],
+    multipleChoice: false
+  },
+  {
+    id: 8,
+    text: "8-In which task are the partner/SAP LoB configuration experts demonstrating each business process chosen on the Digital Discovery Assessment from start to finish in the SAP S/4HANA Cloud Starter System?",
+    options: [
+      { id: "A", text: "Design workshops" },
+      { id: "B", text: "Fit-to-Standard Analysis workshops" },
+      { id: "C", text: "User Acceptance Testing workshops" },
+      { id: "D", text: "Customization workshops" }
+    ],
+    correctAnswers: ["B"],
+    multipleChoice: false
+  },
+  {
+    id: 9,
+    text: "9-Who builds a business case for their organization to purchase SAP S/4HANA Cloud?",
+    options: [
+      { id: "A", text: "Customer IT Contact" },
+      { id: "B", text: "Customer Project Team" },
+      { id: "C", text: "Customer Executive Sponsor(s)" },
+      { id: "D", text: "Partner Project Team" }
+    ],
+    correctAnswers: ["C"],
+    multipleChoice: false
+  },
+  {
+    id: 10,
+    text: "10-Who is responsible for setting up the implementation project in SAP Cloud ALM? (2 correct answers)",
+    options: [
+      { id: "A", text: "Customer IT Contact" },
+      { id: "B", text: "Partner Lead Configuration Expert" },
+      { id: "C", text: "Customer Project Manager" },
+      { id: "D", text: "Partner Project Manager" }
+    ],
+    correctAnswers: ["C", "D"],
+    multipleChoice: true
+  },
+  {
+    id: 11,
+    text: "11-Which system is upgraded to the latest software release version first?",
+    options: [
+      { id: "A", text: "SAP Central Business Configuration" },
+      { id: "B", text: "SAP S/4HANA Cloud Test System" },
+      { id: "C", text: "SAP S/4HANA Cloud Development System, customizing tenant" },
+      { id: "D", text: "SAP S/4HANA Cloud Development System, development tenant" }
+    ],
+    correctAnswers: ["B"],
+    multipleChoice: false
+  },
+  {
+    id: 12,
+    text: "12-Which SAP S/4HANA Cloud system is preconfigured with all SAP Best Practice business processes active and existing master data?",
+    options: [
+      { id: "A", text: "Development System" },
+      { id: "B", text: "Starter System" },
+      { id: "C", text: "Production System" },
+      { id: "D", text: "Test System" }
+    ],
+    correctAnswers: ["B"],
+    multipleChoice: false
+  },
+  {
+    id: 13,
+    text: "13-Which tool is used to activate business process content in the SAP S/4HANA Cloud systems?",
+    options: [
+      { id: "A", text: "SAP Cloud Identity Services" },
+      { id: "B", text: "SAP Cloud ALM" },
+      { id: "C", text: "SAP Central Business Configuration" },
+      { id: "D", text: "SAP Business Technology Platform" }
+    ],
+    correctAnswers: ["C"],
+    multipleChoice: false
+  },
+  {
+    id: 14,
+    text: "14-Which tool compares the release upgrade information against a customer's actual landscape to provide the 'day 1 impact' of a release?",
+    options: [
+      { id: "A", text: "What's New Viewer" },
+      { id: "B", text: "SAP Road Map Explorer" },
+      { id: "C", text: "Release Assessment Scope Dependency Tool" },
+      { id: "D", text: "Release Navigator" }
+    ],
+    correctAnswers: ["C"],
+    multipleChoice: false
+  },
+  {
+    id: 15,
+    text: "15-In which months are upgrades released for SAP S/4HANA Cloud Public Edition? (2 correct answers)",
+    options: [
+      { id: "A", text: "February" },
+      { id: "B", text: "May" },
+      { id: "C", text: "August" },
+      { id: "D", text: "November" }
+    ],
+    correctAnswers: ["A", "C"],
+    multipleChoice: true
+  },
+  {
+    id: 16,
+    text: "16-Which SAP S/4HANA Cloud tenant is the main project for business process configuration and key user extensibility?",
+    options: [
+      { id: "A", text: "Development Tenant" },
+      { id: "B", text: "Customizing Tenant" }
+    ],
+    correctAnswers: ["B"],
+    multipleChoice: false
+  },
+  {
+    id: 17,
+    text: "17-In which system is the content upgrade released first?",
+    options: [
+      { id: "A", text: "SAP Central Business Configuration" },
+      { id: "B", text: "SAP S/4HANA Cloud Test System" },
+      { id: "C", text: "SAP S/4HANA Cloud Development System, customizing tenant" },
+      { id: "D", text: "SAP S/4HANA Cloud Development System, development tenant" }
+    ],
+    correctAnswers: ["A"],
+    multipleChoice: false
+  },
+  {
+    id: 18,
+    text: "18-How many workspaces need to be created in SAP Central Business Configuration for the Starter System?",
+    options: [
+      { id: "A", text: "1 workspace" },
+      { id: "B", text: "2 workspaces" },
+      { id: "C", text: "3 workspaces" },
+      { id: "D", text: "4 workspaces" }
+    ],
+    correctAnswers: ["B"],
+    multipleChoice: false
+  },
+  {
+    id: 19,
+    text: "19-How many people can be assigned the role of the IT Contact?",
+    options: [
+      { id: "A", text: "1" },
+      { id: "B", text: "2" },
+      { id: "C", text: "3" },
+      { id: "D", text: "Unlimited" }
+    ],
+    correctAnswers: ["A"],
+    multipleChoice: false
+  },
+  {
+    id: 20,
+    text: "20-What includes one or more business catalogs that grant access to data and/or applications?",
+    options: [
+      { id: "A", text: "Business User" },
+      { id: "B", text: "Business Role" },
+      { id: "C", text: "Launchpad Space" },
+      { id: "D", text: "Launchpad Page" }
+    ],
+    correctAnswers: ["B"],
+    multipleChoice: false
+  },
+  {
+    id: 21,
+    text: "21-Which systems need to be provisioned via SAP for Me? (2 correct answers)",
+    options: [
+      { id: "A", text: "SAP Cloud Identity Authentication" },
+      { id: "B", text: "SAP Central Business Configuration" },
+      { id: "C", text: "SAP S/4HANA Cloud Development system, development tenant" },
+      { id: "D", text: "SAP S/4HANA Cloud Production System" }
+    ],
+    correctAnswers: ["B", "D"],
+    multipleChoice: true
+  },
+  {
+    id: 22,
+    text: "22-When creating users in the SAP S/4HANA Cloud starter system, what needs to match with the Login Name in the Identity Authentication Service system?",
+    options: [
+      { id: "A", text: "Worker ID" },
+      { id: "B", text: "First Name" },
+      { id: "C", text: "User Name" },
+      { id: "D", text: "Worker Type" }
+    ],
+    correctAnswers: ["C"],
+    multipleChoice: false
+  },
+  {
+    id: 23,
+    text: "23-What does a deployment plan in SAP Cloud ALM contain? (2 correct answers)",
+    options: [
+      { id: "A", text: "Timeboxes" },
+      { id: "B", text: "System Group" },
+      { id: "C", text: "Scopes" },
+      { id: "D", text: "Releases" }
+    ],
+    correctAnswers: ["B", "D"],
+    multipleChoice: true
+  },
+  {
+    id: 24,
+    text: "24-Which scope bundle is automatically selected for the Evaluation workspace?",
+    options: [
+      { id: "A", text: "Baseline Accelerator" },
+      { id: "B", text: "Service-Centric" },
+      { id: "C", text: "Enterprise Management" },
+      { id: "D", text: "Product-Centric" }
+    ],
+    correctAnswers: ["C"],
+    multipleChoice: false
+  },
+  {
+    id: 25,
+    text: "25-What is populated in the Starter System after activating business process content in SAP Central Business Configuration? (2 correct answers)",
+    options: [
+      { id: "A", text: "Users" },
+      { id: "B", text: "Master data" },
+      { id: "C", text: "Business roles" },
+      { id: "D", text: "Configuration values" }
+    ],
+    correctAnswers: ["B", "D"],
+    multipleChoice: true
+  },
+  {
+    id: 26,
+    text: "26-What does the partner project manager align the scope in SAP Cloud ALM with?",
+    options: [
+      { id: "A", text: "The bill of materials" },
+      { id: "B", text: "The Starter System" },
+      { id: "C", text: "The Digital Discovery Assessment" },
+      { id: "D", text: "The Process Navigator" }
+    ],
+    correctAnswers: ["C"],
+    multipleChoice: false
+  },
+  {
+    id: 27,
+    text: "27-Which role should the partner lead configuration expert be assigned in SAP Central Business Configuration?",
+    options: [
+      { id: "A", text: "SAP_CBC_CONSUMPTION_AUDITOR" },
+      { id: "B", text: "SAP_CBC_CONSUMPTION_KEY_USER" },
+      { id: "C", text: "SAP_CBC_CONSUMPTION_PROGRAM_LEAD" }
+    ],
+    correctAnswers: ["C"],
+    multipleChoice: false
+  },
+  {
+    id: 28,
+    text: "28-What should be demonstrated in SAP Signavio Process Navigator during Fit-to-Standard workshops? (3 correct answers)",
+    options: [
+      { id: "A", text: "Business Driven Configuration Questionnaire" },
+      { id: "B", text: "Tutorial (if available)" },
+      { id: "C", text: "Set-up instructions" },
+      { id: "D", text: "Where to download Test Script" },
+      { id: "E", text: "Process Flow diagram" }
+    ],
+    correctAnswers: ["B", "D", "E"],
+    multipleChoice: true
+  },
+  {
+    id: 29,
+    text: "29-Where are requirements documented in SAP Cloud ALM?",
+    options: [
+      { id: "A", text: "In the Requirements app" },
+      { id: "B", text: "In the Processes app" },
+      { id: "C", text: "In the Manage Scopes app" },
+      { id: "D", text: "In the Features app" }
+    ],
+    correctAnswers: ["B"],
+    multipleChoice: false
+  },
+  {
+    id: 30,
+    text: "30-What are some important activities the partner LoB configuration experts need to complete in the Realize phase? (2 correct answers)",
+    options: [
+      { id: "A", text: "Setting up manual test cases in SAP Cloud ALM." },
+      { id: "B", text: "Gathering perceived change impact feedback." },
+      { id: "C", text: "Entering configuration values in SAP Central Business Configuration." },
+      { id: "D", text: "Scheduling meetings with customer experts to gather BDCQ responses." }
+    ],
+    correctAnswers: ["A", "C"],
+    multipleChoice: true
+  },
+  {
+    id: 31,
+    text: "31-What are some important activities the partner LoB configuration experts need to complete in the Explore phase? (2 correct answers)",
+    options: [
+      { id: "A", text: "Preparing a presentation deck for each Fit-to-Standard workshop." },
+      { id: "B", text: "Documenting formal UAT sign-off in SAP Cloud ALM." },
+      { id: "C", text: "Documenting customization requirements in SAP Cloud ALM." },
+      { id: "D", text: "Demonstrating where to find business process documentation." }
+    ],
+    correctAnswers: ["C", "D"],
+    multipleChoice: true
+  },
+  {
+    id: 32,
+    text: "32-What are some important activities the partner LoB configuration experts need to complete in the Prepare phase? (2 correct answers)",
+    options: [
+      { id: "A", text: "Providing test user and starter system login information to the customer LoB experts." },
+      { id: "B", text: "Gathering L2 BDCQ responses." },
+      { id: "C", text: "Gathering L3 BDCQ responses." },
+      { id: "D", text: "Identifying customer LoB experts to participate in Fit-to-Standard workshops." }
+    ],
+    correctAnswers: ["B", "D"],
+    multipleChoice: true
+  },
+  {
+    id: 33,
+    text: "33-How can you activate integration scenarios? (2 correct answers)",
+    options: [
+      { id: "A", text: "In SAP Central Business Configuration" },
+      { id: "B", text: "In SAP Signavio Process Navigator" },
+      { id: "C", text: "In SAP Cloud ALM through the Cloud Integration Automation Service" },
+      { id: "D", text: "In SAP for Me by creating a support case" }
+    ],
+    correctAnswers: ["A", "D"],
+    multipleChoice: true
+  },
+  {
+    id: 34,
+    text: "34-In which SAP Cloud ALM application do you see the finalized list of business processes and country/regions in which they should be implemented?",
+    options: [
+      { id: "A", text: "Manage Scopes" },
+      { id: "B", text: "Requirements" },
+      { id: "C", text: "Processes" },
+      { id: "D", text: "Process Authoring" }
+    ],
+    correctAnswers: ["C"],
+    multipleChoice: false
+  },
+  {
+    id: 35,
+    text: "35-Where can you find the Conflicts app to resolve a configuration conflict?",
+    options: [
+      { id: "A", text: "Main Line" },
+      { id: "B", text: "Parallel Line" }
+    ],
+    correctAnswers: ["B"],
+    multipleChoice: false
+  },
+  {
+    id: 36,
+    text: "36-What determines the organizational entities that are required to create in SAP Central Business Configuration? (2 correct answers)",
+    options: [
+      { id: "A", text: "Business processes" },
+      { id: "B", text: "Group currency" },
+      { id: "C", text: "Country versions" },
+      { id: "D", text: "Fiscal year variant" }
+    ],
+    correctAnswers: ["A", "C"],
+    multipleChoice: true
+  },
+  {
+    id: 37,
+    text: "37-You need to send changes from the main line to the parallel line. Which operation do you choose?",
+    options: [
+      { id: "A", text: "Merge" },
+      { id: "B", text: "Rebase" }
+    ],
+    correctAnswers: ["B"],
+    multipleChoice: false
+  },
+  {
+    id: 38,
+    text: "38-Which of the following tenants do you receive with the Parallel Line? (2 correct answers)",
+    options: [
+      { id: "A", text: "Production tenant (Client 100)" },
+      { id: "B", text: "Customizing tenant (Client 120)" },
+      { id: "C", text: "Test tenant (Client 120)" },
+      { id: "D", text: "Development tenant (Client 080)" }
+    ],
+    correctAnswers: ["B", "C"],
+    multipleChoice: true
+  },
+  {
+    id: 39,
+    text: "39-Who is responsible for entering configuration values in SAP Central Business Configuration?",
+    options: [
+      { id: "A", text: "IT Contact" },
+      { id: "B", text: "Lead configuration expert" },
+      { id: "C", text: "LoB configuration experts" },
+      { id: "D", text: "Project manager" }
+    ],
+    correctAnswers: ["C"],
+    multipleChoice: false
+  },
+  {
+    id: 40,
+    text: "40-Where do you maintain configuration values for 'current settings' configuration activities? (2 correct answers)",
+    options: [
+      { id: "A", text: "SAP Central Business Configuration" },
+      { id: "B", text: "Manage Your Solution app in the Production system" },
+      { id: "C", text: "Implementation Activities app in the Test system" },
+      { id: "D", text: "Display Business Configuration Stagings in the Development system" }
+    ],
+    correctAnswers: ["A", "C"],
+    multipleChoice: true
+  },
+  {
+    id: 41,
+    text: "41-How are customized business roles transferred from the customizing tenant of the Development system to the Test system?",
+    options: [
+      { id: "A", text: "With SAP Cloud Identity Authentication" },
+      { id: "B", text: "In a customizing transport" },
+      { id: "C", text: "With SAP Cloud Identity Provisioning" },
+      { id: "D", text: "In a software collection" }
+    ],
+    correctAnswers: ["D"],
+    multipleChoice: false
+  },
+  {
+    id: 42,
+    text: "42-How many workspaces does the partner lead configuration expert create in SAP Central Business Configuration for the Development system?",
+    options: [
+      { id: "A", text: "1" },
+      { id: "B", text: "2" },
+      { id: "C", text: "3" },
+      { id: "D", text: "4" }
+    ],
+    correctAnswers: ["B"],
+    multipleChoice: false
+  },
+  {
+    id: 43,
+    text: "43-How do you set up the SAP Mobile Start app for a customer?",
+    options: [
+      { id: "A", text: "In the SAP Fiori Launchpad" },
+      { id: "B", text: "In Spaces & Pages" },
+      { id: "C", text: "In SAP Build Work Zone" },
+      { id: "D", text: "In SAP Build Apps" }
+    ],
+    correctAnswers: ["C"],
+    multipleChoice: false
+  },
+  {
+    id: 44,
+    text: "44-What provides a common set of domain-specific languages and services for defining and consuming semantically rich data models in SAP S/4HANA Cloud?",
+    options: [
+      { id: "A", text: "SAP Analytics Cloud" },
+      { id: "B", text: "Virtual Data Model" },
+      { id: "C", text: "Core Data Services" },
+      { id: "D", text: "SAP Datasphere" }
+    ],
+    correctAnswers: ["C"],
+    multipleChoice: false
+  },
+  {
+    id: 45,
+    text: "45-What is contained in a launchpad space?",
+    options: [
+      { id: "A", text: "One or more sections" },
+      { id: "B", text: "One or more apps" },
+      { id: "C", text: "One or more roles" },
+      { id: "D", text: "One or more pages" }
+    ],
+    correctAnswers: ["D"],
+    multipleChoice: false
+  },
+  {
+    id: 46,
+    text: "46-Where can you find relevant simulations for an app you're currently working in on the launchpad?",
+    options: [
+      { id: "A", text: "Question mark icon" },
+      { id: "B", text: "Diamond icon" },
+      { id: "C", text: "Graduation cap icon" },
+      { id: "D", text: "Megaphone icon" }
+    ],
+    correctAnswers: ["C"],
+    multipleChoice: false
+  },
+  {
+    id: 47,
+    text: "47-What are work items in a flexible business workflow?",
+    options: [
+      { id: "A", text: "Tasks assigned to team categories" },
+      { id: "B", text: "Tasks assigned to agents" },
+      { id: "C", text: "Tasks assigned to member functions" },
+      { id: "D", text: "Tasks assigned to teams" }
+    ],
+    correctAnswers: ["B"],
+    multipleChoice: false
+  },
+  {
+    id: 48,
+    text: "48-What are some examples of Team Categories in Responsibility Management? (2 correct answers)",
+    options: [
+      { id: "A", text: "Operational Purchaser" },
+      { id: "B", text: "Procurement" },
+      { id: "C", text: "Purchasing Group" },
+      { id: "D", text: "Distribution" }
+    ],
+    correctAnswers: ["B", "D"],
+    multipleChoice: true
+  },
+  {
+    id: 49,
+    text: "49-What is required to support automated situation resolution? (2 correct answers)",
+    options: [
+      { id: "A", text: "Integration with SAP Business Technology Platform" },
+      { id: "B", text: "SAP Build Process Automation service" },
+      { id: "C", text: "Robotic Process Automation service" },
+      { id: "D", text: "Intelligent Situation Automation service" }
+    ],
+    correctAnswers: ["A", "D"],
+    multipleChoice: true
+  },
+  {
+    id: 50,
+    text: "50-Where can you access Joule from the launchpad?",
+    options: [
+      { id: "A", text: "Question mark icon" },
+      { id: "B", text: "Diamond icon" },
+      { id: "C", text: "Graduation cap icon" },
+      { id: "D", text: "Megaphone icon" }
+    ],
+    correctAnswers: ["B"],
+    multipleChoice: false
+  },
+  {
+    id: 51,
+    text: "51-For which of the following can an analytical query be used as the data source input? (3 correct answers)",
+    options: [
+      { id: "A", text: "Generic drilldown reports" },
+      { id: "B", text: "Multidimensional reports" },
+      { id: "C", text: "Review booklets" },
+      { id: "D", text: "Analysis Path Framework-based apps" },
+      { id: "E", text: "SAP Analytical Cloud Stories" }
+    ],
+    correctAnswers: ["B", "C", "E"],
+    multipleChoice: true
+  },
+  {
+    id: 52,
+    text: "52-What does a launchpad page include? (2 correct answers)",
+    options: [
+      { id: "A", text: "One or more apps" },
+      { id: "B", text: "One or more spaces" },
+      { id: "C", text: "One or more sections" },
+      { id: "D", text: "One or more catalogs" }
+    ],
+    correctAnswers: ["A", "C"],
+    multipleChoice: true
+  },
+  {
+    id: 53,
+    text: "53-What can a business catalog include? (2 correct answers)",
+    options: [
+      { id: "A", text: "Access to data" },
+      { id: "B", text: "Access to a launchpad space" },
+      { id: "C", text: "Access to a business role" },
+      { id: "D", text: "Access to one or more applications" }
+    ],
+    correctAnswers: ["A", "D"],
+    multipleChoice: true
+  },
+  {
+    id: 54,
+    text: "54-You are limiting access for certain users to enter data in specific fields of an application. Which of the following business role access categories would you choose?",
+    options: [
+      { id: "A", text: "Read, Value Help: Restricted" },
+      { id: "B", text: "Write, Read, Value Help: Restricted" },
+      { id: "C", text: "Read, Value Help: Unrestricted" },
+      { id: "D", text: "Write, Read, Value Help: Unrestricted" }
+    ],
+    correctAnswers: ["B"],
+    multipleChoice: false
+  },
+  {
+    id: 55,
+    text: "55-Where do you change the recipients of a form template?",
+    options: [
+      { id: "A", text: "In the Maintain Form Templates app" },
+      { id: "B", text: "In the Manage Texts app" },
+      { id: "C", text: "In the Output Parameter Determination app" },
+      { id: "D", text: "In the Monitor Form Transmissions app" }
+    ],
+    correctAnswers: ["C"],
+    multipleChoice: false
+  },
+  {
+    id: 56,
+    text: "56-You've created a custom app UI from a custom business object. How to you make sure it displays for end-users on the launchpad? (2 correct answers)",
+    options: [
+      { id: "A", text: "Use the Custom Business Catalogs app to assign the app to a custom business catalog." },
+      { id: "B", text: "Use the Custom Catalog Extensions app to assign the app to an existing business catalog." },
+      { id: "C", text: "Use the Manage Launchpad Pages app to add the app to a launchpad page." },
+      { id: "D", text: "Use the Manage Launchpad Spaces app to add the app to a launchpad space." }
+    ],
+    correctAnswers: ["B", "C"],
+    multipleChoice: true
+  },
+  {
+    id: 57,
+    text: "57-Where is the master library of all key user in-app extensions that have been made in an SAP S/4HANA Cloud system?",
+    options: [
+      { id: "A", text: "Extensibility Cockpit app" },
+      { id: "B", text: "Extensibility Explorer app" },
+      { id: "C", text: "Extensibility Inventory app" },
+      { id: "D", text: "Export Customizing Requests app" }
+    ],
+    correctAnswers: ["C"],
+    multipleChoice: false
+  },
+  {
+    id: 58,
+    text: "58-You created a custom tile that links to a website relevant for all employees. What are your next steps to make sure the app is visible for everyone? (2 correct answers)",
+    options: [
+      { id: "A", text: "Assign the app to a relevant business role" },
+      { id: "B", text: "Assign the app to a relevant business catalog" },
+      { id: "C", text: "Add the app to an SAP Fiori Launchpad Page" },
+      { id: "D", text: "Add the app to an SAP Fiori Launchpad Space" }
+    ],
+    correctAnswers: ["B", "C"],
+    multipleChoice: true
+  },
+  {
+    id: 59,
+    text: "59-What can be transported with the Export Software Collection app? (3 correct answers)",
+    options: [
+      { id: "A", text: "A custom form template" },
+      { id: "B", text: "A business configuration value" },
+      { id: "C", text: "A customer-specific CDS view" },
+      { id: "D", text: "A new organizational entity" },
+      { id: "E", text: "An adapted Fiori UI" }
+    ],
+    correctAnswers: ["A", "C", "E"],
+    multipleChoice: true
+  },
+  {
+    id: 60,
+    text: "60-Which tool do you use to add a field that already exists to an SAP Fiori app?",
+    options: [
+      { id: "A", text: "Custom Logic app" },
+      { id: "B", text: "Adapt UI within an app" },
+      { id: "C", text: "Custom Fields app" },
+      { id: "D", text: "Custom Tiles app" }
+    ],
+    correctAnswers: ["B"],
+    multipleChoice: false
+  },
+  {
+    id: 61,
+    text: "61-Which of the following are examples of in-app key user extensibility? (2 correct answers)",
+    options: [
+      { id: "A", text: "An industry cloud app" },
+      { id: "B", text: "A custom business object" },
+      { id: "C", text: "A custom field" },
+      { id: "D", text: "A custom mobile app" }
+    ],
+    correctAnswers: ["B", "C"],
+    multipleChoice: true
+  },
+  {
+    id: 62,
+    text: "62-Which tools would a developer use to build a custom mobile application in JavaScript? (2 correct answers)",
+    options: [
+      { id: "A", text: "SAP Build Apps" },
+      { id: "B", text: "SAP Business Application Studio" },
+      { id: "C", text: "SAP Build Work Zone" },
+      { id: "D", text: "SAP Software Developer Kits" }
+    ],
+    correctAnswers: ["B", "D"],
+    multipleChoice: true
+  },
+  {
+    id: 63,
+    text: "63-Where can you find sample code for a Business Add-In (BAdI)?",
+    options: [
+      { id: "A", text: "Custom Fields app" },
+      { id: "B", text: "Custom Business Objects app" },
+      { id: "C", text: "Extensibility Inventory" },
+      { id: "D", text: "Custom Logic app" }
+    ],
+    correctAnswers: ["D"],
+    multipleChoice: false
+  },
+  {
+    id: 64,
+    text: "64-What is used to transport extensions built in the development tenant of the Development system to the Test system? (2 correct answers)",
+    options: [
+      { id: "A", text: "Export Software Collection app" },
+      { id: "B", text: "Transport Organizer app" },
+      { id: "C", text: "Export Customizing Transports app" },
+      { id: "D", text: "Import Collection app" }
+    ],
+    correctAnswers: ["B", "D"],
+    multipleChoice: true
+  },
+  {
+    id: 65,
+    text: "65-What are some capabilities of SAP Cloud ALM for Operations? (2 correct answers)",
+    options: [
+      { id: "A", text: "Issues & Action Management" },
+      { id: "B", text: "Integration & Exception Monitoring" },
+      { id: "C", text: "Project Tracking & Traceability" },
+      { id: "D", text: "Configuration & Security Analysis" }
+    ],
+    correctAnswers: ["B", "D"],
+    multipleChoice: true
+  },
+  {
+    id: 66,
+    text: "66-Where can you find out-of-the-box integration content from SAP? (2 correct answers)",
+    options: [
+      { id: "A", text: "SAP Discovery Center" },
+      { id: "B", text: "SAP Signavio Process Navigator" },
+      { id: "C", text: "SAP Business Accelerator Hub" },
+      { id: "D", text: "SAP Roadmap Viewer" }
+    ],
+    correctAnswers: ["B", "C"],
+    multipleChoice: true
+  },
+  {
+    id: 67,
+    text: "67-What is required to set up SAP Best Practices integrations in SAP S/4HANA Cloud Public Edition? (2 correct answers)",
+    options: [
+      { id: "A", text: "Communication Scenario" },
+      { id: "B", text: "Communication Arrangement" },
+      { id: "C", text: "Technical User" },
+      { id: "D", text: "Communication System" }
+    ],
+    correctAnswers: ["B", "D"],
+    multipleChoice: true
+  },
+  {
+    id: 68,
+    text: "68-Which SAP Fiori app do you use to define inbound/outbound services that can be later used in a Communication Arrangement?",
+    options: [
+      { id: "A", text: "Maintain Extensions on SAP BTP" },
+      { id: "B", text: "Custom Communication Scenarios" },
+      { id: "C", text: "Enterprise Event Enablement" },
+      { id: "D", text: "Custom Catalog Extensions" }
+    ],
+    correctAnswers: ["B"],
+    multipleChoice: false
+  },
+  {
+    id: 69,
+    text: "69-In which principle of SAP's integration strategy is the Integration Solution Advisory Methodology?",
+    options: [
+      { id: "A", text: "Out-of-the-box integration" },
+      { id: "B", text: "Open integration" },
+      { id: "C", text: "Holistic integration" },
+      { id: "D", text: "AI-driven integration" }
+    ],
+    correctAnswers: ["C"],
+    multipleChoice: false
+  },
+  {
+    id: 70,
+    text: "70-A developer is building a custom integration scenario. Which website do you recommend for them to find an existing library of pre-built APIs and integration packages?",
+    options: [
+      { id: "A", text: "SAP Discovery Center" },
+      { id: "B", text: "SAP Signavio Process Navigator" },
+      { id: "C", text: "SAP Business Accelerator Hub" },
+      { id: "D", text: "SAP Help Portal" }
+    ],
+    correctAnswers: ["C"],
+    multipleChoice: false
+  },
+  {
+    id: 71,
+    text: "71-Which capability of the SAP Integration Suite would you use to identify the most efficient integration interface for B2B scenarios?",
+    options: [
+      { id: "A", text: "Cloud Integration" },
+      { id: "B", text: "Migration Assessment" },
+      { id: "C", text: "API Management" },
+      { id: "D", text: "Integration Advisor" }
+    ],
+    correctAnswers: ["D"],
+    multipleChoice: false
+  },
+  {
+    id: 72,
+    text: "72-Where can you find SAP Best Practices integration content? (3 correct answers)",
+    options: [
+      { id: "A", text: "SAP Best Practices Explorer" },
+      { id: "B", text: "SAP Signavio Process Navigator" },
+      { id: "C", text: "SAP Community" },
+      { id: "D", text: "SAP Help Portal" },
+      { id: "E", text: "Cloud Integration Automation Service" }
+    ],
+    correctAnswers: ["B", "D", "E"],
+    multipleChoice: true
+  },
+  {
+    id: 73,
+    text: "73-Where can you access the Cloud Integration Automation Service (CIAS) tool? (2 correct answers)",
+    options: [
+      { id: "A", text: "Fiori Launchpad in SAP S/4HANA Cloud Public Edition" },
+      { id: "B", text: "SAP Cloud ALM" },
+      { id: "C", text: "SAP Discovery Center" },
+      { id: "D", text: "SAP for Me" }
+    ],
+    correctAnswers: ["B", "D"],
+    multipleChoice: true
+  },
+  {
+    id: 74,
+    text: "74-Which functionality enables you to capture information including source values, target values after mapping, and target IDs that could be used to audit your migrated data?",
+    options: [
+      { id: "A", text: "SAP HANA Cloud Service" },
+      { id: "B", text: "Migration Object Modeler" },
+      { id: "C", text: "SAP Data Services" },
+      { id: "D", text: "Extended Statistics" }
+    ],
+    correctAnswers: ["D"],
+    multipleChoice: false
+  },
+  {
+    id: 75,
+    text: "75-How is data transferred between an existing SAP system and the target SAP S/4HANA Cloud Public Edition system?",
+    options: [
+      { id: "A", text: "OData APIs" },
+      { id: "B", text: "Remote Function Call (RFC)" },
+      { id: "C", text: "SOAP APIs" }
+    ],
+    correctAnswers: ["B"],
+    multipleChoice: false
+  },
+  {
+    id: 76,
+    text: "76-Which framework supports you to receive a notification when a migration object has completed the Migration step of the guided migration process?",
+    options: [
+      { id: "A", text: "Responsibility Management Framework" },
+      { id: "B", text: "In-App Notification Framework" },
+      { id: "C", text: "Situation Handling Framework" },
+      { id: "D", text: "Extensibility Framework" }
+    ],
+    correctAnswers: ["C"],
+    multipleChoice: false
+  },
+  {
+    id: 77,
+    text: "77-You need to add an additional field to a migration object template. What are your options? (2 correct answers)",
+    options: [
+      { id: "A", text: "Developer extensibility for any migration object" },
+      { id: "B", text: "A custom field using the extensibility framework" },
+      { id: "C", text: "Submit a case through SAP for Me for a special request" },
+      { id: "D", text: "Migration Object Modeler for supported objects" }
+    ],
+    correctAnswers: ["B", "D"],
+    multipleChoice: true
+  },
+  {
+    id: 78,
+    text: "78-You migrated data from the customer's legacy database to the target SAP S/4HANA Cloud system using a separate SAP HANA database. Which data migration procedure did you use? (2 correct answers)",
+    options: [
+      { id: "A", text: "Local SAP S/4HANA Database Schema" },
+      { id: "B", text: "Remote SAP HANA Database Schema" },
+      { id: "C", text: "Direct connection to an SAP system" },
+      { id: "D", text: "Migration using staging tables" }
+    ],
+    correctAnswers: ["B", "D"],
+    multipleChoice: true
+  },
+  {
+    id: 79,
+    text: "79-You tried to migrate data for a business object, but the migration failed. What are some reasons the migration could have failed? (2 correct answers)",
+    options: [
+      { id: "A", text: "You didn't simulate the migration before migrating the data." },
+      { id: "B", text: "A predecessor object wasn't migrated." },
+      { id: "C", text: "You don't have the required business role to migrate the data." },
+      { id: "D", text: "You assigned more than one migration object to the project." }
+    ],
+    correctAnswers: ["B", "C"],
+    multipleChoice: true
+  },
+  {
+    id: 80,
+    text: "80-What types of permission do you need to migrate data for a migration object? (2 correct answers)",
+    options: [
+      { id: "A", text: "Permission to migrate all data types in the customizing tenant of the development system." },
+      { id: "B", text: "Permission to access the Migrate Your Data app." },
+      { id: "C", text: "Permission to migrate all data types in the development tenant of the development system." },
+      { id: "D", text: "Permission to migrate data for the specific object." }
+    ],
+    correctAnswers: ["B", "D"],
+    multipleChoice: true
+  },
+  {
+    id: 81,
+    text: "81-If a test plan isn't displaying in the Test Execution app in SAP Cloud ALM, what could be the issue?",
+    options: [
+      { id: "A", text: "The test plan isn't assigned to a test user." },
+      { id: "B", text: "The start and end dates have not been maintained for the test plan." },
+      { id: "C", text: "The test plan status is In Preparation." },
+      { id: "D", text: "The test plan status is In Testing." }
+    ],
+    correctAnswers: ["C"],
+    multipleChoice: false
+  },
+  {
+    id: 82,
+    text: "82-What type of test user would you use in the Test Automation Tool for an integration scenario?",
+    options: [
+      { id: "A", text: "Business User" },
+      { id: "B", text: "Communication User" },
+      { id: "C", text: "Conditional Authentication User" }
+    ],
+    correctAnswers: ["B"],
+    multipleChoice: false
+  },
+  {
+    id: 83,
+    text: "83-What do the preconfigured test automates in the Manage Your Test Processes app correspond to?",
+    options: [
+      { id: "A", text: "Automated test scripts in SAP Cloud ALM" },
+      { id: "B", text: "Manual test scripts in SAP Signavio Process Navigator" },
+      { id: "C", text: "Manual test scripts in SAP Best Practices Explorer" }
+    ],
+    correctAnswers: ["B"],
+    multipleChoice: false
+  },
+  {
+    id: 84,
+    text: "84-Where can you customize the scope of a post-upgrade test?",
+    options: [
+      { id: "A", text: "Test Your Processes app" },
+      { id: "B", text: "Manage Your Test Processes app" },
+      { id: "C", text: "Analyze Automated Test Results app" },
+      { id: "D", text: "Manage Upgrade Tests app" }
+    ],
+    correctAnswers: ["D"],
+    multipleChoice: false
+  },
+  {
+    id: 85,
+    text: "85-Where do you set-up Tricentis Test Automation?",
+    options: [
+      { id: "A", text: "SAP S/4HANA Cloud Public Edition" },
+      { id: "B", text: "SAP Cloud Identity" },
+      { id: "C", text: "SAP Cloud ALM" }
+    ],
+    correctAnswers: ["C"],
+    multipleChoice: false
+  },
+  {
+    id: 86,
+    text: "86-How do you capture a value, error message, or label that is static on the screen when recording new actions for a test automate?",
+    options: [
+      { id: "A", text: "Capture button" },
+      { id: "B", text: "Read button" },
+      { id: "C", text: "Check button" },
+      { id: "D", text: "Copy button" }
+    ],
+    correctAnswers: ["C"],
+    multipleChoice: false
+  },
+  {
+    id: 87,
+    text: "87-What types of tests are displayed in the Analyze Automated Test Results app? (2 correct answers)",
+    options: [
+      { id: "A", text: "Tricentis tests" },
+      { id: "B", text: "Customer-specific tests" },
+      { id: "C", text: "Manual user acceptance tests" },
+      { id: "D", text: "Post-upgrade tests" }
+    ],
+    correctAnswers: ["B", "D"],
+    multipleChoice: true
+  },
+  {
+    id: 88,
+    text: "88-Where can you change the default test user for a process step?",
+    options: [
+      { id: "A", text: "Test Your Processes app" },
+      { id: "B", text: "Manage Your Test Processes app" },
+      { id: "C", text: "Analyze Automated Test Results app" },
+      { id: "D", text: "Manage Upgrade Tests app" }
+    ],
+    correctAnswers: ["B"],
+    multipleChoice: false
+  },
+  {
+    id: 89,
+    text: "89-Which type of test occurs in the Run phase to identify whether any changes in the latest release upgrade affect the customer's configurations or customizations?",
+    options: [
+      { id: "A", text: "Implementation tests" },
+      { id: "B", text: "End-to-end business process tests" },
+      { id: "C", text: "User acceptance tests" },
+      { id: "D", text: "Regression tests" }
+    ],
+    correctAnswers: ["D"],
+    multipleChoice: false
+  },
+  {
+    id: 90,
+    text: "90-Why type of test will SAP execute on behalf of a customer if consent is provided?",
+    options: [
+      { id: "A", text: "Standard tests" },
+      { id: "B", text: "Custom tests" },
+      { id: "C", text: "Post upgrade tests" },
+      { id: "D", text: "Integration tests" }
+    ],
+    correctAnswers: ["C"],
+    multipleChoice: false
+  }
+];
