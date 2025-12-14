@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminologie de Relance SAP S/4HANA Cloud</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* SAP Fiori Quartz Light like background */
+        }
+
+        .node-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .node-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-color: #0a6ed1; /* SAP Blue */
+        }
+
+        /* Custom Scrollbar for the modal content */
+        .custom-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+
+        /* Connecting lines for Desktop */
+        @media (min-width: 1024px) {
+            .connector-line-left {
+                position: absolute;
+                right: -2rem; /* Connects to center */
+                top: 50%;
+                width: 2rem;
+                height: 2px;
+                background-color: #cbd5e1;
+                z-index: 0;
+            }
+            .connector-line-right {
+                position: absolute;
+                left: -2rem; /* Connects to center */
+                top: 50%;
+                width: 2rem;
+                height: 2px;
+                background-color: #cbd5e1;
+                z-index: 0;
+            }
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="bg-blue-700 text-white p-2 rounded-lg">
+                    <i data-lucide="book-open" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-slate-800">Terminologie Relance (Dunning)</h1>
+                    <p class="text-xs text-slate-500 font-medium">SAP S/4HANA Public Cloud Finance</p>
+                </div>
+            </div>
+            <div class="text-sm text-slate-500 hidden md:block">
+                Cliquez sur un élément pour voir la configuration
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow p-4 md:p-8 overflow-y-auto">
+        <div class="max-w-6xl mx-auto">
+            
+            <div class="text-center mb-10">
+                <h2 class="text-2xl font-semibold text-slate-800">Comment les rappels de paiement sont structurés</h2>
+                <p class="text-slate-600 mt-2 max-w-2xl mx-auto">
+                    Interagissez avec le schéma ci-dessous pour comprendre chaque concept et découvrir comment l'implémenter dans votre système SAP Cloud.
+                </p>
+            </div>
+
+            <!-- The Schema Layout -->
+            <div class="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16 relative">
+                
+                <!-- Left Column -->
+                <div class="flex flex-col gap-6 w-full lg:w-1/3">
+                    <!-- Item 1 -->
+                    <div class="relative">
+                        <div class="node-card bg-white p-5 rounded-xl border border-slate-200 shadow-sm relative z-10" onclick="openModal('dunning-area')">
+                            <h3 class="font-bold text-blue-900 mb-1 flex items-center gap-2">
+                                <i data-lucide="map" class="w-4 h-4 text-blue-500"></i> Dunning Area
+                            </h3>
+                            <p class="text-sm text-slate-500">Unité organisationnelle dans une société</p>
+                        </div>
+                        <div class="connector-line-left hidden lg:block"></div>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="relative">
+                        <div class="node-card bg-white p-5 rounded-xl border border-slate-200 shadow-sm relative z-10" onclick="openModal('dunning-key')">
+                            <h3 class="font-bold text-blue-900 mb-1 flex items-center gap-2">
+                                <i data-lucide="key" class="w-4 h-4 text-blue-500"></i> Dunning Key
+                            </h3>
+                            <p class="text-sm text-slate-500">Restreint ou influence le processus</p>
+                        </div>
+                        <div class="connector-line-left hidden lg:block"></div>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="relative">
+                        <div class="node-card bg-white p-5 rounded-xl border border-slate-200 shadow-sm relative z-10" onclick="openModal('dunning-level')">
+                            <h3 class="font-bold text-blue-900 mb-1 flex items-center gap-2">
+                                <i data-lucide="bar-chart-3" class="w-4 h-4 text-blue-500"></i> Dunning Level
+                            </h3>
+                            <p class="text-sm text-slate-500">Étape du processus de rappel</p>
+                        </div>
+                        <div class="connector-line-left hidden lg:block"></div>
+                    </div>
+
+                    <!-- Item 4 -->
+                    <div class="relative">
+                        <div class="node-card bg-white p-5 rounded-xl border border-slate-200 shadow-sm relative z-10" onclick="openModal('dunning-run')">
+                            <h3 class="font-bold text-blue-900 mb-1 flex items-center gap-2">
+                                <i data-lucide="play-circle" class="w-4 h-4 text-blue-500"></i> Dunning Run
+                            </h3>
+                            <p class="text-sm text-slate-500">Exécution du programme & génération</p>
+                        </div>
+                        <div class="connector-line-left hidden lg:block"></div>
+                    </div>
+
+                    <!-- Item 5 -->
+                     <div class="relative">
+                        <div class="node-card bg-white p-5 rounded-xl border border-slate-200 shadow-sm relative z-10" onclick="openModal('dunning-notice')">
+                            <h3 class="font-bold text-blue-900 mb-1 flex items-center gap-2">
+                                <i data-lucide="mail" class="w-4 h-4 text-blue-500"></i> Dunning Notice
+                            </h3>
+                            <p class="text-sm text-slate-500">Lettre/email envoyé au client</p>
+                        </div>
+                        <div class="connector-line-left hidden lg:block"></div>
+                    </div>
+                </div>
+
+                <!-- Center Node (The Hub) -->
+                <div class="relative z-20 my-4 lg:my-0">
+                    <div class="bg-slate-800 text-white p-8 rounded-full shadow-xl w-40 h-40 flex flex-col items-center justify-center text-center border-4 border-blue-200">
+                        <i data-lucide="refresh-cw" class="w-8 h-8 mb-2"></i>
+                        <span class="font-bold text-lg">Dunning</span>
+                        <span class="text-xs text-slate-300">(Relance)</span>
+                    </div>
+                    <!-- Vertical Line for mobile connectivity visual only -->
+                    <div class="absolute top-0 bottom-0 left-1/2 w-0.5 bg-slate-300 -z-10 lg:hidden transform -translate-x-1/2"></div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="flex flex-col gap-6 w-full lg:w-1/3">
+                    <!-- Item 1 -->
+                    <div class="relative">
+                        <div class="connector-line-right hidden lg:block"></div>
+                        <div class="node-card bg-white p-5 rounded-xl border border-slate-200 shadow-sm relative z-10" onclick="openModal('dunning-interval')">
+                            <h3 class="font-bold text-blue-900 mb-1 flex items-center gap-2">
+                                <i data-lucide="calendar-clock" class="w-4 h-4 text-blue-500"></i> Dunning Interval
+                            </h3>
+                            <p class="text-sm text-slate-500">Jours min. avant la prochaine relance</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="relative">
+                        <div class="connector-line-right hidden lg:block"></div>
+                        <div class="node-card bg-white p-5 rounded-xl border border-slate-200 shadow-sm relative z-10" onclick="openModal('dunning-block')">
+                            <h3 class="font-bold text-blue-900 mb-1 flex items-center gap-2">
+                                <i data-lucide="shield-alert" class="w-4 h-4 text-blue-500"></i> Dunning Block
+                            </h3>
+                            <p class="text-sm text-slate-500">Bloque la relance (compte/poste)</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="relative">
+                        <div class="connector-line-right hidden lg:block"></div>
+                        <div class="node-card bg-white p-5 rounded-xl border border-slate-200 shadow-sm relative z-10" onclick="openModal('min-amount')">
+                            <h3 class="font-bold text-blue-900 mb-1 flex items-center gap-2">
+                                <i data-lucide="filter" class="w-4 h-4 text-blue-500"></i> Minimum Amount
+                            </h3>
+                            <p class="text-sm text-slate-500">Seuils pour éviter la relance</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 4 -->
+                    <div class="relative">
+                        <div class="connector-line-right hidden lg:block"></div>
+                        <div class="node-card bg-white p-5 rounded-xl border border-slate-200 shadow-sm relative z-10" onclick="openModal('charges-interest')">
+                            <h3 class="font-bold text-blue-900 mb-1 flex items-center gap-2">
+                                <i data-lucide="coins" class="w-4 h-4 text-blue-500"></i> Charges & Interest
+                            </h3>
+                            <p class="text-sm text-slate-500">Frais administratifs et intérêts de retard</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal (Overlay) -->
+    <div id="modal-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300" onclick="closeModal()">
+        <!-- Modal Content -->
+        <div id="modal-content" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden scale-95 transition-transform duration-300 m-4 max-h-[90vh] flex flex-col" onclick="event.stopPropagation()">
+            
+            <!-- Modal Header -->
+            <div class="bg-blue-900 p-6 flex justify-between items-start shrink-0">
+                <div>
+                    <h3 id="modal-title" class="text-2xl font-bold text-white">Titre</h3>
+                    <span id="modal-subtitle" class="text-blue-200 text-sm font-medium uppercase tracking-wider">Définition</span>
+                </div>
+                <button onclick="closeModal()" class="text-blue-200 hover:text-white transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6 overflow-y-auto custom-scroll">
+                
+                <!-- Section 1: Definition -->
+                <div class="mb-6">
+                    <h4 class="flex items-center gap-2 text-sm font-bold text-blue-600 uppercase mb-2">
+                        <i data-lucide="info" class="w-4 h-4"></i> C'est quoi ?
+                    </h4>
+                    <p id="modal-definition" class="text-slate-700 leading-relaxed text-lg">
+                        <!-- Content injected via JS -->
+                    </p>
+                </div>
+
+                <div class="h-px bg-slate-100 my-4"></div>
+
+                <!-- Section 2: Concrete Example -->
+                <div class="mb-6 bg-slate-50 p-4 rounded-lg border border-slate-200">
+                    <h4 class="flex items-center gap-2 text-sm font-bold text-slate-500 uppercase mb-2">
+                        <i data-lucide="lightbulb" class="w-4 h-4"></i> Exemple concret
+                    </h4>
+                    <p id="modal-example" class="text-slate-600 italic">
+                         <!-- Content injected via JS -->
+                    </p>
+                </div>
+
+                <!-- Section 3: SAP Action -->
+                <div>
+                    <h4 class="flex items-center gap-2 text-sm font-bold text-purple-600 uppercase mb-3">
+                        <i data-lucide="monitor" class="w-4 h-4"></i> Dans SAP S/4HANA Public Cloud
+                    </h4>
+                    <div class="bg-white border border-purple-100 rounded-lg p-4 shadow-sm">
+                        <p class="text-sm text-slate-500 mb-2">Où configurer ou exécuter :</p>
+                        <div id="modal-action" class="font-mono text-sm text-purple-800 bg-purple-50 p-3 rounded border border-purple-200 inline-block mb-3">
+                            <!-- App name injected via JS -->
+                        </div>
+                        <ul id="modal-steps" class="list-disc list-inside text-slate-700 space-y-1 text-sm">
+                            <!-- Steps injected via JS -->
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+            
+            <!-- Modal Footer -->
+            <div class="bg-slate-50 p-4 border-t border-slate-100 flex justify-end shrink-0">
+                <button onclick="closeModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg font-medium transition-colors">
+                    Fermer
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Data Source
+        const contentData = {
+            "dunning-area": {
+                title: "Dunning Area",
+                subtitle: "Domaine de Relance",
+                definition: "C'est une subdivision de votre société utilisée pour séparer les processus de relance. Imaginez que vous ayez des clients 'Grossistes' et des clients 'Détail'. Vous ne voulez pas leur envoyer les mêmes lettres de rappel. Le domaine de relance permet de gérer ces groupes séparément.",
+                example: "La société FR01 a deux domaines : '01' pour les clients standards et '02' pour les grands comptes qui nécessitent un traitement VIP.",
+                actionApp: "App: Manage Your Solution / CBC",
+                steps: [
+                    "Configuration Activity: 'Define Dunning Areas'",
+                    "Affectez ensuite ce domaine dans la fiche client (App: Maintain Business Partner)."
+                ]
+            },
+            "dunning-key": {
+                title: "Dunning Key",
+                subtitle: "Clé de Relance",
+                definition: "C'est un code qui permet de limiter le niveau de relance pour certaines factures spécifiques. C'est comme une exception à la règle générale.",
+                example: "Vous avez une facture en litige. Vous ne voulez pas qu'elle atteigne le niveau 'Contentieux' (Niveau 3). Vous mettez une clé de relance qui bloque cette facture au niveau 1 maximum.",
+                actionApp: "App: Manage Customer Line Items",
+                steps: [
+                    "Modifiez la pièce comptable (facture).",
+                    "Remplissez le champ 'Dunning Key' au niveau du poste individuel.",
+                    "Config: Activity 'Define Dunning Keys'."
+                ]
+            },
+            "dunning-level": {
+                title: "Dunning Level",
+                subtitle: "Niveau de Relance",
+                definition: "Il représente le degré d'urgence du rappel. Plus le niveau est élevé, plus le ton de la lettre est sévère.",
+                example: "Niveau 1 : Rappel amical (J+10).<br>Niveau 2 : Mise en demeure (J+20).<br>Niveau 3 : Transmission au service juridique (J+30).",
+                actionApp: "Config: Define Dunning Procedures",
+                steps: [
+                    "Dans la procédure de relance, vous définissez combien de niveaux existent (max 9, souvent 3 ou 4 dans la pratique).",
+                    "Chaque niveau peut avoir son propre texte de formulaire."
+                ]
+            },
+            "dunning-run": {
+                title: "Dunning Run",
+                subtitle: "Cycle de Relance (F150)",
+                definition: "C'est l'action concrète de lancer le moteur de relance. Le système analyse tous les comptes clients, vérifie les retards, et décide qui doit recevoir une lettre.",
+                example: "Tous les mardis matins, le comptable lance le cycle de relance pour envoyer les emails aux clients en retard.",
+                actionApp: "App: Create Dunning Notices",
+                steps: [
+                    "Créer un nouveau cycle (Run on <Date>, ID <Text>).",
+                    "Entrer les paramètres (Société, Client, Date comptable).",
+                    "Planifier (Schedule) la proposition, puis l'impression (Send output)."
+                ]
+            },
+            "dunning-notice": {
+                title: "Dunning Notice",
+                subtitle: "Avis de Relance",
+                definition: "C'est le document final (PDF ou Email) reçu par le client. Il liste les factures en retard, le total dû, et les instructions de paiement.",
+                example: "Un PDF généré automatiquement avec le logo de l'entreprise, listant 3 factures impayées et demandant un virement sous 48h.",
+                actionApp: "App: Output Parameter Determination",
+                steps: [
+                    "Utilisez BRF+ (Output Management) pour définir si l'avis sort par Email ou Impression.",
+                    "Vous configurez les modèles de formulaires (Form Templates) ici."
+                ]
+            },
+            "dunning-interval": {
+                title: "Dunning Interval",
+                subtitle: "Intervalle de Relance",
+                definition: "C'est le nombre de jours minimum qu'il faut attendre entre deux relances pour le même client. Cela évite de harceler le client tous les jours.",
+                example: "Si l'intervalle est de 14 jours, et que j'ai relancé le client le 1er du mois, le système refusera de générer une nouvelle lettre avant le 15, même si je lance le cycle le 10.",
+                actionApp: "Config: Define Dunning Procedures",
+                steps: [
+                    "Ouvrez votre procédure de relance.",
+                    "Réglez le champ 'Dunning Interval in Days' au niveau de l'en-tête de la procédure."
+                ]
+            },
+            "dunning-block": {
+                title: "Dunning Block",
+                subtitle: "Blocage de Relance",
+                definition: "Un 'verrou' manuel qui empêche le système d'envoyer une relance, soit pour tout le compte client, soit juste pour une facture précise.",
+                example: "Le client vous a appelé pour promettre un virement demain. Pour éviter qu'il reçoive une lettre automatique agressive ce soir, vous mettez un blocage 'A' sur son compte.",
+                actionApp: "App: Manage Business Partner / Line Items",
+                steps: [
+                    "Niveau Compte : Champ 'Dunning Block' dans l'onglet Rôles du BP (FI Customer).",
+                    "Niveau Facture : Champ 'Dunning Block' dans 'Manage Customer Line Items'."
+                ]
+            },
+            "min-amount": {
+                title: "Minimum Amount",
+                subtitle: "Montant Minimum",
+                definition: "Seuil en dessous duquel on ne relance pas. Cela évite d'envoyer un timbre qui coûte plus cher que la dette elle-même.",
+                example: "Si un client doit 0,50€ à cause d'un écart de change, le système ne générera pas de relance si le montant minimum est configuré à 5€.",
+                actionApp: "Config: Define Dunning Procedures",
+                steps: [
+                    "Dans la procédure, allez dans 'Minimum Amounts'.",
+                    "Définissez le montant par niveau de relance et par devise."
+                ]
+            },
+            "charges-interest": {
+                title: "Charges & Interest",
+                subtitle: "Frais & Intérêts",
+                definition: "Les pénalités financières ajoutées à la dette principale pour compenser le retard de paiement ou les coûts administratifs.",
+                example: "Ajouter forfaitairement 40€ de frais de recouvrement dès le niveau 2, ou calculer 5% d'intérêts annuels sur les jours de retard.",
+                actionApp: "Config: Define Dunning Charges / Interest",
+                steps: [
+                    "Activity: 'Define Dunning Charges' pour les frais fixes.",
+                    "App: 'Calculate Interest on Arrears' pour lancer le calcul des intérêts séparément si besoin."
+                ]
+            }
+        };
+
+        // Modal Logic
+        const modalOverlay = document.getElementById('modal-overlay');
+        const modalContent = document.getElementById('modal-content');
+
+        function openModal(key) {
+            const data = contentData[key];
+            if (!data) return;
+
+            // Fill Content
+            document.getElementById('modal-title').textContent = data.title;
+            document.getElementById('modal-subtitle').textContent = data.subtitle;
+            document.getElementById('modal-definition').innerHTML = data.definition; // Allow basic HTML like <br>
+            document.getElementById('modal-example').innerHTML = data.example;
+            document.getElementById('modal-action').textContent = data.actionApp;
+
+            const stepsList = document.getElementById('modal-steps');
+            stepsList.innerHTML = '';
+            data.steps.forEach(step => {
+                const li = document.createElement('li');
+                li.textContent = step;
+                stepsList.appendChild(li);
+            });
+
+            // Show Modal with Animation
+            modalOverlay.classList.remove('hidden');
+            // Small timeout to allow display:block to apply before opacity transition
+            setTimeout(() => {
+                modalOverlay.classList.remove('opacity-0');
+                modalContent.classList.remove('scale-95');
+                modalContent.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            modalOverlay.classList.add('opacity-0');
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modalOverlay.classList.add('hidden');
+            }, 300); // Match transition duration
+        }
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+    </script>
+</body>
+</html>
