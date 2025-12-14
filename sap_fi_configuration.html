@@ -35,7 +35,7 @@
             border-radius: 2px;
         }
 
-        /* Style "Box" for items */
+        /* Style "Box" for items - Now targeting <a> tags too */
         .tree-item-box {
             position: relative;
             padding: 10px 14px;
@@ -50,6 +50,8 @@
             display: flex;
             align-items: center;
             border-left-width: 4px; /* Colored border on left */
+            text-decoration: none; /* Remove underline for links */
+            cursor: pointer;
         }
 
         .tree-item-box:hover {
@@ -166,10 +168,19 @@
                         <h2 class="card-title text-blue-900">Define<br>Organizational Structure</h2>
                     </div>
                     <div class="tree-list">
-                        <div class="tree-item-box border-blue-400 text-blue-700">Company Code</div>
-                        <div class="tree-item-box border-blue-400 text-blue-700">Chart of Accounts</div>
-                        <div class="tree-item-box border-blue-400 text-blue-700">Fiscal Year Variant</div>
-                        <div class="tree-item-box border-blue-400 text-blue-700">Posting Period Variant</div>
+                        <!-- Links to YouTube Searches -->
+                        <a href="https://www.youtube.com/results?search_query=SAP+Company+Code+Configuration" target="_blank" class="tree-item-box border-blue-400 text-blue-700">
+                            Company Code <i class="fab fa-youtube ml-auto text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                        </a>
+                        <a href="https://www.youtube.com/results?search_query=SAP+Chart+of+Accounts+Configuration" target="_blank" class="tree-item-box border-blue-400 text-blue-700">
+                            Chart of Accounts
+                        </a>
+                        <a href="https://www.youtube.com/results?search_query=SAP+Fiscal+Year+Variant+Configuration" target="_blank" class="tree-item-box border-blue-400 text-blue-700">
+                            Fiscal Year Variant
+                        </a>
+                        <a href="https://www.youtube.com/results?search_query=SAP+Posting+Period+Variant" target="_blank" class="tree-item-box border-blue-400 text-blue-700">
+                            Posting Period Variant
+                        </a>
                     </div>
                 </div>
 
@@ -180,10 +191,18 @@
                         <h2 class="card-title text-emerald-900">Accounts Payable (AP) &<br>Accounts Receivable (AR)</h2>
                     </div>
                     <div class="tree-list">
-                        <div class="tree-item-box border-emerald-400 text-emerald-700">Vendor & Customer Master Data</div>
-                        <div class="tree-item-box border-emerald-400 text-emerald-700">Payment Terms & Methods</div>
-                        <div class="tree-item-box border-emerald-400 text-emerald-700">Dunning Procedures</div>
-                        <div class="tree-item-box border-emerald-400 text-emerald-700">Automatic Payment Program</div>
+                        <a href="https://www.youtube.com/results?search_query=SAP+Vendor+Customer+Master+Data" target="_blank" class="tree-item-box border-emerald-400 text-emerald-700">
+                            Vendor & Customer Master Data
+                        </a>
+                        <a href="https://www.youtube.com/results?search_query=SAP+Payment+Terms+and+Methods" target="_blank" class="tree-item-box border-emerald-400 text-emerald-700">
+                            Payment Terms & Methods
+                        </a>
+                        <a href="https://www.youtube.com/results?search_query=SAP+Dunning+Procedures" target="_blank" class="tree-item-box border-emerald-400 text-emerald-700">
+                            Dunning Procedures
+                        </a>
+                        <a href="https://www.youtube.com/results?search_query=SAP+Automatic+Payment+Program" target="_blank" class="tree-item-box border-emerald-400 text-emerald-700">
+                            Automatic Payment Program
+                        </a>
                     </div>
                 </div>
 
@@ -194,8 +213,12 @@
                         <h2 class="card-title text-rose-900">Tax & Withholding<br>Tax Configuration</h2>
                     </div>
                     <div class="tree-list">
-                        <div class="tree-item-box border-rose-400 text-rose-700">Tax Procedures</div>
-                        <div class="tree-item-box border-rose-400 text-rose-700">Tax Codes & Rates</div>
+                        <a href="https://www.youtube.com/results?search_query=SAP+Tax+Procedures+Configuration" target="_blank" class="tree-item-box border-rose-400 text-rose-700">
+                            Tax Procedures
+                        </a>
+                        <a href="https://www.youtube.com/results?search_query=SAP+Tax+Codes+and+Rates" target="_blank" class="tree-item-box border-rose-400 text-rose-700">
+                            Tax Codes & Rates
+                        </a>
                     </div>
                 </div>
 
@@ -213,10 +236,18 @@
                         <h2 class="card-title text-indigo-900">General Ledger<br>(GL) Configuration</h2>
                     </div>
                     <div class="tree-list">
-                        <div class="tree-item-box border-indigo-400 text-indigo-700">Account Groups</div>
-                        <div class="tree-item-box border-indigo-400 text-indigo-700">Field Status Variants</div>
-                        <div class="tree-item-box border-indigo-400 text-indigo-700">Document Types & Number Ranges</div>
-                        <div class="tree-item-box border-indigo-400 text-indigo-700">Tolerance Groups</div>
+                        <a href="https://www.youtube.com/results?search_query=SAP+GL+Account+Groups" target="_blank" class="tree-item-box border-indigo-400 text-indigo-700">
+                            Account Groups
+                        </a>
+                        <a href="https://www.youtube.com/results?search_query=SAP+Field+Status+Variants" target="_blank" class="tree-item-box border-indigo-400 text-indigo-700">
+                            Field Status Variants
+                        </a>
+                        <a href="https://www.youtube.com/results?search_query=SAP+Document+Types+and+Number+Ranges" target="_blank" class="tree-item-box border-indigo-400 text-indigo-700">
+                            Document Types & Number Ranges
+                        </a>
+                        <a href="https://www.youtube.com/results?search_query=SAP+Tolerance+Groups" target="_blank" class="tree-item-box border-indigo-400 text-indigo-700">
+                            Tolerance Groups
+                        </a>
                     </div>
                 </div>
 
@@ -230,9 +261,15 @@
                         <h2 class="card-title text-violet-900">Asset Accounting (AA)</h2>
                     </div>
                     <div class="tree-list">
-                        <div class="tree-item-box border-violet-400 text-violet-700">Chart of Depreciation</div>
-                        <div class="tree-item-box border-violet-400 text-violet-700">Asset Classes</div>
-                        <div class="tree-item-box border-violet-400 text-violet-700">Depreciation Areas</div>
+                        <a href="https://www.youtube.com/results?search_query=SAP+Chart+of+Depreciation" target="_blank" class="tree-item-box border-violet-400 text-violet-700">
+                            Chart of Depreciation
+                        </a>
+                        <a href="https://www.youtube.com/results?search_query=SAP+Asset+Classes+Configuration" target="_blank" class="tree-item-box border-violet-400 text-violet-700">
+                            Asset Classes
+                        </a>
+                        <a href="https://www.youtube.com/results?search_query=SAP+Depreciation+Areas" target="_blank" class="tree-item-box border-violet-400 text-violet-700">
+                            Depreciation Areas
+                        </a>
                     </div>
                 </div>
 
@@ -246,8 +283,12 @@
                         <h2 class="card-title text-cyan-900">Bank Accounting (BA)</h2>
                     </div>
                     <div class="tree-list">
-                        <div class="tree-item-box border-cyan-500 text-cyan-700">House Banks</div>
-                        <div class="tree-item-box border-cyan-500 text-cyan-700">Bank Reconciliation Configuration</div>
+                        <a href="https://www.youtube.com/results?search_query=SAP+House+Banks+Configuration" target="_blank" class="tree-item-box border-cyan-500 text-cyan-700">
+                            House Banks
+                        </a>
+                        <a href="https://www.youtube.com/results?search_query=SAP+Bank+Reconciliation+Configuration" target="_blank" class="tree-item-box border-cyan-500 text-cyan-700">
+                            Bank Reconciliation Configuration
+                        </a>
                     </div>
                 </div>
 
@@ -261,9 +302,15 @@
                         <h2 class="card-title text-orange-900">Integration with Other Modules</h2>
                     </div>
                     <div class="tree-list">
-                        <div class="tree-item-box border-orange-400 text-orange-700">FI-MM Integration</div>
-                        <div class="tree-item-box border-orange-400 text-orange-700">FI-SD Integration</div>
-                        <div class="tree-item-box border-orange-400 text-orange-700">FI-CO Integration</div>
+                        <a href="https://www.youtube.com/results?search_query=SAP+FI-MM+Integration" target="_blank" class="tree-item-box border-orange-400 text-orange-700">
+                            FI-MM Integration
+                        </a>
+                        <a href="https://www.youtube.com/results?search_query=SAP+FI-SD+Integration" target="_blank" class="tree-item-box border-orange-400 text-orange-700">
+                            FI-SD Integration
+                        </a>
+                        <a href="https://www.youtube.com/results?search_query=SAP+FI-CO+Integration" target="_blank" class="tree-item-box border-orange-400 text-orange-700">
+                            FI-CO Integration
+                        </a>
                     </div>
                 </div>
 
