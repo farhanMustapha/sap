@@ -7,109 +7,145 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f4f6f9;
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+            background-size: 24px 24px;
         }
 
-        /* Custom Tree Logic for the sub-items */
+        /* Custom Tree Logic */
         .tree-list {
             position: relative;
-            padding-left: 20px;
-            margin-top: 0.5rem;
+            padding-left: 24px;
+            margin-top: 0.75rem;
         }
         
-        /* The vertical line on the left of the list */
         .tree-list::before {
             content: '';
             position: absolute;
             left: 0;
             top: 0;
-            bottom: 15px; /* Stop slightly before the bottom to match image style */
+            bottom: 20px;
             width: 2px;
-            background-color: #4b5563; /* Gray-600 */
+            background-color: #cbd5e1; /* Slate-300 */
+            border-radius: 2px;
         }
 
         .tree-item {
             position: relative;
-            padding-left: 15px;
-            margin-bottom: 0.5rem;
-            color: #374151; /* Gray-700 */
+            padding: 8px 12px;
+            margin-bottom: 0.25rem;
+            color: #475569; /* Slate-600 */
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            cursor: default;
+        }
+
+        .tree-item:hover {
+            background-color: #eff6ff; /* Blue-50 */
+            color: #2563eb; /* Blue-600 */
+            transform: translateX(4px);
         }
 
         /* The horizontal tick mark */
         .tree-item::before {
             content: '';
             position: absolute;
-            left: -20px; /* Connects to the main vertical line */
-            top: 12px;
-            width: 15px;
+            left: -24px;
+            top: 50%;
+            width: 18px;
             height: 2px;
-            background-color: #4b5563;
+            background-color: #cbd5e1;
+            transition: background-color 0.2s;
         }
 
-        /* Main Connector Lines between large blocks */
+        .tree-item:hover::before {
+            background-color: #93c5fd; /* Blue-300 */
+        }
+
+        /* Connector Lines */
         .connector-v {
             width: 2px;
-            height: 2rem;
-            background-color: #4b5563;
+            height: 2.5rem;
+            background: linear-gradient(to bottom, #94a3b8, #cbd5e1);
             margin: 0 auto;
         }
 
         .top-bracket {
             position: relative;
-            height: 20px;
+            height: 24px;
             width: 50%;
-            margin: 0 auto 20px auto;
-            border-top: 2px solid #4b5563;
-            border-left: 2px solid #4b5563;
-            border-right: 2px solid #4b5563;
+            margin: 0 auto 24px auto;
+            border-top: 2px solid #94a3b8;
+            border-left: 2px solid #94a3b8;
+            border-right: 2px solid #94a3b8;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
         }
         
-        /* Central vertical line from title to bracket */
         .top-stem {
             width: 2px;
-            height: 20px;
-            background-color: #4b5563;
+            height: 24px;
+            background-color: #94a3b8;
             margin: 0 auto;
         }
 
-        /* Number Circle Style */
+        /* Enhanced Badges */
         .num-badge {
-            background-color: #3b82f6; /* Blue-500 */
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             color: white;
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.85rem;
-            font-weight: bold;
-            margin-right: 0.75rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-right: 1rem;
             flex-shrink: 0;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
+            border: 2px solid #eff6ff;
         }
 
         .card-title {
-            color: #1e3a8a; /* Dark Blue */
+            color: #1e293b; /* Slate-800 */
             font-weight: 700;
-            font-size: 1.1rem;
-            line-height: 1.3;
+            font-size: 1.15rem;
+            line-height: 1.25;
+            letter-spacing: -0.01em;
+        }
+
+        /* Section Hover Effect */
+        .config-block {
+            padding: 1rem;
+            border-radius: 0.75rem;
+            transition: background-color 0.3s ease;
+        }
+        .config-block:hover {
+            background-color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
     </style>
 </head>
-<body class="p-4 md:p-10 min-h-screen flex justify-center">
+<body class="p-4 md:p-12 min-h-screen flex justify-center items-start">
 
-    <div class="bg-white p-8 rounded-xl shadow-lg max-w-4xl w-full border border-gray-200">
+    <div class="bg-white/90 backdrop-blur-sm p-8 md:p-12 rounded-2xl shadow-xl max-w-5xl w-full border border-white">
         
         <!-- Header -->
-        <div class="text-center mb-2">
-            <h1 class="text-3xl md:text-4xl font-bold text-blue-900 flex items-center justify-center gap-3">
-                <i class="fas fa-cube text-blue-600"></i>
+        <div class="text-center mb-6 relative">
+            <div class="inline-block p-3 rounded-full bg-blue-50 mb-3">
+                <i class="fas fa-cubes text-3xl text-blue-600"></i>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800 tracking-tight">
                 SAP FI Configuration Flow
             </h1>
+            <p class="text-slate-500 mt-2 text-sm font-medium uppercase tracking-wider">Financial Accounting Setup</p>
         </div>
 
         <!-- Top Connecting Structure -->
@@ -117,18 +153,18 @@
         <div class="top-bracket"></div>
 
         <!-- Main Grid Layout -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 relative">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-6 relative">
 
             <!-- COLUMN 1 (Left Side) -->
-            <div class="flex flex-col gap-10">
+            <div class="flex flex-col gap-6">
                 
                 <!-- BLOCK 1 -->
-                <div>
+                <div class="config-block">
                     <div class="flex items-start mb-2">
                         <div class="num-badge">1</div>
-                        <h2 class="card-title">Define<br>Organizational<br>Structure</h2>
+                        <h2 class="card-title">Define<br>Organizational Structure</h2>
                     </div>
-                    <div class="tree-list ml-8">
+                    <div class="tree-list">
                         <div class="tree-item">Company Code</div>
                         <div class="tree-item">Chart of Accounts</div>
                         <div class="tree-item">Fiscal Year Variant</div>
@@ -137,12 +173,12 @@
                 </div>
 
                 <!-- BLOCK 3 -->
-                <div>
+                <div class="config-block">
                     <div class="flex items-start mb-2">
                         <div class="num-badge">3</div>
-                        <h2 class="card-title">Accounts Payable (AP) & Accounts Receivable (AR)</h2>
+                        <h2 class="card-title">Accounts Payable (AP) &<br>Accounts Receivable (AR)</h2>
                     </div>
-                    <div class="tree-list ml-8">
+                    <div class="tree-list">
                         <div class="tree-item">Vendor & Customer Master Data</div>
                         <div class="tree-item">Payment Terms & Methods</div>
                         <div class="tree-item">Dunning Procedures</div>
@@ -151,12 +187,12 @@
                 </div>
 
                 <!-- BLOCK 6 -->
-                <div>
+                <div class="config-block">
                     <div class="flex items-start mb-2">
                         <div class="num-badge">6</div>
-                        <h2 class="card-title">Tax & Withholding Tax Configuration</h2>
+                        <h2 class="card-title">Tax & Withholding<br>Tax Configuration</h2>
                     </div>
-                    <div class="tree-list ml-8">
+                    <div class="tree-list">
                         <div class="tree-item">Tax Procedures</div>
                         <div class="tree-item">Tax Codes & Rates</div>
                     </div>
@@ -170,12 +206,12 @@
             <div class="flex flex-col items-start">
                 
                 <!-- BLOCK 2 -->
-                <div class="w-full">
+                <div class="w-full config-block">
                     <div class="flex items-start mb-2">
                         <div class="num-badge">2</div>
                         <h2 class="card-title">General Ledger<br>(GL) Configuration</h2>
                     </div>
-                    <div class="tree-list ml-8">
+                    <div class="tree-list">
                         <div class="tree-item">Account Groups</div>
                         <div class="tree-item">Field Status Variants</div>
                         <div class="tree-item">Document Types & Number Ranges</div>
@@ -183,47 +219,47 @@
                     </div>
                 </div>
 
-                <!-- Connector 2 to 4 -->
-                <div class="connector-v self-center md:self-start md:ml-20 my-2"></div>
+                <!-- Connector -->
+                <div class="connector-v self-center md:self-start md:ml-24 my-1 opacity-50"></div>
 
                 <!-- BLOCK 4 -->
-                <div class="w-full">
+                <div class="w-full config-block">
                     <div class="flex items-start mb-2">
                         <div class="num-badge">4</div>
                         <h2 class="card-title">Asset Accounting (AA)</h2>
                     </div>
-                    <div class="tree-list ml-8">
+                    <div class="tree-list">
                         <div class="tree-item">Chart of Depreciation</div>
                         <div class="tree-item">Asset Classes</div>
                         <div class="tree-item">Depreciation Areas</div>
                     </div>
                 </div>
 
-                <!-- Connector 4 to 5 -->
-                <div class="connector-v self-center md:self-start md:ml-20 my-2"></div>
+                <!-- Connector -->
+                <div class="connector-v self-center md:self-start md:ml-24 my-1 opacity-50"></div>
 
                 <!-- BLOCK 5 -->
-                <div class="w-full">
+                <div class="w-full config-block">
                     <div class="flex items-start mb-2">
                         <div class="num-badge">5</div>
                         <h2 class="card-title">Bank Accounting (BA)</h2>
                     </div>
-                    <div class="tree-list ml-8">
+                    <div class="tree-list">
                         <div class="tree-item">House Banks</div>
                         <div class="tree-item">Bank Reconciliation Configuration</div>
                     </div>
                 </div>
 
-                <!-- Connector 5 to 7 -->
-                <div class="connector-v self-center md:self-start md:ml-20 my-2"></div>
+                <!-- Connector -->
+                <div class="connector-v self-center md:self-start md:ml-24 my-1 opacity-50"></div>
 
                 <!-- BLOCK 7 -->
-                <div class="w-full">
+                <div class="w-full config-block">
                     <div class="flex items-start mb-2">
                         <div class="num-badge">7</div>
                         <h2 class="card-title">Integration with Other Modules</h2>
                     </div>
-                    <div class="tree-list ml-8">
+                    <div class="tree-list">
                         <div class="tree-item">FI-MM Integration</div>
                         <div class="tree-item">FI-SD Integration</div>
                         <div class="tree-item">FI-CO Integration</div>
@@ -234,7 +270,12 @@
             <!-- End Column 2 -->
 
         </div>
+        
+        <!-- Footer -->
+        <div class="mt-12 pt-6 border-t border-slate-100 text-center text-slate-400 text-sm">
+            <p>farhanmustapha.pmm@gmail.com</p>
+        </div>
     </div>
 
 </body>
-</html>
+</html>cl
