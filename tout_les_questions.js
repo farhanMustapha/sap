@@ -856,7 +856,7 @@ var test_blanc_2 = [
     correct: [1] // Standard is 6 weeks.
   },
   {
-    q: "37-When using the Local SAP S/4HANA Database Schema migration approach, what is the maximum file size? (2 correct answers - likely error in prompt, usually single answer for size)",
+    q: "37-When using the Local SAP S/4HANA Database Schema migration approach, what is the maximum file size? (2 correct answers)",
     options: [
       "A. 160 MB per file",
       "B. 160 MB per ZIP file",
