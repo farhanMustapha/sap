@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAP FI Configuration Flow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f6f9;
+        }
+
+        /* Custom Tree Logic for the sub-items */
+        .tree-list {
+            position: relative;
+            padding-left: 20px;
+            margin-top: 0.5rem;
+        }
+        
+        /* The vertical line on the left of the list */
+        .tree-list::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 15px; /* Stop slightly before the bottom to match image style */
+            width: 2px;
+            background-color: #4b5563; /* Gray-600 */
+        }
+
+        .tree-item {
+            position: relative;
+            padding-left: 15px;
+            margin-bottom: 0.5rem;
+            color: #374151; /* Gray-700 */
+        }
+
+        /* The horizontal tick mark */
+        .tree-item::before {
+            content: '';
+            position: absolute;
+            left: -20px; /* Connects to the main vertical line */
+            top: 12px;
+            width: 15px;
+            height: 2px;
+            background-color: #4b5563;
+        }
+
+        /* Main Connector Lines between large blocks */
+        .connector-v {
+            width: 2px;
+            height: 2rem;
+            background-color: #4b5563;
+            margin: 0 auto;
+        }
+
+        .top-bracket {
+            position: relative;
+            height: 20px;
+            width: 50%;
+            margin: 0 auto 20px auto;
+            border-top: 2px solid #4b5563;
+            border-left: 2px solid #4b5563;
+            border-right: 2px solid #4b5563;
+        }
+        
+        /* Central vertical line from title to bracket */
+        .top-stem {
+            width: 2px;
+            height: 20px;
+            background-color: #4b5563;
+            margin: 0 auto;
+        }
+
+        /* Number Circle Style */
+        .num-badge {
+            background-color: #3b82f6; /* Blue-500 */
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-right: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .card-title {
+            color: #1e3a8a; /* Dark Blue */
+            font-weight: 700;
+            font-size: 1.1rem;
+            line-height: 1.3;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-10 min-h-screen flex justify-center">
+
+    <div class="bg-white p-8 rounded-xl shadow-lg max-w-4xl w-full border border-gray-200">
+        
+        <!-- Header -->
+        <div class="text-center mb-2">
+            <h1 class="text-3xl md:text-4xl font-bold text-blue-900 flex items-center justify-center gap-3">
+                <i class="fas fa-cube text-blue-600"></i>
+                SAP FI Configuration Flow
+            </h1>
+        </div>
+
+        <!-- Top Connecting Structure -->
+        <div class="top-stem"></div>
+        <div class="top-bracket"></div>
+
+        <!-- Main Grid Layout -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 relative">
+
+            <!-- COLUMN 1 (Left Side) -->
+            <div class="flex flex-col gap-10">
+                
+                <!-- BLOCK 1 -->
+                <div>
+                    <div class="flex items-start mb-2">
+                        <div class="num-badge">1</div>
+                        <h2 class="card-title">Define<br>Organizational<br>Structure</h2>
+                    </div>
+                    <div class="tree-list ml-8">
+                        <div class="tree-item">Company Code</div>
+                        <div class="tree-item">Chart of Accounts</div>
+                        <div class="tree-item">Fiscal Year Variant</div>
+                        <div class="tree-item">Posting Period Variant</div>
+                    </div>
+                </div>
+
+                <!-- BLOCK 3 -->
+                <div>
+                    <div class="flex items-start mb-2">
+                        <div class="num-badge">3</div>
+                        <h2 class="card-title">Accounts Payable (AP) & Accounts Receivable (AR)</h2>
+                    </div>
+                    <div class="tree-list ml-8">
+                        <div class="tree-item">Vendor & Customer Master Data</div>
+                        <div class="tree-item">Payment Terms & Methods</div>
+                        <div class="tree-item">Dunning Procedures</div>
+                        <div class="tree-item">Automatic Payment Program</div>
+                    </div>
+                </div>
+
+                <!-- BLOCK 6 -->
+                <div>
+                    <div class="flex items-start mb-2">
+                        <div class="num-badge">6</div>
+                        <h2 class="card-title">Tax & Withholding Tax Configuration</h2>
+                    </div>
+                    <div class="tree-list ml-8">
+                        <div class="tree-item">Tax Procedures</div>
+                        <div class="tree-item">Tax Codes & Rates</div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- End Column 1 -->
+
+
+            <!-- COLUMN 2 (Right Side) -->
+            <div class="flex flex-col items-start">
+                
+                <!-- BLOCK 2 -->
+                <div class="w-full">
+                    <div class="flex items-start mb-2">
+                        <div class="num-badge">2</div>
+                        <h2 class="card-title">General Ledger<br>(GL) Configuration</h2>
+                    </div>
+                    <div class="tree-list ml-8">
+                        <div class="tree-item">Account Groups</div>
+                        <div class="tree-item">Field Status Variants</div>
+                        <div class="tree-item">Document Types & Number Ranges</div>
+                        <div class="tree-item">Tolerance Groups</div>
+                    </div>
+                </div>
+
+                <!-- Connector 2 to 4 -->
+                <div class="connector-v self-center md:self-start md:ml-20 my-2"></div>
+
+                <!-- BLOCK 4 -->
+                <div class="w-full">
+                    <div class="flex items-start mb-2">
+                        <div class="num-badge">4</div>
+                        <h2 class="card-title">Asset Accounting (AA)</h2>
+                    </div>
+                    <div class="tree-list ml-8">
+                        <div class="tree-item">Chart of Depreciation</div>
+                        <div class="tree-item">Asset Classes</div>
+                        <div class="tree-item">Depreciation Areas</div>
+                    </div>
+                </div>
+
+                <!-- Connector 4 to 5 -->
+                <div class="connector-v self-center md:self-start md:ml-20 my-2"></div>
+
+                <!-- BLOCK 5 -->
+                <div class="w-full">
+                    <div class="flex items-start mb-2">
+                        <div class="num-badge">5</div>
+                        <h2 class="card-title">Bank Accounting (BA)</h2>
+                    </div>
+                    <div class="tree-list ml-8">
+                        <div class="tree-item">House Banks</div>
+                        <div class="tree-item">Bank Reconciliation Configuration</div>
+                    </div>
+                </div>
+
+                <!-- Connector 5 to 7 -->
+                <div class="connector-v self-center md:self-start md:ml-20 my-2"></div>
+
+                <!-- BLOCK 7 -->
+                <div class="w-full">
+                    <div class="flex items-start mb-2">
+                        <div class="num-badge">7</div>
+                        <h2 class="card-title">Integration with Other Modules</h2>
+                    </div>
+                    <div class="tree-list ml-8">
+                        <div class="tree-item">FI-MM Integration</div>
+                        <div class="tree-item">FI-SD Integration</div>
+                        <div class="tree-item">FI-CO Integration</div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- End Column 2 -->
+
+        </div>
+    </div>
+
+</body>
+</html>
