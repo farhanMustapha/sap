@@ -11,68 +11,70 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8;
-            background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
-            background-size: 24px 24px;
+            background-color: #f8fafc;
+            /* Subtle grid pattern */
+            background-image: linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
+            background-size: 40px 40px;
         }
 
         /* Custom Tree Logic */
         .tree-list {
             position: relative;
             padding-left: 24px;
-            margin-top: 0.75rem;
+            margin-top: 1rem;
         }
         
         .tree-list::before {
             content: '';
             position: absolute;
-            left: 0;
+            left: 6px;
             top: 0;
             bottom: 20px;
             width: 2px;
-            background-color: #cbd5e1; /* Slate-300 */
+            background-color: #cbd5e1;
             border-radius: 2px;
         }
 
-        .tree-item {
+        /* Style "Box" for items */
+        .tree-item-box {
             position: relative;
-            padding: 8px 12px;
-            margin-bottom: 0.25rem;
-            color: #475569; /* Slate-600 */
-            font-size: 0.95rem;
-            font-weight: 500;
-            border-radius: 6px;
+            padding: 10px 14px;
+            margin-bottom: 0.75rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #475569;
             transition: all 0.2s ease;
-            cursor: default;
+            display: flex;
+            align-items: center;
+            border-left-width: 4px; /* Colored border on left */
         }
 
-        .tree-item:hover {
-            background-color: #eff6ff; /* Blue-50 */
-            color: #2563eb; /* Blue-600 */
-            transform: translateX(4px);
+        .tree-item-box:hover {
+            transform: translateY(-2px) translateX(2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            z-index: 10;
         }
 
-        /* The horizontal tick mark */
-        .tree-item::before {
+        /* The horizontal tick mark connecting to the tree line */
+        .tree-item-box::before {
             content: '';
             position: absolute;
-            left: -24px;
+            left: -18px; /* Reach back to the vertical line */
             top: 50%;
-            width: 18px;
+            width: 14px;
             height: 2px;
             background-color: #cbd5e1;
             transition: background-color 0.2s;
         }
 
-        .tree-item:hover::before {
-            background-color: #93c5fd; /* Blue-300 */
-        }
-
-        /* Connector Lines */
+        /* Connector Lines between blocks */
         .connector-v {
             width: 2px;
-            height: 2.5rem;
-            background: linear-gradient(to bottom, #94a3b8, #cbd5e1);
+            height: 2rem;
+            background: #cbd5e1;
             margin: 0 auto;
         }
 
@@ -84,8 +86,8 @@
             border-top: 2px solid #94a3b8;
             border-left: 2px solid #94a3b8;
             border-right: 2px solid #94a3b8;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
         }
         
         .top-stem {
@@ -95,57 +97,56 @@
             margin: 0 auto;
         }
 
-        /* Enhanced Badges */
+        /* Base styles for badges */
         .num-badge {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             color: white;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
+            font-size: 1rem;
             font-weight: 700;
             margin-right: 1rem;
             flex-shrink: 0;
-            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
-            border: 2px solid #eff6ff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .card-title {
-            color: #1e293b; /* Slate-800 */
+            color: #1e293b;
             font-weight: 700;
-            font-size: 1.15rem;
+            font-size: 1.2rem;
             line-height: 1.25;
-            letter-spacing: -0.01em;
         }
 
-        /* Section Hover Effect */
         .config-block {
-            padding: 1rem;
-            border-radius: 0.75rem;
-            transition: background-color 0.3s ease;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            transition: all 0.3s ease;
+            height: 100%;
+            border: 1px solid rgba(255,255,255,0.5);
         }
+        
         .config-block:hover {
-            background-color: white;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            background-color: white !important; /* Force white on hover for clarity */
         }
     </style>
 </head>
 <body class="p-4 md:p-12 min-h-screen flex justify-center items-start">
 
-    <div class="bg-white/90 backdrop-blur-sm p-8 md:p-12 rounded-2xl shadow-xl max-w-5xl w-full border border-white">
+    <div class="bg-white/80 backdrop-blur-xl p-8 md:p-12 rounded-3xl shadow-2xl max-w-6xl w-full border border-white/50">
         
         <!-- Header -->
-        <div class="text-center mb-6 relative">
-            <div class="inline-block p-3 rounded-full bg-blue-50 mb-3">
-                <i class="fas fa-cubes text-3xl text-blue-600"></i>
+        <div class="text-center mb-10 relative">
+            <div class="inline-block p-4 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 shadow-lg mb-4 text-white">
+                <i class="fas fa-network-wired text-3xl"></i>
             </div>
-            <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800 tracking-tight">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-800 tracking-tight">
                 SAP FI Configuration Flow
             </h1>
-            <p class="text-slate-500 mt-2 text-sm font-medium uppercase tracking-wider">Financial Accounting Setup</p>
+            <p class="text-slate-500 mt-3 text-base font-medium uppercase tracking-wider">Guide d'Implémentation S/4HANA Finance</p>
         </div>
 
         <!-- Top Connecting Structure -->
@@ -153,48 +154,48 @@
         <div class="top-bracket"></div>
 
         <!-- Main Grid Layout -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-6 relative">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 relative">
 
             <!-- COLUMN 1 (Left Side) -->
-            <div class="flex flex-col gap-6">
+            <div class="flex flex-col gap-8">
                 
-                <!-- BLOCK 1 -->
-                <div class="config-block">
+                <!-- BLOCK 1: ORG STRUCTURE (BLUE) -->
+                <div class="config-block bg-blue-50/60 border-blue-100">
                     <div class="flex items-start mb-2">
-                        <div class="num-badge">1</div>
-                        <h2 class="card-title">Define<br>Organizational Structure</h2>
+                        <div class="num-badge bg-blue-500">1</div>
+                        <h2 class="card-title text-blue-900">Define<br>Organizational Structure</h2>
                     </div>
                     <div class="tree-list">
-                        <div class="tree-item">Company Code</div>
-                        <div class="tree-item">Chart of Accounts</div>
-                        <div class="tree-item">Fiscal Year Variant</div>
-                        <div class="tree-item">Posting Period Variant</div>
+                        <div class="tree-item-box border-blue-400 text-blue-700">Company Code</div>
+                        <div class="tree-item-box border-blue-400 text-blue-700">Chart of Accounts</div>
+                        <div class="tree-item-box border-blue-400 text-blue-700">Fiscal Year Variant</div>
+                        <div class="tree-item-box border-blue-400 text-blue-700">Posting Period Variant</div>
                     </div>
                 </div>
 
-                <!-- BLOCK 3 -->
-                <div class="config-block">
+                <!-- BLOCK 3: AP & AR (EMERALD) -->
+                <div class="config-block bg-emerald-50/60 border-emerald-100">
                     <div class="flex items-start mb-2">
-                        <div class="num-badge">3</div>
-                        <h2 class="card-title">Accounts Payable (AP) &<br>Accounts Receivable (AR)</h2>
+                        <div class="num-badge bg-emerald-500">3</div>
+                        <h2 class="card-title text-emerald-900">Accounts Payable (AP) &<br>Accounts Receivable (AR)</h2>
                     </div>
                     <div class="tree-list">
-                        <div class="tree-item">Vendor & Customer Master Data</div>
-                        <div class="tree-item">Payment Terms & Methods</div>
-                        <div class="tree-item">Dunning Procedures</div>
-                        <div class="tree-item">Automatic Payment Program</div>
+                        <div class="tree-item-box border-emerald-400 text-emerald-700">Vendor & Customer Master Data</div>
+                        <div class="tree-item-box border-emerald-400 text-emerald-700">Payment Terms & Methods</div>
+                        <div class="tree-item-box border-emerald-400 text-emerald-700">Dunning Procedures</div>
+                        <div class="tree-item-box border-emerald-400 text-emerald-700">Automatic Payment Program</div>
                     </div>
                 </div>
 
-                <!-- BLOCK 6 -->
-                <div class="config-block">
+                <!-- BLOCK 6: TAX (ROSE) -->
+                <div class="config-block bg-rose-50/60 border-rose-100">
                     <div class="flex items-start mb-2">
-                        <div class="num-badge">6</div>
-                        <h2 class="card-title">Tax & Withholding<br>Tax Configuration</h2>
+                        <div class="num-badge bg-rose-500">6</div>
+                        <h2 class="card-title text-rose-900">Tax & Withholding<br>Tax Configuration</h2>
                     </div>
                     <div class="tree-list">
-                        <div class="tree-item">Tax Procedures</div>
-                        <div class="tree-item">Tax Codes & Rates</div>
+                        <div class="tree-item-box border-rose-400 text-rose-700">Tax Procedures</div>
+                        <div class="tree-item-box border-rose-400 text-rose-700">Tax Codes & Rates</div>
                     </div>
                 </div>
 
@@ -203,66 +204,66 @@
 
 
             <!-- COLUMN 2 (Right Side) -->
-            <div class="flex flex-col items-start">
+            <div class="flex flex-col items-start gap-2">
                 
-                <!-- BLOCK 2 -->
-                <div class="w-full config-block">
+                <!-- BLOCK 2: GENERAL LEDGER (INDIGO) -->
+                <div class="w-full config-block bg-indigo-50/60 border-indigo-100">
                     <div class="flex items-start mb-2">
-                        <div class="num-badge">2</div>
-                        <h2 class="card-title">General Ledger<br>(GL) Configuration</h2>
+                        <div class="num-badge bg-indigo-500">2</div>
+                        <h2 class="card-title text-indigo-900">General Ledger<br>(GL) Configuration</h2>
                     </div>
                     <div class="tree-list">
-                        <div class="tree-item">Account Groups</div>
-                        <div class="tree-item">Field Status Variants</div>
-                        <div class="tree-item">Document Types & Number Ranges</div>
-                        <div class="tree-item">Tolerance Groups</div>
+                        <div class="tree-item-box border-indigo-400 text-indigo-700">Account Groups</div>
+                        <div class="tree-item-box border-indigo-400 text-indigo-700">Field Status Variants</div>
+                        <div class="tree-item-box border-indigo-400 text-indigo-700">Document Types & Number Ranges</div>
+                        <div class="tree-item-box border-indigo-400 text-indigo-700">Tolerance Groups</div>
                     </div>
                 </div>
 
                 <!-- Connector -->
-                <div class="connector-v self-center md:self-start md:ml-24 my-1 opacity-50"></div>
+                <div class="connector-v self-center md:self-start md:ml-24 opacity-40"></div>
 
-                <!-- BLOCK 4 -->
-                <div class="w-full config-block">
+                <!-- BLOCK 4: ASSET ACCOUNTING (VIOLET) -->
+                <div class="w-full config-block bg-violet-50/60 border-violet-100">
                     <div class="flex items-start mb-2">
-                        <div class="num-badge">4</div>
-                        <h2 class="card-title">Asset Accounting (AA)</h2>
+                        <div class="num-badge bg-violet-500">4</div>
+                        <h2 class="card-title text-violet-900">Asset Accounting (AA)</h2>
                     </div>
                     <div class="tree-list">
-                        <div class="tree-item">Chart of Depreciation</div>
-                        <div class="tree-item">Asset Classes</div>
-                        <div class="tree-item">Depreciation Areas</div>
+                        <div class="tree-item-box border-violet-400 text-violet-700">Chart of Depreciation</div>
+                        <div class="tree-item-box border-violet-400 text-violet-700">Asset Classes</div>
+                        <div class="tree-item-box border-violet-400 text-violet-700">Depreciation Areas</div>
                     </div>
                 </div>
 
                 <!-- Connector -->
-                <div class="connector-v self-center md:self-start md:ml-24 my-1 opacity-50"></div>
+                <div class="connector-v self-center md:self-start md:ml-24 opacity-40"></div>
 
-                <!-- BLOCK 5 -->
-                <div class="w-full config-block">
+                <!-- BLOCK 5: BANK ACCOUNTING (CYAN) -->
+                <div class="w-full config-block bg-cyan-50/60 border-cyan-100">
                     <div class="flex items-start mb-2">
-                        <div class="num-badge">5</div>
-                        <h2 class="card-title">Bank Accounting (BA)</h2>
+                        <div class="num-badge bg-cyan-600">5</div>
+                        <h2 class="card-title text-cyan-900">Bank Accounting (BA)</h2>
                     </div>
                     <div class="tree-list">
-                        <div class="tree-item">House Banks</div>
-                        <div class="tree-item">Bank Reconciliation Configuration</div>
+                        <div class="tree-item-box border-cyan-500 text-cyan-700">House Banks</div>
+                        <div class="tree-item-box border-cyan-500 text-cyan-700">Bank Reconciliation Configuration</div>
                     </div>
                 </div>
 
                 <!-- Connector -->
-                <div class="connector-v self-center md:self-start md:ml-24 my-1 opacity-50"></div>
+                <div class="connector-v self-center md:self-start md:ml-24 opacity-40"></div>
 
-                <!-- BLOCK 7 -->
-                <div class="w-full config-block">
+                <!-- BLOCK 7: INTEGRATION (AMBER/ORANGE) -->
+                <div class="w-full config-block bg-orange-50/60 border-orange-100">
                     <div class="flex items-start mb-2">
-                        <div class="num-badge">7</div>
-                        <h2 class="card-title">Integration with Other Modules</h2>
+                        <div class="num-badge bg-orange-500">7</div>
+                        <h2 class="card-title text-orange-900">Integration with Other Modules</h2>
                     </div>
                     <div class="tree-list">
-                        <div class="tree-item">FI-MM Integration</div>
-                        <div class="tree-item">FI-SD Integration</div>
-                        <div class="tree-item">FI-CO Integration</div>
+                        <div class="tree-item-box border-orange-400 text-orange-700">FI-MM Integration</div>
+                        <div class="tree-item-box border-orange-400 text-orange-700">FI-SD Integration</div>
+                        <div class="tree-item-box border-orange-400 text-orange-700">FI-CO Integration</div>
                     </div>
                 </div>
 
@@ -272,7 +273,12 @@
         </div>
         
         <!-- Footer -->
-        <div class="mt-12 pt-6 border-t border-slate-100 text-center text-slate-400 text-sm">
+        <div class="mt-16 pt-8 border-t border-slate-100 flex flex-col items-center justify-center text-slate-400 text-sm">
+            <div class="flex space-x-4 mb-4">
+                <i class="fab fa-aws text-2xl hover:text-slate-600 cursor-pointer"></i>
+                <i class="fab fa-google text-2xl hover:text-slate-600 cursor-pointer"></i>
+                <i class="fas fa-server text-2xl hover:text-slate-600 cursor-pointer"></i>
+            </div>
             <p>farhanmustapha.pmm@gmail.com</p>
         </div>
     </div>
