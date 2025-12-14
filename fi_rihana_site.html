@@ -249,7 +249,7 @@
         function getInitialQuizData() {
             return [
                 {
-                    question: "What is the best definition of a semantic tag?",
+                    question: "1-What is the best definition of a semantic tag?",
                     options: [
                         "Spreadsheet formula that can be imported into SAP.",
                         "A textual identifier used to highlight key figures in financial statement versions (FSVs).",
@@ -261,7 +261,7 @@
                     explanation: ""
                 },
                 {
-                    question: "Which of the following elements belong to the configuration of a financial statement version? (2 correct answers)",
+                    question: "2-Which of the following elements belong to the configuration of a financial statement version? (2 correct answers)",
                     options: [
                         "Currency",
                         "FSV Item",
@@ -273,7 +273,7 @@
                     explanation: ""
                 },
                 {
-                    question: "A new financial statement version must be created for each new company joining the group.",
+                    question: "3-A new financial statement version must be created for each new company joining the group.",
                     options: [
                         "True",
                         "False"
@@ -283,7 +283,7 @@
                     explanation: ""
                 },
                 {
-                    question: "Which of the following statements applies to the Cash Flow Statement – Indirect method report, provided by SAP? (2 correct answers)",
+                    question: "4-Which of the following statements applies to the Cash Flow Statement – Indirect method report, provided by SAP? (2 correct answers)",
                     options: [
                         "The basic semantic tags required to set up the cash flow statement are provided by SAP.",
                         "Its setup requires specific ABAP development.",
@@ -298,7 +298,7 @@
                     explanation: ""
                 },
                 {
-                    question: "The Balance Sheet/Income Statement report can be exported to a .xlsx or a .pdf format file.",
+                    question: "5-The Balance Sheet/Income Statement report can be exported to a .xlsx or a .pdf format file.",
                     options: [
                         "True",
                         "False"
@@ -308,7 +308,7 @@
                     explanation: ""
                 },
                 {
-                    question: "The setup of the Statement of Changes in General Ledger report requires you to configure which of the following items? (2 correct answers)",
+                    question: "6-The setup of the Statement of Changes in General Ledger report requires you to configure which of the following items? (2 correct answers)",
                     options: [
                         "Currency",
                         "Transaction Type",
@@ -320,7 +320,7 @@
                     explanation: ""
                 },
                 {
-                    question: "The transfer and creation of accrual objects for a purchase order can be done by which two of the following? (2 correct answers)",
+                    question: "7-The transfer and creation of accrual objects for a purchase order can be done by which two of the following? (2 correct answers)",
                     options: [
                         "Offline, using the SAP Fiori app, Schedule Accruals Job",
                         "At month end, part of accruals posting job",
@@ -335,7 +335,7 @@
                     explanation: ""
                 },
                 {
-                    question: "Before displaying simulated postings in a report, which of the following jobs should be scheduled?",
+                    question: "8-Before displaying simulated postings in a report, which of the following jobs should be scheduled?",
                     options: [
                         "Transfer purchase orders",
                         "Propose periodic accruals",
@@ -347,7 +347,7 @@
                     explanation: ""
                 },
                 {
-                    question: "Which of the following are use cases for purchase order accruals. (2 correct answers)",
+                    question: "9-Which of the following are use cases for purchase order accruals. (2 correct answers)",
                     options: [
                         "Fixed asset purchase",
                         "Non-valuated consumables",
@@ -359,19 +359,19 @@
                     explanation: ""
                 },
                 {
-                    question: "Only service entry sheets with the following document statuses are considered for accruals. Which one of the following are considered?",
+                    question: "10-Only service entry sheets with the following document statuses are considered for accruals. Which one of the following are considered?",
                     options: [
                         "Approved (30)",
                         "In Process (10)",
                         "In approval (20)",
                         "Rejected (05)"
                     ],
-                    correct: ["Approved (30)"],
+                    correct: ["In approval (20)"],
                     type: "single",
                     explanation: ""
                 },
                 {
-                    question: "Which of the following does the Accruals Management component enable? (2 correct answers)",
+                    question: "11-Which of the following does the Accruals Management component enable? (2 correct answers)",
                     options: [
                         "Integrated with Sales and Distribution",
                         "Fully integrated into the General Ledger",
@@ -383,7 +383,7 @@
                     explanation: ""
                 },
                 {
-                    question: "Where is the field status determined from in accounting documents? (2 correct answers)",
+                    question: "12-Where is the field status determined from in accounting documents? (2 correct answers)",
                     options: [
                         "Posting key",
                         "Company code",
@@ -395,13 +395,13 @@
                     explanation: ""
                 },
                 {
-                    question: "What step is required to determine the threshold for the tolerance of automatic clearing of differences in open items?",
+                    question: "13-What step is required to determine the threshold for the tolerance of automatic clearing of differences in open items?",
                     options: [
                         "Create any required additional tolerance groups with different thresholds.",
                         "Set default tolerance value for each company code.",
                         "Assign additional tolerance groups to the corresponding accounts in the G/L account master records."
                     ],
-                    correct: ["Assign additional tolerance groups to the corresponding accounts in the G/L account master records."],
+                    correct: ["Set default tolerance value for each company code."],
                     type: "single",
                     explanation: ""
                 },
@@ -493,7 +493,7 @@
                     explanation: ""
                 },
                 {
-                    question: "In which of the following scenarios would you recommend using an extension ledger? (3 correct answers)",
+                    question: "21-In which of the following scenarios would you recommend using an extension ledger? (3 correct answers)",
                     options: [
                         "Managing local GAAP accounting for a subsidiary in a new country.",
                         "Simulate the impact in accounting of a new regulation on provisions accounting.",
@@ -501,9 +501,9 @@
                         "Manage commitments from purchase orders to facilitate the budget availability control."
                     ],
                     correct: [
-                        "Managing local GAAP accounting for a subsidiary in a new country.",
                         "Simulate the impact in accounting of a new regulation on provisions accounting.",
-                        "Adjustments related to taxes, to calculate a tax-adjusted profit or loss."
+                        "Adjustments related to taxes, to calculate a tax-adjusted profit or loss.",
+                        "Manage commitments from purchase orders to facilitate the budget availability control."
                     ],
                     type: "multiple",
                     explanation: ""
@@ -521,7 +521,7 @@
                     explanation: ""
                 },
                 {
-                    question: "To clear the down payment with the invoice, which options do they have? (2 correct answers)",
+                    question: "23-To clear the down payment with the invoice, which options do they have? (2 correct answers)",
                     options: [
                         "Clearing can be performed manually with the Clear Outgoing Payments Manuel Clearingapp.",
                         "Clearing takes place automatically when the invoice is posted.",
@@ -529,7 +529,7 @@
                     ],
                     correct: [
                         "Clearing can be performed manually with the Clear Outgoing Payments Manuel Clearingapp.",
-                        "Clearing takes place automatically when the invoice is posted."
+                        "The clearing takes place automatically with the residual payment in the automatic payment run."
                     ],
                     type: "multiple",
                     explanation: ""
@@ -573,7 +573,7 @@
                     explanation: ""
                 },
                 {
-                    question: "Down payments made must not be displayed together with payables for goods and services in the balance sheet. What do they need to do?",
+                    question: "27-Down payments made must not be displayed together with payables for goods and services in the balance sheet. What do they need to do?",
                     options: [
                         "Maintain the master record of the supplier.",
                         "Transfer reconciliation accounts.",
@@ -705,14 +705,14 @@
                     explanation: ""
                 },
                 {
-                    question: "What kind of posting does the down payment process use? (2 correct answers)",
+                    question: "38-What kind of posting does the down payment process use? (2 correct answers)",
                     options: [
                         "Automatic offsetting entry",
                         "Free offsetting entry",
                         "Posting to customer main G/L account",
                         "Posting to alternative reconciliation account"
                     ],
-                    correct: ["Automatic offsetting entry", "Posting to alternative reconciliation account"],
+                    correct: ["Free offsetting entry", "Posting to alternative reconciliation account"],
                     type: "multiple",
                     explanation: ""
                 },
