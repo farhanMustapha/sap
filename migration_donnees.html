@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guide Migration SAP S/4HANA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        /* Timeline Connector Line */
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 60px;
+            bottom: 60px;
+            width: 4px;
+            background: #e2e8f0;
+            z-index: 0;
+            border-radius: 4px;
+        }
+
+        /* Card Styles */
+        .step-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Number Badge Pulse Effect */
+        .badge-pulse {
+            box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+            animation: pulse-blue 2s infinite;
+        }
+
+        @keyframes pulse-blue {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+
+        /* Modal Animation */
+        .modal {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            transform: scale(0.9);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        /* Scrollbar for modal content */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .icon-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-10 min-h-screen text-slate-800">
+
+    <!-- Main Container -->
+    <div class="max-w-4xl mx-auto relative">
+        
+        <!-- Header -->
+        <div class="text-center mb-12 md:mb-16">
+            <div class="inline-flex items-center justify-center p-3 bg-blue-600 rounded-xl text-white shadow-lg mb-4">
+                <i class="fas fa-database text-2xl"></i>
+            </div>
+            <h1 class="text-3xl md:text-5xl font-bold text-slate-900 tracking-tight mb-2">
+                Migration Cockpit S/4HANA
+            </h1>
+            <p class="text-slate-500 font-medium">Flux de Migration des Données (App "Migrate Your Data")</p>
+            <p class="text-sm text-blue-600 mt-2 font-semibold bg-blue-50 inline-block px-3 py-1 rounded-full border border-blue-100">
+                <i class="fas fa-mouse-pointer mr-1"></i> Cliquez sur une étape pour les détails techniques
+            </p>
+        </div>
+
+        <!-- Vertical Timeline Line (Desktop Only) -->
+        <div class="timeline-line hidden md:block"></div>
+
+        <!-- STEPS CONTAINER -->
+        <div class="space-y-12 md:space-y-16 relative pb-12">
+
+            <!-- STEP 1: INITIALISATION (GAUCHE) -->
+            <div class="step-card bg-white p-6 md:p-8 rounded-2xl shadow-md border border-slate-100 relative flex flex-col md:flex-row items-center md:items-start gap-6 group" onclick="openModal(1)">
+                <!-- Number Badge -->
+                <div class="absolute -top-4 -left-4 md:left-1/2 md:-translate-x-1/2 md:-top-6 z-20">
+                    <div class="badge-pulse w-10 h-10 md:w-12 md:h-12 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-lg md:text-xl border-4 border-white">1</div>
+                </div>
+                
+                <div class="flex-1 text-center md:text-right md:pr-12 w-full">
+                    <div class="icon-box bg-blue-100 text-blue-600 mx-auto md:ml-auto md:mr-0">
+                        <i class="fas fa-folder-plus text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Initialisation du Projet</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Création du projet de migration et sélection des objets métier.</p>
+                </div>
+                
+                <div class="hidden md:block w-8"></div>
+
+                <div class="flex-1 text-center md:text-left md:pl-12 pt-2 w-full">
+                    <div class="flex items-center justify-center md:justify-start gap-2 text-sm text-slate-400 mb-1">
+                        <i class="fas fa-play-circle"></i> Démarrage
+                    </div>
+                    <div class="text-slate-600 font-medium">
+                        Approche & Scope (Objets)
+                    </div>
+                    <button class="mt-4 text-blue-600 text-sm font-semibold group-hover:underline">
+                        Voir les détails <i class="fas fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 2: PRÉPARATION (DROITE) -->
+            <div class="step-card bg-white p-6 md:p-8 rounded-2xl shadow-md border border-slate-100 relative flex flex-col md:flex-row-reverse items-center md:items-start gap-6 group" onclick="openModal(2)">
+                <div class="absolute -top-4 -left-4 md:left-1/2 md:-translate-x-1/2 md:-top-6 z-20">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-lg md:text-xl border-4 border-white shadow-lg">2</div>
+                </div>
+
+                <div class="flex-1 text-center md:text-left md:pl-12 w-full">
+                    <div class="icon-box bg-indigo-100 text-indigo-600 mx-auto md:mx-0">
+                        <i class="fas fa-file-download text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Préparation des Données</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Téléchargement et remplissage des modèles (XML/CSV) avec les données sources.</p>
+                </div>
+
+                <div class="hidden md:block w-8"></div>
+
+                <div class="flex-1 text-center md:text-right md:pr-12 pt-2 w-full">
+                    <div class="flex items-center justify-center md:justify-end gap-2 text-sm text-slate-400 mb-1">
+                        <i class="fas fa-edit"></i> Templates
+                    </div>
+                    <div class="text-slate-600 font-medium">
+                        Download & Fill Templates
+                    </div>
+                    <button class="mt-4 text-indigo-600 text-sm font-semibold group-hover:underline">
+                        Voir les détails <i class="fas fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 3: CHARGEMENT (GAUCHE) -->
+            <div class="step-card bg-white p-6 md:p-8 rounded-2xl shadow-md border border-slate-100 relative flex flex-col md:flex-row items-center md:items-start gap-6 group" onclick="openModal(3)">
+                <div class="absolute -top-4 -left-4 md:left-1/2 md:-translate-x-1/2 md:-top-6 z-20">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold text-lg md:text-xl border-4 border-white shadow-lg">3</div>
+                </div>
+
+                <div class="flex-1 text-center md:text-right md:pr-12 w-full">
+                    <div class="icon-box bg-emerald-100 text-emerald-600 mx-auto md:ml-auto md:mr-0">
+                        <i class="fas fa-cloud-upload-alt text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Chargement (Upload)</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Import des fichiers remplis dans le Cockpit et validation de structure.</p>
+                </div>
+
+                <div class="hidden md:block w-8"></div>
+
+                <div class="flex-1 text-center md:text-left md:pl-12 pt-2 w-full">
+                    <div class="flex items-center justify-center md:justify-start gap-2 text-sm text-slate-400 mb-1">
+                        <i class="fas fa-check-circle"></i> Validation
+                    </div>
+                    <div class="text-slate-600 font-medium">
+                        Upload to Staging Tables
+                    </div>
+                    <button class="mt-4 text-emerald-600 text-sm font-semibold group-hover:underline">
+                        Voir les détails <i class="fas fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 4: MAPPING (DROITE) -->
+            <div class="step-card bg-white p-6 md:p-8 rounded-2xl shadow-md border border-slate-100 relative flex flex-col md:flex-row-reverse items-center md:items-start gap-6 group" onclick="openModal(4)">
+                <div class="absolute -top-4 -left-4 md:left-1/2 md:-translate-x-1/2 md:-top-6 z-20">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-amber-500 text-white rounded-full flex items-center justify-center font-bold text-lg md:text-xl border-4 border-white shadow-lg">4</div>
+                </div>
+
+                <div class="flex-1 text-center md:text-left md:pl-12 w-full">
+                    <div class="icon-box bg-amber-100 text-amber-600 mx-auto md:mx-0">
+                        <i class="fas fa-map-signs text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Préparation & Mapping</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Mapping des valeurs sources vers les valeurs cibles S/4HANA.</p>
+                </div>
+
+                <div class="hidden md:block w-8"></div>
+
+                <div class="flex-1 text-center md:text-right md:pr-12 pt-2 w-full">
+                    <div class="flex items-center justify-center md:justify-end gap-2 text-sm text-slate-400 mb-1">
+                        <i class="fas fa-exchange-alt"></i> Transformation
+                    </div>
+                    <div class="text-slate-600 font-medium">
+                        Mapping Tasks & Validation
+                    </div>
+                    <button class="mt-4 text-amber-600 text-sm font-semibold group-hover:underline">
+                        Voir les détails <i class="fas fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 5: EXÉCUTION (GAUCHE) -->
+            <div class="step-card bg-white p-6 md:p-8 rounded-2xl shadow-md border border-slate-100 relative flex flex-col md:flex-row items-center md:items-start gap-6 group" onclick="openModal(5)">
+                <div class="absolute -top-4 -left-4 md:left-1/2 md:-translate-x-1/2 md:-top-6 z-20">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-rose-600 text-white rounded-full flex items-center justify-center font-bold text-lg md:text-xl border-4 border-white shadow-lg">5</div>
+                </div>
+
+                <div class="flex-1 text-center md:text-right md:pr-12 w-full">
+                    <div class="icon-box bg-rose-100 text-rose-600 mx-auto md:ml-auto md:mr-0">
+                        <i class="fas fa-rocket text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Simulation & Migration</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Test à blanc (simulation) suivi de la migration réelle en base de données.</p>
+                </div>
+
+                <div class="hidden md:block w-8"></div>
+
+                <div class="flex-1 text-center md:text-left md:pl-12 pt-2 w-full">
+                    <div class="flex items-center justify-center md:justify-start gap-2 text-sm text-slate-400 mb-1">
+                        <i class="fas fa-cogs"></i> Exécution
+                    </div>
+                    <div class="text-slate-600 font-medium">
+                        Simulate & Execute Migration
+                    </div>
+                    <button class="mt-4 text-rose-600 text-sm font-semibold group-hover:underline">
+                        Voir les détails <i class="fas fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 6: SUIVI (DROITE) -->
+            <div class="step-card bg-white p-6 md:p-8 rounded-2xl shadow-md border border-slate-100 relative flex flex-col md:flex-row-reverse items-center md:items-start gap-6 group" onclick="openModal(6)">
+                <div class="absolute -top-4 -left-4 md:left-1/2 md:-translate-x-1/2 md:-top-6 z-20">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-cyan-600 text-white rounded-full flex items-center justify-center font-bold text-lg md:text-xl border-4 border-white shadow-lg">6</div>
+                </div>
+
+                <div class="flex-1 text-center md:text-left md:pl-12 w-full">
+                    <div class="icon-box bg-cyan-100 text-cyan-600 mx-auto md:mx-0">
+                        <i class="fas fa-chart-line text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Suivi & Audit</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Contrôle des résultats, gestion des erreurs et validation finale.</p>
+                </div>
+
+                <div class="hidden md:block w-8"></div>
+
+                <div class="flex-1 text-center md:text-right md:pr-12 pt-2 w-full">
+                    <div class="flex items-center justify-center md:justify-end gap-2 text-sm text-slate-400 mb-1">
+                        <i class="fas fa-clipboard-check"></i> Monitoring
+                    </div>
+                    <div class="text-slate-600 font-medium">
+                        Data Migration Status
+                    </div>
+                    <button class="mt-4 text-cyan-600 text-sm font-semibold group-hover:underline">
+                        Voir les détails <i class="fas fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+        
+        <!-- Footer -->
+        <div class="text-center mt-16 text-slate-400 text-sm">
+            Basé sur le guide officiel SAP S/4HANA Cloud Implementation (IM11)
+        </div>
+
+    </div>
+
+    <!-- MODAL POPUP -->
+    <div id="infoModal" class="modal fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+        <div class="modal-content bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            
+            <!-- Modal Header -->
+            <div id="modalHeader" class="p-6 border-b border-slate-100 flex justify-between items-start bg-slate-50">
+                <div>
+                    <span id="modalStepNum" class="text-xs font-bold tracking-wider uppercase text-blue-600 bg-blue-100 px-2 py-1 rounded-md mb-2 inline-block">Étape 1</span>
+                    <h2 id="modalTitle" class="text-2xl font-bold text-slate-800">Titre de l'étape</h2>
+                </div>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 transition-colors p-2 rounded-full hover:bg-slate-200">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body (Scrollable) -->
+            <div id="modalBody" class="p-6 overflow-y-auto custom-scroll text-slate-600 space-y-4">
+                <!-- Content injected via JS -->
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 border-t border-slate-100 bg-slate-50 flex justify-end">
+                <button onclick="closeModal()" class="px-5 py-2 bg-slate-800 text-white rounded-lg font-medium hover:bg-slate-900 transition-colors">
+                    Fermer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data from the PDF "IM11 Migration.pdf"
+        const stepData = {
+            1: {
+                step: "Phase 1",
+                title: "Initialisation du Projet",
+                content: `
+                    <div class="space-y-6">
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                            <h4 class="font-bold text-blue-800 mb-2 flex items-center"><i class="fas fa-toolbox mr-2"></i> L'application "Migrate Your Data"</h4>
+                            <p class="text-sm">Tout commence ici. C'est votre centre de commande inclus dans la licence S/4HANA.</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-bold text-slate-800 mb-2">1. Choisir l'Approche</h4>
+                            <ul class="list-disc ml-5 text-sm space-y-1 text-slate-600">
+                                <li><strong>Migration via Tables Intermédiaires (Staging) :</strong> La méthode la plus courante. Vous remplissez des "Staging Tables" via des fichiers (XML/CSV) ou une base de données HANA distante.</li>
+                                <li><strong>Migration Directe :</strong> Connexion directe à un système SAP ERP source (via RFC).</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 class="font-bold text-slate-800 mb-2">2. Sélectionner les Objets</h4>
+                            <p class="text-sm text-slate-600">Vous choisissez les <strong>Objets de Migration</strong> pertinents pour votre projet (ex: <em>Bank</em>, <em>Customer</em>, <em>Cost Center</em>). Le système copie alors ces objets modèles dans votre projet.</p>
+                        </div>
+                    </div>
+                `
+            },
+            2: {
+                step: "Phase 2",
+                title: "Préparation des Données",
+                content: `
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="font-bold text-indigo-800 mb-2 text-lg">Le Modèle de Migration (Template)</h4>
+                            <p class="text-sm mb-3">Pour chaque objet sélectionné, vous devez télécharger le modèle de fichier fourni par SAP.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                                <h5 class="font-bold text-slate-700 text-sm mb-1">Format XML (Recommandé)</h5>
+                                <p class="text-xs text-slate-500">Idéal pour les débutants. Contient des onglets d'aide, des validations de format et des explications champ par champ.</p>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                                <h5 class="font-bold text-slate-700 text-sm mb-1">Format CSV</h5>
+                                <p class="text-xs text-slate-500">
+                                    Utilisé pour les très gros volumes de données. Nécessite de télécharger un fichier ZIP contenant plusieurs CSV.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="bg-amber-50 p-3 rounded border-l-4 border-amber-400 text-sm">
+                            <strong>Conseil d'Expert :</strong> Lisez attentivement l'onglet "Field List" dans le fichier XML. Il indique quels champs sont obligatoires et le format attendu (ex: Date YYYYMMDD).
+                        </div>
+                    </div>
+                `
+            },
+            3: {
+                step: "Phase 3",
+                title: "Chargement (Upload)",
+                content: `
+                    <div class="space-y-5">
+                        <p class="text-sm">Une fois vos fichiers remplis avec vos données sources (Legacy Data), il faut les charger dans le système.</p>
+
+                        <div class="space-y-3">
+                            <div class="flex gap-4 items-start">
+                                <div class="bg-emerald-100 p-2 rounded text-emerald-600"><i class="fas fa-upload"></i></div>
+                                <div>
+                                    <h4 class="font-bold text-slate-800 text-sm">Upload File</h4>
+                                    <p class="text-xs text-slate-500">Chargez le fichier dans le Cockpit. La limite est de 100 Mo par fichier XML (100 Mo pour un ZIP).</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 items-start">
+                                <div class="bg-emerald-100 p-2 rounded text-emerald-600"><i class="fas fa-tasks"></i></div>
+                                <div>
+                                    <h4 class="font-bold text-slate-800 text-sm">Validation Structurelle</h4>
+                                    <p class="text-xs text-slate-500">Le système vérifie immédiatement la structure (format des dates, longueurs, types de données). En cas d'erreur, le fichier est rejeté.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">Transfert vers les Tables de Staging</h4>
+                            <p class="text-sm mb-2">Si le fichier est valide, les données sont transférées dans les "Staging Tables" (tables tampon) internes de S/4HANA Cloud.</p>
+                        </div>
+                    </div>
+                `
+            },
+            4: {
+                step: "Phase 4",
+                title: "Préparation & Mapping",
+                content: `
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="font-bold text-slate-800 mb-2">Tâches de Mapping (Mapping Tasks)</h4>
+                            <p class="text-sm text-slate-600">C'est l'étape cruciale de "traduction". Vous devez dire au système comment convertir vos anciennes valeurs en valeurs S/4HANA.</p>
+                            
+                            <div class="mt-4 space-y-2">
+                                <div class="bg-amber-50 p-3 rounded border border-amber-100 text-sm">
+                                    <strong>Value Mapping :</strong> Ex: Votre ancien code pays "FRANCE" doit devenir "FR".
+                                </div>
+                                <div class="bg-amber-50 p-3 rounded border border-amber-100 text-sm">
+                                    <strong>Fixed Values :</strong> Ex: Définir que tous les clients importés auront par défaut la devise "EUR".
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800 text-white p-4 rounded-xl shadow-lg mt-4">
+                            <h4 class="font-bold mb-2 flex items-center"><i class="fas fa-check-double mr-2"></i> Confirmation</h4>
+                            <p class="text-xs text-slate-300">
+                                Tant que vous avez des "Open Mapping Tasks", vous ne pouvez pas passer à l'étape suivante. Vous devez toutes les confirmer.
+                            </p>
+                        </div>
+                    </div>
+                `
+            },
+            5: {
+                step: "Phase 5",
+                title: "Simulation & Migration",
+                content: `
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="font-bold text-slate-800 mb-2">1. Simulation (Dry Run)</h4>
+                            <p class="text-sm mb-3">Le système simule la création des données sans rien enregistrer. Il vérifie la logique métier (ex: "Ce centre de coût existe-t-il ?", "Le code postal est-il valide ?").</p>
+                            <div class="flex gap-2 text-xs">
+                                <span class="bg-red-100 text-red-700 px-2 py-1 rounded">Erreurs</span>
+                                <span class="text-slate-500 flex items-center">Doivent être corrigées (dans le fichier ou le mapping).</span>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-slate-200 pt-4">
+                            <h4 class="font-bold text-rose-700 mb-2">2. Exécution de la Migration</h4>
+                            <p class="text-sm text-slate-600 mb-2">Si la simulation est réussie, vous lancez la migration réelle.</p>
+                            <ul class="text-sm list-disc ml-5 text-slate-500">
+                                <li>Les données sont écrites dans la base de données S/4HANA.</li>
+                                <li>Un ID unique est généré pour chaque enregistrement.</li>
+                                <li>Une fois migré, l'enregistrement ne peut plus être supprimé via le Cockpit (il faut utiliser l'app métier pour l'archiver).</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            6: {
+                step: "Phase 6",
+                title: "Suivi & Audit",
+                content: `
+                    <div class="space-y-6">
+                        <div class="bg-cyan-50 border border-cyan-100 p-4 rounded-lg">
+                            <h4 class="font-bold text-cyan-800 mb-2 flex items-center"><i class="fas fa-tachometer-alt mr-2"></i> App "Data Migration Status"</h4>
+                            <p class="text-sm text-cyan-900 mb-2">Cette application vous donne une vue d'ensemble de l'avancement.</p>
+                            <div class="grid grid-cols-3 gap-2 mt-2 text-center text-xs">
+                                <div class="bg-white p-2 rounded shadow-sm"><strong>Initial</strong><br>Non démarré</div>
+                                <div class="bg-white p-2 rounded shadow-sm"><strong>In Process</strong><br>En cours</div>
+                                <div class="bg-white p-2 rounded shadow-sm"><strong>Finished</strong><br>Migré</div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-bold text-slate-800 mb-2">Audit & Correction</h4>
+                            <ol class="list-decimal ml-5 text-sm space-y-2 text-slate-600">
+                                <li><strong>Logs :</strong> Téléchargez les fichiers de logs pour voir les détails des erreurs.</li>
+                                <li><strong>Delta :</strong> Si vous avez oublié des enregistrements, vous pouvez créer un nouveau fichier et refaire le processus (Migration Delta).</li>
+                                <li><strong>Correction :</strong> Pour corriger une donnée déjà migrée, vous devez utiliser l'application Fiori correspondante (ex: "Manage Business Partner") ou la fonction "Mass Maintenance".</li>
+                            </ol>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        function openModal(stepId) {
+            const modal = document.getElementById('infoModal');
+            const data = stepData[stepId];
+
+            if (data) {
+                // Update Badge
+                const badge = document.getElementById('modalStepNum');
+                badge.innerText = data.step;
+                
+                // Update Content
+                document.getElementById('modalTitle').innerText = data.title;
+                document.getElementById('modalBody').innerHTML = data.content;
+                
+                // Show Modal
+                modal.classList.add('active');
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('infoModal');
+            modal.classList.remove('active');
+        }
+
+        // Close on click outside
+        document.getElementById('infoModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
