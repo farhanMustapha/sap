@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guide Configuration SAP CBC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        /* Timeline Connector Line */
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 60px;
+            bottom: 60px;
+            width: 4px;
+            background: #e2e8f0;
+            z-index: 0;
+            border-radius: 4px;
+        }
+
+        /* Card Styles */
+        .step-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Number Badge Pulse Effect */
+        .badge-pulse {
+            box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+            animation: pulse-blue 2s infinite;
+        }
+
+        @keyframes pulse-blue {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+
+        /* Modal Animation */
+        .modal {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            transform: scale(0.9);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        /* Scrollbar for modal content */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .icon-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body class="p-6 md:p-10 min-h-screen text-slate-800">
+
+    <!-- Main Container -->
+    <div class="max-w-4xl mx-auto relative">
+        
+        <!-- Header -->
+        <div class="text-center mb-16">
+            <div class="inline-flex items-center justify-center p-3 bg-blue-600 rounded-xl text-white shadow-lg mb-4">
+                <i class="fas fa-project-diagram text-2xl"></i>
+            </div>
+            <h1 class="text-3xl md:text-5xl font-bold text-slate-900 tracking-tight mb-2">
+                Le Guide SAP CBC
+            </h1>
+            <p class="text-slate-500 font-medium">Central Business Configuration Flow</p>
+            <p class="text-sm text-blue-600 mt-2 font-semibold bg-blue-50 inline-block px-3 py-1 rounded-full border border-blue-100">
+                <i class="fas fa-mouse-pointer mr-1"></i> Cliquez sur une étape pour voir les détails
+            </p>
+        </div>
+
+        <!-- Vertical Timeline Line -->
+        <div class="timeline-line hidden md:block"></div>
+
+        <!-- STEPS CONTAINER -->
+        <div class="space-y-8 md:space-y-16 relative">
+
+            <!-- STEP 1: PRÉPARER LE PROJET -->
+            <div class="step-card bg-white p-6 md:p-8 rounded-2xl shadow-md border border-slate-100 relative flex flex-col md:flex-row items-center md:items-start gap-6 group" onclick="openModal(1)">
+                <!-- Number Badge -->
+                <div class="absolute -top-4 -left-4 md:left-1/2 md:-translate-x-1/2 md:-top-6 z-20">
+                    <div class="badge-pulse w-10 h-10 md:w-12 md:h-12 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-lg md:text-xl border-4 border-white">1</div>
+                </div>
+                
+                <div class="flex-1 md:text-right md:pr-12">
+                    <div class="icon-box bg-blue-100 text-blue-600 md:ml-auto">
+                        <i class="fas fa-tools text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Préparer le Projet</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Création des espaces de travail et connexion aux locataires (Tenants).</p>
+                </div>
+                
+                <!-- Spacer for Timeline -->
+                <div class="hidden md:block w-8"></div>
+
+                <div class="flex-1 md:pl-12 pt-2">
+                    <div class="flex items-center gap-2 text-sm text-slate-400 mb-1">
+                        <i class="fas fa-clock"></i> Phase Initiale
+                    </div>
+                    <div class="text-slate-600 font-medium">
+                        Création des Workspace & Users
+                    </div>
+                    <button class="mt-4 text-blue-600 text-sm font-semibold group-hover:underline">
+                        Voir les détails <i class="fas fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 2: DÉFINIR LE BLUEPRINT -->
+            <div class="step-card bg-white p-6 md:p-8 rounded-2xl shadow-md border border-slate-100 relative flex flex-col md:flex-row-reverse items-center md:items-start gap-6 group" onclick="openModal(2)">
+                <div class="absolute -top-4 -left-4 md:left-1/2 md:-translate-x-1/2 md:-top-6 z-20">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-lg md:text-xl border-4 border-white shadow-lg">2</div>
+                </div>
+
+                <div class="flex-1 md:text-left md:pl-12">
+                    <div class="icon-box bg-indigo-100 text-indigo-600">
+                        <i class="fas fa-globe text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Définir le Blueprint</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Sélection du périmètre (Scope) et des pays/localisations.</p>
+                </div>
+
+                <div class="hidden md:block w-8"></div>
+
+                <div class="flex-1 md:text-right md:pr-12 pt-2">
+                    <div class="flex items-center justify-end gap-2 text-sm text-slate-400 mb-1">
+                        <i class="fas fa-map-marker-alt"></i> Localisation
+                    </div>
+                    <div class="text-slate-600 font-medium">
+                        Choix des pays & Scenarios
+                    </div>
+                    <button class="mt-4 text-indigo-600 text-sm font-semibold group-hover:underline">
+                        Voir les détails <i class="fas fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 3: CONSTRUIRE LA STRUCTURE -->
+            <div class="step-card bg-white p-6 md:p-8 rounded-2xl shadow-md border border-slate-100 relative flex flex-col md:flex-row items-center md:items-start gap-6 group" onclick="openModal(3)">
+                <div class="absolute -top-4 -left-4 md:left-1/2 md:-translate-x-1/2 md:-top-6 z-20">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold text-lg md:text-xl border-4 border-white shadow-lg">3</div>
+                </div>
+
+                <div class="flex-1 md:text-right md:pr-12">
+                    <div class="icon-box bg-emerald-100 text-emerald-600 md:ml-auto">
+                        <i class="fas fa-sitemap text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Construire la Structure</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Structure organisationnelle et paramètres financiers (Org Structure).</p>
+                </div>
+
+                <div class="hidden md:block w-8"></div>
+
+                <div class="flex-1 md:pl-12 pt-2">
+                    <div class="flex items-center gap-2 text-sm text-slate-400 mb-1">
+                        <i class="fas fa-coins"></i> Finance
+                    </div>
+                    <div class="text-slate-600 font-medium">
+                        Entités, Fiscal Year & Devises
+                    </div>
+                    <button class="mt-4 text-emerald-600 text-sm font-semibold group-hover:underline">
+                        Voir les détails <i class="fas fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 4: CONFIGURER ET TRANSPORTER -->
+            <div class="step-card bg-white p-6 md:p-8 rounded-2xl shadow-md border border-slate-100 relative flex flex-col md:flex-row-reverse items-center md:items-start gap-6 group" onclick="openModal(4)">
+                <div class="absolute -top-4 -left-4 md:left-1/2 md:-translate-x-1/2 md:-top-6 z-20">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-amber-500 text-white rounded-full flex items-center justify-center font-bold text-lg md:text-xl border-4 border-white shadow-lg">4</div>
+                </div>
+
+                <div class="flex-1 md:text-left md:pl-12">
+                    <div class="icon-box bg-amber-100 text-amber-600">
+                        <i class="fas fa-cogs text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Configurer & Transporter</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Saisie des valeurs (Fit-to-Standard) et gestion des Transports.</p>
+                </div>
+
+                <div class="hidden md:block w-8"></div>
+
+                <div class="flex-1 md:text-right md:pr-12 pt-2">
+                    <div class="flex items-center justify-end gap-2 text-sm text-slate-400 mb-1">
+                        <i class="fas fa-truck-loading"></i> Déploiement
+                    </div>
+                    <div class="text-slate-600 font-medium">
+                        Configuration Activities & TRs
+                    </div>
+                    <button class="mt-4 text-amber-600 text-sm font-semibold group-hover:underline">
+                        Voir les détails <i class="fas fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 5: GÉRER L'ÉVOLUTION -->
+            <div class="step-card bg-white p-6 md:p-8 rounded-2xl shadow-md border border-slate-100 relative flex flex-col md:flex-row items-center md:items-start gap-6 group" onclick="openModal(5)">
+                <div class="absolute -top-4 -left-4 md:left-1/2 md:-translate-x-1/2 md:-top-6 z-20">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-slate-700 text-white rounded-full flex items-center justify-center font-bold text-lg md:text-xl border-4 border-white shadow-lg">5</div>
+                </div>
+
+                <div class="flex-1 md:text-right md:pr-12">
+                    <div class="icon-box bg-slate-100 text-slate-600 md:ml-auto">
+                        <i class="fas fa-code-branch text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Gérer l'Évolution</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Maintenance, utilisateurs et utilisation de la Ligne Parallèle.</p>
+                </div>
+
+                <div class="hidden md:block w-8"></div>
+
+                <div class="flex-1 md:pl-12 pt-2">
+                    <div class="flex items-center gap-2 text-sm text-slate-400 mb-1">
+                        <i class="fas fa-users-cog"></i> Lifecycle
+                    </div>
+                    <div class="text-slate-600 font-medium">
+                        Parallel Line & IAM (Users)
+                    </div>
+                    <button class="mt-4 text-slate-600 text-sm font-semibold group-hover:underline">
+                        Voir les détails <i class="fas fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+        
+        <!-- Footer -->
+        <div class="text-center mt-16 text-slate-400 text-sm">
+            Basé sur le guide officiel SAP S/4HANA Cloud Implementation (IM06)
+        </div>
+
+    </div>
+
+    <!-- MODAL POPUP -->
+    <div id="infoModal" class="modal fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+        <div class="modal-content bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            
+            <!-- Modal Header -->
+            <div id="modalHeader" class="p-6 border-b border-slate-100 flex justify-between items-start bg-slate-50">
+                <div>
+                    <span id="modalStepNum" class="text-xs font-bold tracking-wider uppercase text-blue-600 bg-blue-100 px-2 py-1 rounded-md mb-2 inline-block">Phase 1</span>
+                    <h2 id="modalTitle" class="text-2xl font-bold text-slate-800">Titre de l'étape</h2>
+                </div>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 transition-colors p-2 rounded-full hover:bg-slate-200">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body (Scrollable) -->
+            <div id="modalBody" class="p-6 overflow-y-auto custom-scroll text-slate-600 space-y-4">
+                <!-- Content injected via JS -->
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 border-t border-slate-100 bg-slate-50 flex justify-end">
+                <button onclick="closeModal()" class="px-5 py-2 bg-slate-800 text-white rounded-lg font-medium hover:bg-slate-900 transition-colors">
+                    Fermer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data from the PDF "IM06 LLM.pdf"
+        const stepData = {
+            1: {
+                step: "Phase 1",
+                title: "Préparer le Projet & Espaces",
+                colorClass: "bg-blue-50 text-blue-600",
+                content: `
+                    <div class="space-y-6">
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                            <h4 class="font-bold text-blue-800 mb-2 flex items-center"><i class="fas fa-layer-group mr-2"></i> Création des Workspaces</h4>
+                            <p class="text-sm">L'expert configuration crée deux espaces de travail distincts connectés aux "locataires" (tenants) du système de développement :</p>
+                            <ul class="list-disc ml-5 mt-2 text-sm space-y-1">
+                                <li><strong>Espace de Personnalisation :</strong> Connecté au client 100 (Customization Tenant). C'est ici que la configuration principale a lieu.</li>
+                                <li><strong>Espace de Développement :</strong> Connecté au client 80 (Development Tenant) pour les extensions ABAP.</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-bold text-slate-800 mb-2">Équipe Projet</h4>
+                            <p class="text-sm">Une fois les espaces créés, l'expert principal ajoute les membres de l'équipe et attribue les accès via <strong>SAP Cloud Identity Services (IAS)</strong>.</p>
+                        </div>
+                    </div>
+                `
+            },
+            2: {
+                step: "Phase 2",
+                title: "Définir le Blueprint (Portée)",
+                colorClass: "bg-indigo-50 text-indigo-600",
+                content: `
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="font-bold text-indigo-800 mb-2 text-lg">Sélection du Périmètre (Scope)</h4>
+                            <p class="text-sm mb-3">L'objectif est de sélectionner les pays et les scénarios métier à activer. SAP propose le <strong>"Base Accelerator Pack"</strong> qui présélectionne environ 60 processus indispensables (Finance, Ventes, Achats...).</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                                <h5 class="font-bold text-slate-700 text-sm mb-1">Localisation</h5>
+                                <p class="text-xs text-slate-500">Sélection des pays où les processus seront activés. <br><span class="text-amber-600 font-semibold">⚠️ Recommandation :</span> Activer max 5 pays à la fois pour la performance.</p>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                                <h5 class="font-bold text-slate-700 text-sm mb-1">Types de Localisation</h5>
+                                <p class="text-xs text-slate-500">
+                                    1. <strong>SAP Best Practice :</strong> Standard fourni par SAP.<br>
+                                    2. <strong>Client (CLT) :</strong> Pour les pays non couverts par SAP.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="bg-amber-50 p-3 rounded border-l-4 border-amber-400 text-sm">
+                            <strong>Point Critique :</strong> La sélection des Scénarios de Grand Livre (ex: IFRS, US GAAP, Group Ledger 4G) est définitive. Impossible d'ajouter ou supprimer des ledgers après la définition initiale.
+                        </div>
+                    </div>
+                `
+            },
+            3: {
+                step: "Phase 3",
+                title: "Construire la Structure",
+                colorClass: "bg-emerald-50 text-emerald-600",
+                content: `
+                    <div class="space-y-5">
+                        <p class="text-sm">Cette phase configure l'épine dorsale financière et organisationnelle de l'entreprise.</p>
+
+                        <div class="space-y-3">
+                            <div class="flex gap-4 items-start">
+                                <div class="bg-emerald-100 p-2 rounded text-emerald-600"><i class="fas fa-calendar-alt"></i></div>
+                                <div>
+                                    <h4 class="font-bold text-slate-800 text-sm">1. Variante d'Exercice (Fiscal Year Variant)</h4>
+                                    <p class="text-xs text-slate-500">Définit la relation entre l'année civile et comptable. S'applique à tout le système.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 items-start">
+                                <div class="bg-emerald-100 p-2 rounded text-emerald-600"><i class="fas fa-dollar-sign"></i></div>
+                                <div>
+                                    <h4 class="font-bold text-slate-800 text-sm">2. Devise du Groupe (Group Currency)</h4>
+                                    <p class="text-xs text-slate-500">Permet de comparer les montants de différentes entités dans une devise unique.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">Org Structure (Structure Organisationnelle)</h4>
+                            <p class="text-sm mb-2">Peut être gérée via une <strong>Vue Graphique</strong> (visuelle) ou une <strong>Vue Tableau</strong> (pour les structures complexes).</p>
+                            <div class="bg-red-50 text-red-700 text-xs p-2 rounded border border-red-100">
+                                <strong>La Confirmation :</strong> Une fois une entité (ex: Société, Plant) confirmée, elle est déployée dans le back-end et ne peut plus être supprimée.
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            4: {
+                step: "Phase 4",
+                title: "Configurer et Transporter",
+                colorClass: "bg-amber-50 text-amber-600",
+                content: `
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="font-bold text-slate-800 mb-2">Activités de Configuration (Fit-to-Standard)</h4>
+                            <p class="text-sm text-slate-600">Les experts saisissent les valeurs spécifiques dans CBC.</p>
+                            <div class="grid grid-cols-3 gap-2 mt-2 text-center">
+                                <div class="bg-red-50 p-2 rounded border border-red-100">
+                                    <span class="block font-bold text-red-600 text-xs uppercase">Obligatoire</span>
+                                    <span class="text-xs">Doit être configuré</span>
+                                </div>
+                                <div class="bg-blue-50 p-2 rounded border border-blue-100">
+                                    <span class="block font-bold text-blue-600 text-xs uppercase">Recommandé</span>
+                                    <span class="text-xs">Souvent modifié (ex: Plan comptable)</span>
+                                </div>
+                                <div class="bg-slate-50 p-2 rounded border border-slate-100">
+                                    <span class="block font-bold text-slate-500 text-xs uppercase">Facultatif</span>
+                                    <span class="text-xs">Peu de changements (ex: Motifs blocage)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800 text-white p-4 rounded-xl shadow-lg">
+                            <h4 class="font-bold mb-2 flex items-center"><i class="fas fa-truck mr-2"></i> Le Flux de Transport</h4>
+                            <ol class="list-decimal ml-5 text-sm space-y-2 text-slate-300">
+                                <li>Modifications enregistrées dans une <strong>Demande de Transport</strong> (Customization Tenant).</li>
+                                <li><strong>Exportation :</strong> Via l'app "Export Customizing Transports" (Dev System).</li>
+                                <li><strong>Importation :</strong> Dans le système de Test (Q) puis Production (P).</li>
+                            </ol>
+                        </div>
+                    </div>
+                `
+            },
+            5: {
+                step: "Phase 5",
+                title: "Gérer l'Évolution & Utilisateurs",
+                colorClass: "bg-slate-100 text-slate-600",
+                content: `
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="font-bold text-slate-800 mb-2">La Ligne Parallèle (Parallel Line)</h4>
+                            <p class="text-sm mb-3">Fonctionnalité clé pour innover sans risque après le Go-Live (ex: ajouter un nouveau pays).</p>
+                            <div class="flex gap-2">
+                                <div class="flex-1 bg-white p-3 rounded border border-slate-200 shadow-sm">
+                                    <div class="text-xs font-bold text-blue-600 mb-1">MAIN LINE</div>
+                                    <div class="text-xs text-slate-500">Opérations quotidiennes productives.</div>
+                                </div>
+                                <div class="flex-1 bg-white p-3 rounded border border-slate-200 shadow-sm">
+                                    <div class="text-xs font-bold text-purple-600 mb-1">PARALLEL LINE</div>
+                                    <div class="text-xs text-slate-500">Tests de nouvelles fonctionnalités majeures.</div>
+                                </div>
+                            </div>
+                            <div class="mt-2 text-xs text-slate-500 italic">
+                                Concepts clés : <strong>Rebase</strong> (Main vers Parallel) et <strong>Merge</strong> (Parallel vers Main).
+                            </div>
+                        </div>
+
+                        <div class="border-t border-slate-200 pt-4">
+                            <h4 class="font-bold text-slate-800 mb-2">Gestion des Utilisateurs (IAM)</h4>
+                            <p class="text-sm text-slate-600 mb-2">Utilisation de <strong>SAP Cloud Identity Services (IAS)</strong> comme proxy pour votre IdP d'entreprise.</p>
+                            <ul class="text-sm list-disc ml-5 text-slate-500">
+                                <li>Import des utilisateurs (CSV).</li>
+                                <li>Affectation des rôles métier (ex: SAP_BR_ADMINISTRATOR).</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        function openModal(stepId) {
+            const modal = document.getElementById('infoModal');
+            const data = stepData[stepId];
+
+            if (data) {
+                // Update Badge
+                const badge = document.getElementById('modalStepNum');
+                badge.innerText = data.step;
+                // Reset classes for badge colors if needed, keeping it simple for now
+                
+                // Update Content
+                document.getElementById('modalTitle').innerText = data.title;
+                document.getElementById('modalBody').innerHTML = data.content;
+                
+                // Show Modal
+                modal.classList.add('active');
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('infoModal');
+            modal.classList.remove('active');
+        }
+
+        // Close on click outside
+        document.getElementById('infoModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
