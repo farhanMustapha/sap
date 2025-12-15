@@ -8300,14 +8300,14 @@ var test_rihana_finance = [
   },
   {
     id: 40,
-    text: "What is the functions of the billing plan in relation to down payment processing in SAP S/4HANA Cloud? (2 correct answers)",
+    text: "40-What is the functions of the billing plan in relation to down payment processing in SAP S/4HANA Cloud? (2 correct answers)",
     options: [
       { id: "A", text: "It automatically posts billing documents on the designated dates." },
       { id: "B", text: "It stores one or more down payment agreements as a date." },
       { id: "C", text: "It assigns a down payment agreement directly to an item or to all items in the order." },
       { id: "D", text: "It clears down payment requests according to the planned dates." }
     ],
-    correctAnswers: ["A", "B"],
+    correctAnswers: ["B", "C"],
     multipleChoice: true
   },
   {
