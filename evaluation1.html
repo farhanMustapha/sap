@@ -10,7 +10,6 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f9fafb; color: #1f2937; scroll-behavior: smooth; }
         
-        /* Utilitaires simples */
         .hidden { display: none !important; }
         .fade-in { animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -21,8 +20,6 @@
             border-bottom: 1px solid #e5e7eb;
         }
 
-        /* Styles d'états pour les options */
-        .option-card { transition: all 0.2s; }
         .option-selected { border-color: #3b82f6; background-color: #eff6ff; color: #1e3a8a; }
         .option-correct { border-color: #22c55e !important; background-color: #f0fdf4 !important; color: #14532d !important; }
         .option-incorrect { border-color: #ef4444 !important; background-color: #fef2f2 !important; color: #7f1d1d !important; opacity: 0.8; }
@@ -39,12 +36,17 @@
             <div>
                 <h1 class="font-bold text-blue-700 text-lg">Evaluation finale 1: Explore & Implementation</h1>
                 <div class="text-xs text-gray-500 mt-0.5">
-                    <!-- Score en temps réel -->
                     <span id="score-display" class="font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded transition-all">Score : 0 / 80</span>
                     <span class="ml-1 hidden sm:inline">• Implementation & Explore</span>
                 </div>
             </div>
             <div class="flex gap-2">
+                <!-- Bouton Filtre Erreurs -->
+                <button id="filter-btn" onclick="app.toggleFilter()" class="flex items-center gap-2 px-3 py-2 bg-white border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition font-medium text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                    <span id="filter-text">Mes erreurs (0)</span>
+                </button>
+
                 <button onclick="app.resetQuiz()" class="p-2 text-gray-500 hover:bg-red-50 hover:text-red-500 rounded-lg transition" title="Réinitialiser (Recommencer à 0)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 12"/><path d="M3 3v9h9"/></svg>
                 </button>
@@ -54,18 +56,21 @@
 
     <!-- Conteneur Principal -->
     <div class="max-w-5xl mx-auto pt-24 pb-12 px-4">
-        
-        <!-- Vue : Quiz -->
-        <div id="view-quiz" class="fade-in space-y-6">
-            <!-- Les questions seront injectées ici par JS -->
-            <div id="questions-container" class="space-y-8"></div>
+        <!-- Bannière mode filtre -->
+        <div id="filter-banner" class="hidden mb-6 p-4 bg-red-50 border border-red-100 rounded-xl flex justify-between items-center fade-in">
+            <p class="text-red-800 text-sm font-medium">Mode Révision : Vos erreurs ont été réinitialisées. Prêt pour une nouvelle tentative.</p>
+            <button onclick="app.toggleFilter()" class="text-xs bg-red-100 text-red-700 px-3 py-1 rounded-full font-bold hover:bg-red-200 transition uppercase">Quitter</button>
         </div>
 
+        <div id="view-quiz" class="fade-in space-y-6">
+            <div id="questions-container" class="space-y-8"></div>
+        </div>
     </div>
 
     <script>
         // --- DONNÉES (80 Questions) ---
         const questionsData = [
+
   {
     "id": 1,
     "text": "Which of the following is a benefit of cloud computing?",
@@ -1238,33 +1243,33 @@
         const app = {
             answers: {},
             verified: {}, // Stocke l'état vérifié { qId: true }
+            isFilterMode: false,
+            // NOUVEAU : On garde trace des IDs qui ont été échoués
+            failedIds: new Set(),
             
-            // Clé unique pour le stockage de session
             SESSION_KEY: 'sap_quiz_current_session',
 
             init() {
-                // Charger la session active (PERSISTANCE)
                 const savedSession = localStorage.getItem(this.SESSION_KEY);
                 if (savedSession) {
                     try {
                         const session = JSON.parse(savedSession);
                         this.answers = session.answers || {};
                         this.verified = session.verified || {};
+                        // Re-calculer les failedIds basés sur l'état sauvegardé
+                        Object.keys(this.verified).forEach(id => {
+                            if(!this.isQuestionCorrect(parseInt(id))) this.failedIds.add(parseInt(id));
+                        });
                     } catch (e) {
                         console.error("Erreur chargement session:", e);
                     }
                 }
 
-                // Rendu initial
                 this.renderQuizList();
                 this.updateHeader();
-                
-                // Si on a des réponses, on restore la position de scroll si possible (optionnel)
-                // Pour l'instant on reste en haut
             },
 
             saveState() {
-                // Sauvegarde l'état actuel dans le localStorage
                 const session = {
                     answers: this.answers,
                     verified: this.verified
@@ -1272,9 +1277,74 @@
                 localStorage.setItem(this.SESSION_KEY, JSON.stringify(session));
             },
 
+            // Fonction de basculement du filtre d'erreurs avec réinitialisation automatique
+            toggleFilter() {
+                this.isFilterMode = !this.isFilterMode;
+                
+                const btn = document.getElementById('filter-btn');
+                const banner = document.getElementById('filter-banner');
+                
+                if (this.isFilterMode) {
+                    btn.classList.add('bg-red-600', 'text-white');
+                    btn.classList.remove('bg-white', 'text-red-600');
+                    banner.classList.remove('hidden');
+
+                    // NOUVEAU : Réinitialiser AUTOMATIQUEMENT toutes les erreurs pour pouvoir y répondre
+                    Object.keys(this.verified).forEach(idStr => {
+                        const id = parseInt(idStr);
+                        if (!this.isQuestionCorrect(id)) {
+                            this.failedIds.add(id); // On s'assure qu'il est dans la liste des échecs
+                            delete this.verified[id]; // On déverrouille la question
+                            this.answers[id] = []; // On vide la réponse pour gagner du temps
+                        }
+                    });
+                    this.saveState();
+                } else {
+                    btn.classList.remove('bg-red-600', 'text-white');
+                    btn.classList.add('bg-white', 'text-red-600');
+                    banner.classList.add('hidden');
+                }
+                
+                this.renderQuizList();
+                window.scrollTo(0,0);
+            },
+
+            isQuestionCorrect(qId) {
+                const q = questionsData.find(item => item.id === qId);
+                if (!q) return false;
+                const userSelected = this.answers[qId] || [];
+                const sortedUser = [...userSelected].sort();
+                const sortedCorrect = [...q.correctIndices].sort();
+                return JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect);
+            },
+
             renderQuizList() {
                 const container = document.getElementById('questions-container');
-                container.innerHTML = questionsData.map((q, index) => this.createQuestionCard(q, index)).join('');
+                let displayData = questionsData;
+
+                if (this.isFilterMode) {
+                    // On affiche les questions qui sont dans failedIds et pas encore réussies (non verified)
+                    displayData = questionsData.filter(q => this.failedIds.has(q.id) && !this.verified[q.id]);
+
+                    if (displayData.length === 0) {
+                        container.innerHTML = `
+                            <div class="py-20 text-center space-y-4 fade-in">
+                                <div class="bg-green-100 text-green-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                </div>
+                                <h2 class="text-2xl font-bold text-gray-800">C'est tout bon !</h2>
+                                <p class="text-gray-500 max-w-md mx-auto">Toutes vos erreurs précédentes ont été corrigées avec succès.</p>
+                                <button onclick="app.toggleFilter()" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition">Retour au quiz complet</button>
+                            </div>
+                        `;
+                        return;
+                    }
+                }
+
+                container.innerHTML = displayData.map((q) => {
+                    const originalIndex = questionsData.findIndex(orig => orig.id === q.id);
+                    return this.createQuestionCard(q, originalIndex);
+                }).join('');
             },
 
             createQuestionCard(q, index) {
@@ -1282,16 +1352,11 @@
                 const isVerified = this.verified[q.id];
                 const userSelection = this.answers[q.id] || [];
                 
-                // Déterminer les classes de la carte
                 let cardClasses = "bg-white rounded-2xl shadow-sm border border-gray-200 relative overflow-hidden transition-all";
                 let indicator = "";
 
                 if (isVerified) {
-                    const sortedUser = [...userSelection].sort();
-                    const sortedCorrect = [...q.correctIndices].sort();
-                    const isCorrect = JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect);
-                    
-                    if (isCorrect) {
+                    if (this.isQuestionCorrect(q.id)) {
                         cardClasses += " card-verified-correct";
                         indicator = `<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-green-500"></div>`;
                     } else {
@@ -1302,7 +1367,6 @@
                     cardClasses += " hover:border-blue-300 hover:shadow-md";
                 }
 
-                // Générer les options
                 const optionsHtml = q.options.map((opt, optIdx) => {
                     const isSelected = userSelection.includes(optIdx);
                     const isActuallyCorrect = q.correctIndices.includes(optIdx);
@@ -1311,7 +1375,7 @@
                     let iconHtml = "";
 
                     if (isVerified) {
-                        optClass += "disabled "; // Désactiver le clic
+                        optClass += "disabled "; 
                         if (isActuallyCorrect) {
                             optClass += "option-correct ";
                             iconHtml = `<svg class="w-5 h-5 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>`;
@@ -1341,7 +1405,6 @@
                     `;
                 }).join('');
 
-                // Zone de Feedback / Bouton
                 let footerHtml = "";
                 if (!isVerified) {
                     const hasSelection = userSelection.length > 0;
@@ -1357,23 +1420,26 @@
                     `;
                 } else {
                     footerHtml = `
-                        <div class="w-full bg-blue-50 text-blue-900 p-4 rounded-lg text-sm flex gap-3 fade-in">
-                            <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
-                            <div>
-                                <span class="font-bold block mb-1">Explication :</span>
-                                ${q.explanation}
+                        <div class="w-full space-y-4 fade-in">
+                            <div class="w-full bg-blue-50 text-blue-900 p-4 rounded-lg text-sm flex gap-3">
+                                <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+                                <div>
+                                    <span class="font-bold block mb-1">Explication :</span>
+                                    ${q.explanation}
+                                </div>
                             </div>
                         </div>
                     `;
                 }
 
                 return `
-                    <div id="q-${q.id}" class="${cardClasses}">
+                    <div id="q-${q.id}" class="${cardClasses} fade-in">
                         ${indicator}
                         <div class="p-6">
                             <div class="flex items-center gap-2 mb-4 pl-2">
                                 <span class="text-sm font-bold text-gray-400 uppercase tracking-wider">Q${index + 1}</span>
                                 ${isMulti ? '<span class="bg-indigo-50 text-indigo-600 text-[10px] px-2 py-0.5 rounded border border-indigo-100 font-bold uppercase tracking-wide">'+q.correctIndices.length+' Choix</span>' : ''}
+                                ${isVerified ? (this.isQuestionCorrect(q.id) ? '<span class="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded uppercase ml-auto">Correct</span>' : '<span class="text-[10px] font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded uppercase ml-auto">Incorrect</span>') : ''}
                             </div>
                             
                             <h3 class="text-lg font-semibold text-gray-800 mb-6 pl-2 leading-relaxed">${q.text}</h3>
@@ -1392,10 +1458,8 @@
 
             selectOption(qId, optIdx, isMulti) {
                 if (this.verified[qId]) return;
-
                 const currentSelected = this.answers[qId] || [];
                 let newSelected;
-
                 if (isMulti) {
                     if (currentSelected.includes(optIdx)) {
                         newSelected = currentSelected.filter(i => i !== optIdx);
@@ -1405,44 +1469,47 @@
                 } else {
                     newSelected = [optIdx];
                 }
-
                 this.answers[qId] = newSelected;
-                this.saveState(); // SAUVEGARDE
+                this.saveState();
                 this.refreshCard(qId);
             },
 
             verifyQuestion(qId) {
                 this.verified[qId] = true;
-                this.saveState(); // SAUVEGARDE
+                
+                // Gérer le statut d'erreur
+                const isCorrect = this.isQuestionCorrect(qId);
+                if (!isCorrect) {
+                    this.failedIds.add(qId);
+                } else {
+                    this.failedIds.delete(qId);
+                }
+
+                this.saveState();
+                
+                // Rafraîchir immédiatement la carte pour que l'utilisateur voie la couleur (Vert/Rouge)
                 this.refreshCard(qId);
-                this.updateHeader(); // Met à jour le score
+                
+                // Si on est en mode filtre et que c'est correct, on attend avant de masquer
+                if (this.isFilterMode && isCorrect) {
+                   setTimeout(() => this.renderQuizList(), 1500); // On laisse 1.5s pour voir le succès
+                }
+                
+                this.updateHeader();
             },
 
             refreshCard(qId) {
                 const qIndex = questionsData.findIndex(q => q.id === qId);
                 const qData = questionsData[qIndex];
                 const newHtml = this.createQuestionCard(qData, qIndex);
-                
                 const oldCard = document.getElementById(`q-${qId}`);
-                if (oldCard) {
-                    oldCard.outerHTML = newHtml;
-                }
+                if (oldCard) oldCard.outerHTML = newHtml;
             },
 
             calculateScore() {
                 let score = 0;
-                // On calcule le score UNIQUEMENT sur les questions VÉRIFIÉES
                 Object.keys(this.verified).forEach(qIdStr => {
-                    const qId = parseInt(qIdStr);
-                    const q = questionsData.find(item => item.id === qId);
-                    if (q) {
-                        const userSelected = this.answers[qId] || [];
-                        const sortedUser = [...userSelected].sort();
-                        const sortedCorrect = [...q.correctIndices].sort();
-                        if (JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect)) {
-                            score++;
-                        }
-                    }
+                    if (this.isQuestionCorrect(parseInt(qIdStr))) score++;
                 });
                 return score;
             },
@@ -1450,12 +1517,25 @@
             updateHeader() {
                 const currentScore = this.calculateScore();
                 document.getElementById('score-display').innerText = `Score : ${currentScore} / ${questionsData.length}`;
+                
+                // Calculer les erreurs réelles
+                let errorsCount = 0;
+                Object.keys(this.verified).forEach(id => {
+                    if(!this.isQuestionCorrect(parseInt(id))) errorsCount++;
+                });
+                if(this.isFilterMode) {
+                    errorsCount = Array.from(this.failedIds).filter(id => !this.verified[id] || !this.isQuestionCorrect(id)).length;
+                }
+
+                document.getElementById('filter-text').innerText = `Mes erreurs (${errorsCount})`;
             },
 
             resetQuiz() {
-                if(confirm("Attention : Cela effacera toute votre progression et remettra le score à 0. Continuer ?")) {
+                if(confirm("Attention : Cela effacera toute votre progression. Continuer ?")) {
                     this.answers = {};
                     this.verified = {};
+                    this.failedIds.clear();
+                    this.isFilterMode = false;
                     localStorage.removeItem(this.SESSION_KEY);
                     this.renderQuizList();
                     this.updateHeader();
@@ -1464,7 +1544,6 @@
             }
         };
 
-        // Démarrer l'application
         app.init();
     </script>
 </body>

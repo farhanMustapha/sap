@@ -4,206 +4,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Blanc 1:40 questions</title>
+    <title>Test Blanc 1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        .progress-container {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 20px;
-        }
-
-        .progress-bar {
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 10px;
-            height: 30px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .progress-fill {
-            background: linear-gradient(90deg, #4CAF50 0%, #8BC34A 100%);
-            height: 100%;
-            transition: width 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-        }
-
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 10px;
-        }
-
-        .stat-value {
-            font-size: 1.8em;
-            font-weight: bold;
-        }
-
-        .stat-label {
-            font-size: 0.9em;
-            opacity: 0.9;
-        }
-
-        .content {
-            padding: 30px;
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
         }
 
         .question-card {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            border-left: 5px solid #667eea;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
-        .question-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .question-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-
-        .question-number {
-            background: #667eea;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 0.9em;
-        }
-
-        .question-type {
-            background: #ff6b6b;
-            color: white;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.8em;
-            margin-left: 10px;
-        }
-
-        .question-text {
-            font-size: 1.1em;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            color: #2c3e50;
-        }
-
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .option {
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 15px;
+        .option-label {
             cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
+            transition: background-color 0.2s, border-color 0.2s;
         }
 
-        .option:hover {
-            border-color: #667eea;
-            background: #f0f4ff;
-            transform: translateX(5px);
+        /* Custom colors for feedback */
+        .bg-custom-red {
+            background-color: #fcebeb;
+            border-color: #ef4444;
         }
 
-        .option input[type="checkbox"],
-        .option input[type="radio"] {
-            margin-right: 12px;
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
+        .bg-custom-green {
+            background-color: #ecfdf5;
+            border-color: #10b981;
         }
 
-        .option.selected {
-            background: #e3f2fd;
-            border-color: #2196F3;
+        .border-custom-red {
+            border-color: #ef4444;
         }
 
-        .option.correct {
-            background: #e8f5e9;
-            border-color: #4CAF50;
+        .border-custom-green {
+            border-color: #10b981;
         }
 
-        .option.incorrect {
-            background: #ffebee;
-            border-color: #f44336;
+        /* Style pour le menu de navigation */
+        .nav-link {
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            white-space: nowrap;
         }
 
-        .explanation-section {
-            margin-top: 20px;
-            padding: 15px;
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            border-radius: 8px;
+        .nav-link:hover {
+            background-color: #eef2ff;
+            color: #4f46e5;
+        }
+
+        /* Styles pour la modal d'explication / message */
+        .modal {
             display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(2px);
         }
 
-        .explanation-section.show {
-            display: block;
-            animation: slideDown 0.3s ease;
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 12px;
+            animation: slide-down 0.3s ease-out;
         }
 
-        @keyframes slideDown {
+        @keyframes slide-down {
             from {
                 opacity: 0;
-                transform: translateY(-10px);
+                transform: translateY(-50px);
             }
 
             to {
@@ -212,1090 +92,1214 @@
             }
         }
 
-        .explanation-header {
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
             font-weight: bold;
-            color: #856404;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
         }
 
-        .explanation-header::before {
-            content: "💡";
-            margin-right: 8px;
-        }
-
-        .explanation-text {
-            color: #856404;
-            line-height: 1.5;
-        }
-
-        .add-explanation-btn {
-            background: #ffc107;
-            color: #856404;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
+        .close-btn:hover,
+        .close-btn:focus {
+            color: #000;
+            text-decoration: none;
             cursor: pointer;
-            font-size: 0.9em;
-            margin-top: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .add-explanation-btn:hover {
-            background: #ffb300;
-            transform: scale(1.05);
-        }
-
-        .validate-question-btn {
-            background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.95em;
-            margin-top: 15px;
-            transition: all 0.3s ease;
-            font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        .validate-question-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .validate-question-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .validation-status {
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.85em;
-            font-weight: bold;
-            margin-left: 10px;
-        }
-
-        .validation-status.correct {
-            background: #4CAF50;
-            color: white;
-        }
-
-        .validation-status.incorrect {
-            background: #f44336;
-            color: white;
-        }
-
-        .explanation-input {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #ffc107;
-            border-radius: 5px;
-            margin-top: 10px;
-            font-family: inherit;
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        .save-explanation-btn {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .save-explanation-btn:hover {
-            background: #45a049;
-            transform: scale(1.05);
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 30px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 25px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%);
-            color: white;
-        }
-
-        .btn-warning {
-            background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
-            color: white;
-        }
-
-        .btn-info {
-            background: linear-gradient(135deg, #2196F3 0%, #03A9F4 100%);
-            color: white;
-        }
-
-        .results-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .results-modal.show {
-            display: flex;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        .results-content {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 500px;
-            width: 90%;
-            text-align: center;
-            animation: scaleIn 0.3s ease;
-        }
-
-        @keyframes scaleIn {
-            from {
-                transform: scale(0.8);
-                opacity: 0;
-            }
-
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        .results-content h2 {
-            color: #667eea;
-            margin-bottom: 20px;
-            font-size: 2em;
-        }
-
-        .score-display {
-            font-size: 3em;
-            font-weight: bold;
-            color: #4CAF50;
-            margin: 20px 0;
-        }
-
-        .score-display.fail {
-            color: #f44336;
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 1.8em;
-            }
-
-            .question-text {
-                font-size: 1em;
-            }
-
-            .stat-value {
-                font-size: 1.4em;
-            }
-
-            .content {
-                padding: 15px;
-            }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🎓 Test Blanc SAP S/4HANA</h1>
-            <div class="progress-container">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill">0%</div>
-                </div>
-                <div class="stats">
-                    <div class="stat-item">
-                        <div class="stat-value" id="answeredCount">0</div>
-                        <div class="stat-label">Répondues</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="correctCount">0</div>
-                        <div class="stat-label">Correctes</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="totalCount">40</div>
-                        <div class="stat-label">Total</div>
-                    </div>
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-8 flex justify-between items-center flex-wrap">
+            <div>
+                <h1 class="text-4xl font-bold text-gray-800 border-b-4 border-indigo-500 pb-2 inline-block">Quiz Test Blanc 1</h1>
+                
+            </div>
+            <div class="flex items-center space-x-4 mt-4 md:mt-0">
+                <!-- Bouton Réinitialiser l'Historique -->
+                <button onclick="promptResetQuiz()"
+                    class="px-4 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition duration-150 shadow-md text-sm">
+                    <span class="font-bold">↻</span> Réinitialiser le Quiz
+                </button>
+
+                <!-- Bouton Administration -->
+                <button onclick="switchView('admin-view')"
+                    class="px-4 py-2 bg-gray-700 text-white font-medium rounded-lg hover:bg-gray-800 transition duration-150 shadow-md text-sm">
+                    Ajouter une explication
+                </button>
+            </div>
+        </header>
+
+        <!-- VUE DU QUIZ PRINCIPAL -->
+        <div id="quiz-view">
+            <!-- CONTEUR DE SCORE -->
+            <div class="flex justify-center mb-6">
+                <div id="score-display"
+                    class="bg-indigo-100 text-indigo-800 text-xl font-bold py-3 px-6 rounded-lg shadow-inner">
+                    Score: 0 / 0
                 </div>
             </div>
-        </div>
+            <!-- FIN DU CONTEUR DE SCORE -->
 
-        <div class="content" id="questionsContainer"></div>
+            <!-- MENU DE NAVIGATION -->
+            <nav id="chapter-nav" class="mb-8 p-4 bg-white rounded-xl shadow-lg border border-gray-200">
+                <h3 class="text-lg font-bold text-gray-700 mb-3">Accéder à un Chapitre :</h3>
+                <div id="nav-links-container" class="flex flex-wrap gap-2 justify-center text-sm">
+                    <!-- Les liens seront insérés ici par JavaScript -->
+                </div>
+            </nav>
+            <!-- FIN DU MENU DE NAVIGATION -->
 
-        <div class="action-buttons">
-            <button class="btn btn-success" onclick="validateAnswers()">✓ Valider toutes les réponses</button>
-            <button class="btn btn-warning" onclick="resetQuiz()">↻ Recommencer</button>
-            <button class="btn btn-info" onclick="showResults()">📊 Voir les résultats</button>
+            <div id="quiz-container" class="space-y-6">
+                <!-- Questions will be dynamically inserted here -->
+            </div>
         </div>
+        <!-- FIN DU QUIZ PRINCIPAL -->
+
+        <!-- VUE D'ADMINISTRATION -->
+        <div id="admin-view" class="hidden">
+            <h2 class="text-3xl font-extrabold text-gray-800 mt-4 mb-6 pb-2 border-b-2 border-gray-300">Panneau
+                d'Administration</h2>
+
+            <button onclick="switchView('quiz-view')"
+                class="mb-6 px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition duration-150 shadow-md">
+                &larr; Retour au Quiz
+            </button>
+
+            <div id="admin-content" class="p-6 bg-white rounded-xl shadow-lg border border-gray-200">
+                <!-- Le contenu de l'administration (liste des questions/éditeur) sera injecté ici -->
+            </div>
+        </div>
+        <!-- FIN DE LA VUE D'ADMINISTRATION -->
     </div>
 
-    <div class="results-modal" id="resultsModal">
-        <div class="results-content">
-            <h2>Résultats du Test</h2>
-            <div class="score-display" id="scoreDisplay"></div>
-            <p id="scoreMessage"></p>
-            <button class="btn btn-primary" onclick="closeResults()" style="margin-top: 20px;">Fermer</button>
+    <!-- Modal Général pour Explications et Messages -->
+    <div id="message-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeMessageModal()">&times;</span>
+            <h4 id="modal-title" class="text-2xl font-bold text-indigo-700 mb-4">Message</h4>
+            <div id="modal-content-text" class="text-gray-700 space-y-3">
+                <!-- Contenu du message ou de l'explication -->
+            </div>
         </div>
     </div>
+    <!-- Fin de la Modal -->
 
     <script>
-         const questions = [
-            {
-                id: 1,
-                text: "Which financial statement nodes are part of the calculation for net profit/loss? Note: There are 2 correct answers to this question.",
-                options: [
-                    { id: "A", text: "Financial Statement Notes" },
-                    { id: "B", text: "Assets" },
-                    { id: "C", text: "Not Assigned" },
-                    { id: "D", text: "Liabilities and Equity" }
-                ],
-                correctAnswers: ["B", "D"],
-                multipleChoice: true
-            },
-            {
-                id: 2,
-                text: "Why do you create a down-payment request for a customer?",
-                options: [
-                    { id: "A", text: "To inform the bank of a pending payment." },
-                    { id: "B", text: "To post the down-payment automatically." },
-                    { id: "C", text: "To update the general ledger." },
-                    { id: "D", text: "To report it on your P&L statement." }
-                ],
-                correctAnswers: ["B"],
-                multipleChoice: false
-            },
-            {
-                id: 3,
-                text: "The credit profile is used to store which information in the customer master data? Note: There are 2 correct answers to this question.",
-                options: [
-                    { id: "A", text: "The credit exposure" },
-                    { id: "B", text: "The scoring rules" },
-                    { id: "C", text: "The customer credit group" },
-                    { id: "D", text: "The credit decisions" }
-                ],
-                correctAnswers: ["B", "C"],
-                multipleChoice: true
-            },
-            {
-                id: 4,
-                text: "A company wants to use the automatic payment program in SAP S/4HANA and ensure that the system uses a specific document type for the generated postings during the payment run. Which configuration setting controls the document type used for payment postings?",
-                options: [
-                    { id: "A", text: "The bank determination settings, specifically the paying company codes section." },
-                    { id: "B", text: "The payment method settings, specifically the note to payee by origin section." },
-                    { id: "C", text: "The payment method setting, specifically the posting details section." },
-                    { id: "D", text: "The payment medium format settings, specifically the format output section." }
-                ],
-                correctAnswers: ["C"],
-                multipleChoice: false
-            },
-            {
-                id: 5,
-                text: "A fixed asset you ordered is delivered but is not activated. What could be the reason?",
-                options: [
-                    { id: "A", text: "The asset is only activated upon payment. It is a valuated goods receipt." },
-                    { id: "B", text: "The asset accountant did not enter the activation date in the asset master record" },
-                    { id: "C", text: "The asset is only activated with the invoice. It is a non-valuated goods receipt" },
-                    { id: "D", text: "The asset is only activated with the invoice. It is a valuated goods receipt." }
-                ],
-                correctAnswers: ["C"],
-                multipleChoice: false
-            },
-            {
-                id: 6,
-                text: "Which tasks are mandatory before you can migrate data for a specific object? Note: There are 2 correct answers to this question.",
-                options: [
-                    { id: "A", text: "Predecessor objects have been migrated" },
-                    { id: "B", text: "You select the same migration method previously used for other objects" },
-                    { id: "C", text: "All previous migration projects are in the 'Finished' status" },
-                    { id: "D", text: "Permission to migrate the data has been assigned" }
-                ],
-                correctAnswers: ["A", "D"],
-                multipleChoice: true
-            },
-            {
-                id: 7,
-                text: "You are recording actions for custom process steps in a test automate. When do you press the 'Read' button on the recording panel? Note: There are 2 correct answers to this question.",
-                options: [
-                    { id: "A", text: "To capture a static label on the screen that should be checked during test execution" },
-                    { id: "B", text: "To capture a value in a text field that should be stored as a variable" },
-                    { id: "C", text: "To capture an error message on the screen that can be used later" },
-                    { id: "D", text: "To capture text in a message screen that can be used for data binding later" }
-                ],
-                correctAnswers: ["B", "D"],
-                multipleChoice: true
-            },
-            {
-                id: 8,
-                text: "When do you specify the data retention period in the SAP S/4HANA Migration Cockpit?",
-                options: [
-                    { id: "A", text: "When the project status is 'Not Started'" },
-                    { id: "B", text: "When the project status is 'Completed'" },
-                    { id: "C", text: "When the project status in 'In Progress'" },
-                    { id: "D", text: "When the project status is 'Finished'" }
-                ],
-                correctAnswers: ["D"],
-                multipleChoice: false
-            },
-            {
-                id: 9,
-                text: "What are some characteristics of the SAP S/4HANA Migration Cockpit? Note: There are 2 correct answers to this question.",
-                options: [
-                    { id: "A", text: "Mapping source values to SAP S/4HANA target values" },
-                    { id: "B", text: "Extensibility using the Legacy System Migration Workbench" },
-                    { id: "C", text: "Combining the local and remote schema approaches into one migration object" },
-                    { id: "D", text: "Guidance and simulation of the migration process" }
-                ],
-                correctAnswers: ["A", "D"],
-                multipleChoice: true
-            },
-            {
-                id: 10,
-                text: "Where are the manual test cases created for customer User Acceptance Testing?",
-                options: [
-                    { id: "A", text: "SAP Solution Manager" },
-                    { id: "B", text: "SAP Cloud ALM" },
-                    { id: "C", text: "SAP Signavio Process Navigator" },
-                    { id: "D", text: "Test Automation Tool" }
-                ],
-                correctAnswers: ["B"],
-                multipleChoice: false
-            },
-            {
-                id: 11,
-                text: "When using the Local SAP S/4HANA Database Schema migration approach, what is the maximum file size? Note: There are 2 correct answers to this question (Plusieurs réponses possibles)",
-                options: [
-                    { id: "A", text: "160 MB per file" },
-                    { id: "B", text: "160 MB per ZIP file" },
-                    { id: "C", text: "100 MB per ZIP file" },
-                    { id: "D", text: "100 MB per file" }
-                ],
-                correctAnswers: ["C","D"],
-                multipleChoice: true
-            },
-            {
-                id: 12,
-                text: "When processing manual incoming payments, which of the following options can be used to manage company payment differences? Note: There are 3 correct answers to this question.",
-                options: [
-                    { id: "A", text: "Individual value adjustment" },
-                    { id: "B", text: "Return payment" },
-                    { id: "C", text: "Residual payment" },
-                    { id: "D", text: "Partial payment" },
-                    { id: "E", text: "Payment on account" }
-                ],
-                correctAnswers: ["C", "D", "E"],
-                multipleChoice: true
-            },
-            {
-                id: 13,
-                text: "What does a partner line of business configuration expert reference when identifying business processes to cover in the Fit-to-Standard workshops?",
-                options: [
-                    { id: "A", text: "SAP Signavio Process Collaboration Hub" },
-                    { id: "B", text: "Business Driven Configuration" },
-                    { id: "C", text: "Digital Discovery Assessment" },
-                    { id: "D", text: "SAP Signavio Journey Modeler" }
-                ],
-                correctAnswers: ["C"],
-                multipleChoice: false
-            },
-            {
-                id: 14,
-                text: "You post and match an incoming payment to the incorrect customer account. How can you correct the mistake?",
-                options: [
-                    { id: "A", text: "Change the customer on the payment document" },
-                    { id: "B", text: "Reset the clearing and reverse the document" },
-                    { id: "C", text: "Issue a credit memo to the customer" },
-                    { id: "D", text: "Contact the customer through correspondence" }
-                ],
-                correctAnswers: ["B"],
-                multipleChoice: false
-            },
-            {
-                id: 15,
-                text: "Where can you customize the scope of a post-upgrade test?",
-                options: [
-                    { id: "A", text: "Test Your Processes app" },
-                    { id: "B", text: "Manage Your Test Processes app" },
-                    { id: "C", text: "Analyze Automated Test Results app" },
-                    { id: "D", text: "Manage Upgrade Tests app" }
-                ],
-                correctAnswers: ["D"],
-                multipleChoice: false
-            },
-            {
-                id: 16,
-                text: "Where can you access the Cloud Integration Automation Service (CIAS)? There are two correct answers.",
-                options: [
-                    { id: "A", text: "SAP Cloud ALM" },
-                    { id: "B", text: "SAP for Me" },
-                    { id: "C", text: "SAP Signavio Process Navigator" },
-                    { id: "D", text: "SAP Discovery Center" }
-                ],
-                correctAnswers: ["A", "B"],
-                multipleChoice: true
-            },
-            {
-                id: 17,
-                text: "You migrated data from a legacy DB to the target SAP S/4HANA Cloud using a remote HANA DB. Which data migration procedure did you use? (2 answers )",
-                options: [
-                    { id: "A", text: "Local SAP S/4HANA Database Schema" },
-                    { id: "B", text: "Remote SAP HANA Database Schema" },
-                    { id: "C", text: "Direct connection to an SAP system" },
-                    { id: "D", text: "Migration using staging tables" }
-                ],
-                correctAnswers: ["B","D"],
-                multipleChoice: true
-            },
-            {
-                id: 18,
-                text: "Which editing options are available in the dunning proposal list? Note: There are 3 correct answers to this question.",
-                options: [
-                    { id: "A", text: "Change the dunning charges" },
-                    { id: "B", text: "Editing the dunning texts" },
-                    { id: "C", text: "Edit dunning blocks at account level" },
-                    { id: "D", text: "Edit dunning blocks at line item level" },
-                    { id: "E", text: "Change the dunning level of an open item" }
-                ],
-                correctAnswers: ["A","C", "D"],
-                multipleChoice: true
-            },
-            {
-                id: 19,
-                text: "In which type of extensibility is the SAP Business Technology Platform used to host a custom extension?",
-                options: [
-                    { id: "A", text: "Classic extensibility" },
-                    { id: "B", text: "Key user extensibility" },
-                    { id: "C", text: "Side-by-side extensibility" },
-                    { id: "D", text: "Developer extensibility" }
-                ],
-                correctAnswers: ["C"],
-                multipleChoice: false
-            },
-            {
-                id: 20,
-                text: "What does a launchpad page include? There are two correct answers.",
-                options: [
-                    { id: "A", text: "One or more apps" },
-                    { id: "B", text: "One or more spaces" },
-                    { id: "C", text: "One or more sections" },
-                    { id: "D", text: "One or more catalogs" }
-                ],
-                correctAnswers: ["A", "C"],
-                multipleChoice: true
-            },
-            {
-                id: 21,
-                text: "When processing payments, what are possible functions of reason codes? Note: There are 3 correct answers to this question.",
-                options: [
-                    { id: "A", text: "Create a sales order" },
-                    { id: "B", text: "Automatic posting of a residual item to a specific G/L account" },
-                    { id: "C", text: "Control of the account where a residual item is posted" },
-                    { id: "D", text: "Control of the type of payment notice sent to a customer" },
-                    { id: "E", text: "Generate payment reminder" }
-                ],
-                correctAnswers: ["B", "C", "D"],
-                multipleChoice: true
-            },
-            {
-                id: 22,
-                text: "How does an implementation consultant support customer experts during Fit-to-Standard? Note: There are 2 correct answers to this question.",
-                options: [
-                    { id: "A", text: "Conduct end-user training on active scope items" },
-                    { id: "B", text: "Demonstrate SAP Best Practices business processes in the starter system" },
-                    { id: "C", text: "Determine set up instructions for customer-driven integrations" },
-                    { id: "D", text: "Highlight areas that require configuration or customization decisions" }
-                ],
-                correctAnswers: ["B", "D"],
-                multipleChoice: true
-            },
-            {
-                id: 23,
-                text: "Based on the SAP Activate Methodology, which activities must you perform in the Explore phase? Note: There are 2 correct answers to this question.",
-                options: [
-                    { id: "A", text: "Conduct the Fit-to-Standard analysis to gather configuration values" },
-                    { id: "B", text: "Conduct the Digital Discovery Assessment to identify extension requirements" },
-                    { id: "C", text: "Use the Test system to demonstrate SAP Best Practices process" },
-                    { id: "D", text: "Define the organizational structure and chart of accounts" }
-                ],
-                correctAnswers: ["A", "D"],
-                multipleChoice: true
-            },
-            {
-                id: 24,
-                text: "You migrated data from a legacy DB to the target SAP S/4HANA Cloud using a remote HANA DB. Which data migration procedure did you use?",
-                options: [
-                    { id: "A", text: "Local SAP S/4HANA Database Schema" },
-                    { id: "B", text: "Remote SAP HANA Database Schema" },
-                    { id: "C", text: "Direct connection to an SAP system" },
-                    { id: "D", text: "Migration using staging tables" }
-                ],
-                correctAnswers: ["B","D"],
-                multipleChoice: true
-            },
-            {
-                id: 25,
-                text: "Which of the following fields are maintained on the general data segment of the customer business partner? Note: There are 2 correct answers to this question.",
-                options: [
-                    { id: "A", text: "Communication language" },
-                    { id: "B", text: "Bank key" },
-                    { id: "C", text: "Payment method" },
-                    { id: "D", text: "Company code" }
-                ],
-                correctAnswers: ["A", "B"],
-                multipleChoice: true
-            },
-            {
-                id: 26,
-                text: "What are the effects of a goods issue posting? Note: There are 2 correct answers to this question.",
-                options: [
-                    { id: "A", text: "It posts an accounting document" },
-                    { id: "B", text: "It reduces the inventory values" },
-                    { id: "C", text: "It generates an invoice for approval" },
-                    { id: "D", text: "It increases the inventory value" }
-                ],
-                correctAnswers: ["A", "B"],
-                multipleChoice: true
-            },
-            {
-                id: 27,
-                text: "You want to check why a down payment request was not generated for an item in a purchase order. Where would you check? Note: There are 2 correct answers to this question.",
-                options: [
-                    { id: "A", text: "The purchase order line item" },
-                    { id: "B", text: "The purchase order header" },
-                    { id: "C", text: "The goods receipt line item" },
-                    { id: "D", text: "The invoice header" }
-                ],
-                correctAnswers: ["A", "B"],
-                multipleChoice: true
-            },
-            {
-                id: 28,
-                text: "What can be transported with the Export Software Collection app?",
-                options: [
-                    { id: "A", text: "A custom form template" },
-                    { id: "B", text: "A business configuration value" },
-                    { id: "C", text: "A customer-specific CDS view" },
-                    { id: "D", text: "A new organizational entity" },
-                    { id: "E", text: "An adapted Fiori UI" }
-                ],
-                correctAnswers: ["A","C","E"],
-                multipleChoice: true
-            },
-            {
-                id: 29,
-                text: "Which of the following statements is true regarding Situation Handling in SAP S/4HANA and SAP S/4HANA Cloud?",
-                options: [
-                    { id: "A", text: "Situation Handling is only applicable to financial operations." },
-                    { id: "B", text: "Situation Handling provides alerts for non-critical issues only." },
-                    { id: "C", text: "Situation Handling helps improve user efficiency by bringing critical issues to your attention at the right time." },
-                    { id: "D", text: "Situation Handling follows a manual approach for resolving issues." }
-                ],
-                correctAnswers: ["C"],
-                multipleChoice: false
-            },
-            {
-                id: 30,
-                text: "What is the relation between the line items displayed for a journal entry in the entry view and the general ledger view?",
-                options: [
-                    { id: "A", text: "The general ledger view has as many or more line items as the entry view." },
-                    { id: "B", text: "The entry view has as many or more line items as the general ledger view." },
-                    { id: "C", text: "The general ledger view displays direct account assignments such as the profit center while these are not available in the entry view." },
-                    { id: "D", text: "The entry view displays the subledger accounts (such as customer or supplier) while this is not available in the general ledger view." }
-                ],
-                correctAnswers: ["A"],
-                multipleChoice: false
-            },
-            {
-                id: 31,
-                text: "Which dimension do you use to produce external financial statements based on cost-of-sales accounting?",
-                options: [
-                    { id: "A", text: "Segment" },
-                    { id: "B", text: "Market segment" },
-                    { id: "C", text: "Functional area" },
-                    { id: "D", text: "Profit center" }
-                ],
-                correctAnswers: ["C"],
-                multipleChoice: false
-            },
-            {
-                id: 32,
-                text: "The Balance Sheet/Income Statement report can be exported to a .xlsx or a .pdf format file",
-                options: [
-                    { id: "A", text: "True" },
-                    { id: "B", text: "False" }
-                ],
-                correctAnswers: ["B"],
-                multipleChoice: false
-            },
-            {
-                id: 33,
-                text: "Which fields can you define on the Chart of Accounts level of a G/L Account? Note: There are 2 correct answers to this question.",
-                options: [
-                    { id: "A", text: "Account currency" },
-                    { id: "B", text: "Account group" },
-                    { id: "C", text: "G/L account type" },
-                    { id: "D", text: "Functional area" }
-                ],
-                correctAnswers: ["B", "C"],
-                multipleChoice: true
-            },
-            {
-                id: 34,
-                text: "An organization has their finance line of business (LoB) running in SAP S/4HANA Cloud Public Edition, while the rest of the LoBs are running in SAP S/4HANA Cloud Private Edition. Which two-tier ERP scenario is this an example of? Choose the correct answer.",
-                options: [
-                    { id: "A", text: "Headquarter and Subsidiary" },
-                    { id: "B", text: "Central Services" },
-                    { id: "C", text: "Supply Chain Ecosystem" }
-                ],
-                correctAnswers: ["B"],
-                multipleChoice: false
-            },
-            {
-                id: 35,
-                text: "Which of the following solutions are included in the SAP Business Suite? Note: There are 3 correct answers to this question.?",
-                options: [
-                    { id: "A", text: "SAP Business AI" },
-                    { id: "B", text: "SAP Solution Manager" },
-                    { id: "C", text: "SAP Business Data Cloud" },
-                    { id: "D", text: "SAP Enterprise Central Component" },
-                    { id: "E", text: "SAP cloud ERP applications" }
-                ],
-                correctAnswers: ["A","C","E"],
-                multipleChoice: true
-            },
-            {
-                id: 36,
-                text: "If you cannot find a prepackaged solution process that addresses integration requirements, where would you look?",
-                options: [
-                    { id: "A", text: "SAP Signavio Process" },
-                    { id: "B", text: "SAP Business Accelerator Hub" },
-                    { id: "C", text: "SAP Business Technology Platform" },
-                    { id: "D", text: "SAP Discovery Center" },
-                    { id: "E", text: "SAP Cloud ALM" }
-                ],
-                correctAnswers: ["B"],
-                multipleChoice: false
-            },
-            {
-                id: 37,
-                text: "Who is responsible for delivering advisory, implementation, and application management services to customers transitioning to cloud ERP?",
-                options: [
-                    { id: "A", text: "SAP only" },
-                    { id: "B", text: "Partners" },
-                    { id: "C", text: "End customers" },
-                    { id: "D", text: "CIOs" }
-                ],
-                correctAnswers: ["B"],
-                multipleChoice: false
-            },
-            {
-                id: 38,
-                text: "Which of the following elements belong to the configuration of a financial statement version? (2 answers)",
-                options: [
-                    { id: "A", text: "Currency" },
-                    { id: "B", text: "FSV Item" },
-                    { id: "C", text: "Accounts" }
-                ],
-                correctAnswers: ["B", "C"],
-                multipleChoice: true
-            },
-            {
-                id: 39,
-                text: "Where can you launch the Quick Qualification? 3 Answers",
-                options: [
-                    { id: "A", text: "Known integrations" },
-                    { id: "B", text: "Data volume to be migrated" },
-                    { id: "C", text: "Legal entities" },
-                    { id: "D", text: "Extensibility requirements" },
-                    { id: "E", text: "Percentage of processes selected in a line of business" }
-                ],
-                correctAnswers: ["A", "C", "E"],
-                multipleChoice: true
-            },
-            {
-                id: 40,
-                text: "What is the best definition of a semantic tag?",
-                options: [
-                    { id: "A", text: "A textual identifier used to highlight key figures in financial statement versions (FSVs)." },
-                    { id: "B", text: "A calculation logic that is always developed by the business to meet their individual requirement." },
-                    { id: "C", text: "A formula that can be manually embedded into SAP reports." }
-                ],
-                correctAnswers: ["A"],
-                multipleChoice: false
-            }
+        // =====================================================================================
+        // VARIABLES ET DONNÉES GLOBALES
+        // =====================================================================================
+
+        let currentScore = 0;
+        let totalQuestions = 0;
+        let quizData = [];
+        let userProgress = {};
+        let currentlyEditingIndex = -1;
+
+        const chapterBreaks = [
+            { start: 0, title: "Test Blanc 1", anchor: "chapitre-0" },
+            
         ];
 
+        // Fonction pour obtenir les données initiales (Hardcoded)
+        function getInitialQuizData() {
+            return [
+                 {
+    question: "1-Which financial statement nodes are part of the calculation for net profit/loss?",
+    type: "multiple",
+    options: [
+        "A. Financial Statement Notes",
+        "B. Assets",
+        "C. Not Assigned",
+        "D. Liabilities and Equity"
+    ],
+    correct: [
+        "B. Assets",
+        "D. Liabilities and Equity"
+    ],
+    explanation:""
+},
+{
+    question: "2-Why do you create a down-payment request for a customer?",
+    type: "single",
+    options: [
+        "A. To inform the bank of a pending payment.",
+        "B. To post the down-payment automatically.",
+        "C. To update the general ledger.",
+        "D. To report it on your P&L statement."
+    ],
+    correct: [
+        "B. To post the down-payment automatically."
+    ],
+    explanation:""
+},
+{
+    question: "3-The credit profile is used to store which information in the customer master data?",
+    type: "multiple",
+    options: [
+        "A. The credit exposure",
+        "B. The scoring rules",
+        "C. The customer credit group",
+        "D. The credit decisions"
+    ],
+    correct: [
+        "B. The scoring rules",
+        "C. The customer credit group"
+    ],
+    explanation: ""
+},
+{
+    question: "4-A company wants to use the automatic payment program in SAP S/4HANA. Which configuration setting controls the document type used for payment postings?",
+    type: "single",
+    options: [
+        "A. The bank determination settings, specifically the paying company codes section.",
+        "B. The payment method settings, specifically the note to payee by origin section.",
+        "C. The payment method setting, specifically the posting details section.",
+        "D. The payment medium format settings, specifically the format output section."
+    ],
+    correct: [
+        "C. The payment method setting, specifically the posting details section."
+    ],
+    explanation: ""
+},
+{
+    question: "5-A fixed asset you ordered is delivered but is not activated. What could be the reason?",
+    type: "single",
+    options: [
+        "A. The asset is only activated upon payment. It is a valuated goods receipt.",
+        "B. The asset accountant did not enter the activation date in the asset master record",
+        "C. The asset is only activated with the invoice. It is a non-valuated goods receipt",
+        "D. The asset is only activated with the invoice. It is a valuated goods receipt."
+    ],
+    correct: [
+        "C. The asset is only activated with the invoice. It is a non-valuated goods receipt"
+    ],
+    explanation: ""
+},
+{
+    question: "6-Which tasks are mandatory before you can migrate data for a specific object?",
+    type: "multiple",
+    options: [
+        "A. Predecessor objects have been migrated",
+        "B. You select the same migration method previously used for other objects",
+        "C. All previous migration projects are in the 'Finished' status",
+        "D. Permission to migrate the data has been assigned"
+    ],
+    correct: [
+        "A. Predecessor objects have been migrated",
+        "D. Permission to migrate the data has been assigned"
+    ],
+    explanation: ""
+},
+{
+    question: "7-When do you press the 'Read' button on the recording panel in a test automate?",
+    type: "multiple",
+    options: [
+        "A. To capture a static label on the screen that should be checked during test execution",
+        "B. To capture a value in a text field that should be stored as a variable",
+        "C. To capture an error message on the screen that can be used later",
+        "D. To capture text in a message screen that can be used for data binding later"
+    ],
+    correct: [
+        "B. To capture a value in a text field that should be stored as a variable",
+        "D. To capture text in a message screen that can be used for data binding later"
+    ],
+    explanation: ""
+},
+{
+    question: "8-When do you specify the data retention period in the SAP S/4HANA Migration Cockpit?",
+    type: "single",
+    options: [
+        "A. When the project status is 'Not Started'",
+        "B. When the project status is 'Completed'",
+        "C. When the project status is 'In Progress'",
+        "D. When the project status is 'Finished'"
+    ],
+    correct: [
+        "D. When the project status is 'Finished'"
+    ],
+    explanation: ""
+},
+{
+    question: "9-What are some characteristics of the SAP S/4HANA Migration Cockpit?",
+    type: "multiple",
+    options: [
+        "A. Mapping source values to SAP S/4HANA target values",
+        "B. Extensibility using the Legacy System Migration Workbench",
+        "C. Combining the local and remote schema approaches into one migration object",
+        "D. Guidance and simulation of the migration process"
+    ],
+    correct: [
+        "A. Mapping source values to SAP S/4HANA target values",
+        "D. Guidance and simulation of the migration process"
+    ],
+    explanation: ""
+},
+{
+    question: "10-Where are the manual test cases created for customer User Acceptance Testing?",
+    type: "single",
+    options: [
+        "A. SAP Solution Manager",
+        "B. SAP Cloud ALM",
+        "C. SAP Signavio Process Navigator",
+        "D. Test Automation Tool"
+    ],
+    correct: [
+        "B. SAP Cloud ALM"
+    ],
+    explanation: ""
+},
+{
+    question: "11-When using the Local SAP S/4HANA Database Schema migration approach, what is the maximum file size?",
+    type: "multiple",
+    options: [
+        "A. 160 MB per file",
+        "B. 160 MB per ZIP file",
+        "C. 100 MB per ZIP file",
+        "D. 100 MB per file"
+    ],
+    correct: [
+        "C. 100 MB per ZIP file",
+        "D. 100 MB per file"
+    ],
+    explanation: ""
+},
+{
+    question: "12-When processing manual incoming payments, which options can be used to manage company payment differences?",
+    type: "multiple",
+    options: [
+        "A. Individual value adjustment",
+        "B. Return payment",
+        "C. Residual payment",
+        "D. Partial payment",
+        "E. Payment on account"
+    ],
+    correct: [
+        "C. Residual payment",
+        "D. Partial payment",
+        "E. Payment on account"
+    ],
+    explanation: ""
+},
+{
+    question: "13-What does a partner line of business configuration expert reference when identifying business processes to cover in the Fit-to-Standard workshops?",
+    type: "single",
+    options: [
+        "A. SAP Signavio Process Collaboration Hub",
+        "B. Business Driven Configuration",
+        "C. Digital Discovery Assessment",
+        "D. SAP Signavio Journey Modeler"
+    ],
+    correct: [
+        "C. Digital Discovery Assessment"
+    ],
+    explanation: ""
+},
+{
+    question: "14-You post and match an incoming payment to the incorrect customer account. How can you correct the mistake?",
+    type: "single",
+    options: [
+        "A. Change the customer on the payment document",
+        "B. Reset the clearing and reverse the document",
+        "C. Issue a credit memo to the customer",
+        "D. Contact the customer through correspondence"
+    ],
+    correct: [
+        "B. Reset the clearing and reverse the document"
+    ],
+    explanation: ""
+},
+{
+    question: "15-Where can you customize the scope of a post-upgrade test?",
+    type: "single",
+    options: [
+        "A. Test Your Processes app",
+        "B. Manage Your Test Processes app",
+        "C. Analyze Automated Test Results app",
+        "D. Manage Upgrade Tests app"
+    ],
+    correct: [
+        "D. Manage Upgrade Tests app"
+    ],
+    explanation: ""
+},
+{
+    question: "16-Where can you access the Cloud Integration Automation Service (CIAS)?",
+    type: "multiple",
+    options: [
+        "A. SAP Cloud ALM",
+        "B. SAP for Me",
+        "C. SAP Signavio Process Navigator",
+        "D. SAP Discovery Center"
+    ],
+    correct: [
+        "A. SAP Cloud ALM",
+        "B. SAP for Me"
+    ],
+    explanation: ""
+},
+{
+    question: "17-You migrated data from a legacy DB to SAP S/4HANA Cloud using a remote HANA DB. Which migration procedure did you use?",
+    type: "multiple",
+    options: [
+        "A. Local SAP S/4HANA Database Schema",
+        "B. Remote SAP HANA Database Schema",
+        "C. Direct connection to an SAP system",
+        "D. Migration using staging tables"
+    ],
+    correct: [
+        "B. Remote SAP HANA Database Schema",
+        "D. Migration using staging tables"
+    ],
+    explanation: ""
+},
+{
+    question: "18-Which editing options are available in the dunning proposal list?",
+    type: "multiple",
+    options: [
+        "A. Change the dunning charges",
+        "B. Editing the dunning texts",
+        "C. Edit dunning blocks at account level",
+        "D. Edit dunning blocks at line item level",
+        "E. Change the dunning level of an open item"
+    ],
+    correct: [
+        "A. Change the dunning charges",
+        "C. Edit dunning blocks at account level",
+        "D. Edit dunning blocks at line item level"
+    ],
+    explanation: ""
+},
+{
+    question: "19-In which type of extensibility is the SAP Business Technology Platform used to host a custom extension?",
+    type: "single",
+    options: [
+        "A. Classic extensibility",
+        "B. Key user extensibility",
+        "C. Side-by-side extensibility",
+        "D. Developer extensibility"
+    ],
+    correct: [
+        "C. Side-by-side extensibility"
+    ],
+    explanation: ""
+},
+{
+    question: "20-What does a launchpad page include?",
+    type: "multiple",
+    options: [
+        "A. One or more apps",
+        "B. One or more spaces",
+        "C. One or more sections",
+        "D. One or more catalogs"
+    ],
+    correct: [
+        "A. One or more apps",
+        "C. One or more sections"
+    ],
+    explanation: ""
+},
+{
+    question: "21-When processing payments, what are possible functions of reason codes?",
+    type: "multiple",
+    options: [
+        "A. Create a sales order",
+        "B. Automatic posting of a residual item to a specific G/L account",
+        "C. Control of the account where a residual item is posted",
+        "D. Control of the type of payment notice sent to a customer",
+        "E. Generate payment reminder"
+    ],
+    correct: [
+        "B. Automatic posting of a residual item to a specific G/L account",
+        "C. Control of the account where a residual item is posted",
+        "D. Control of the type of payment notice sent to a customer"
+    ],
+    explanation: ""
+},
+{
+    question: "22-How does an implementation consultant support customer experts during Fit-to-Standard?",
+    type: "multiple",
+    options: [
+        "A. Conduct end-user training on active scope items",
+        "B. Demonstrate SAP Best Practices business processes in the starter system",
+        "C. Determine set up instructions for customer-driven integrations",
+        "D. Highlight areas that require configuration or customization decisions"
+    ],
+    correct: [
+        "B. Demonstrate SAP Best Practices business processes in the starter system",
+        "D. Highlight areas that require configuration or customization decisions"
+    ],
+    explanation: ""
+},
+{
+    question: "23-Based on the SAP Activate Methodology, which activities must you perform in the Explore phase?",
+    type: "multiple",
+    options: [
+        "A. Conduct the Fit-to-Standard analysis to gather configuration values",
+        "B. Conduct the Digital Discovery Assessment to identify extension requirements",
+        "C. Use the Test system to demonstrate SAP Best Practices process",
+        "D. Define the organizational structure and chart of accounts"
+    ],
+    correct: [
+        "A. Conduct the Fit-to-Standard analysis to gather configuration values",
+        "D. Define the organizational structure and chart of accounts"
+    ],
+    explanation: ""
+},
+{
+    question: "24-You migrated data from a legacy DB to SAP S/4HANA Cloud using a remote HANA DB. Which data migration procedure did you use?",
+    type: "multiple",
+    options: [
+        "A. Local SAP S/4HANA Database Schema",
+        "B. Remote SAP HANA Database Schema",
+        "C. Direct connection to an SAP system",
+        "D. Migration using staging tables"
+    ],
+    correct: [
+        "B. Remote SAP HANA Database Schema",
+        "D. Migration using staging tables"
+    ],
+    explanation: ""
+},
+{
+    question: "25-Which fields are maintained on the general data segment of the customer business partner?",
+    type: "multiple",
+    options: [
+        "A. Communication language",
+        "B. Bank key",
+        "C. Payment method",
+        "D. Company code"
+    ],
+    correct: [
+        "A. Communication language",
+        "B. Bank key"
+    ],
+    explanation: ""
+},
+{
+    question: "26-What are the effects of a goods issue posting?",
+    type: "multiple",
+    options: [
+        "A. It posts an accounting document",
+        "B. It reduces the inventory values",
+        "C. It generates an invoice for approval",
+        "D. It increases the inventory value"
+    ],
+    correct: [
+        "A. It posts an accounting document",
+        "B. It reduces the inventory values"
+    ],
+    explanation: ""
+},
+{
+    question: "27-You want to check why a down payment request was not generated for a purchase order item. Where would you check?",
+    type: "multiple",
+    options: [
+        "A. The purchase order line item",
+        "B. The purchase order header",
+        "C. The goods receipt line item",
+        "D. The invoice header"
+    ],
+    correct: [
+        "A. The purchase order line item",
+        "B. The purchase order header"
+    ],
+    explanation: ""
+},
+{
+    question: "28-What can be transported with the Export Software Collection app?",
+    type: "multiple",
+    options: [
+        "A. A custom form template",
+        "B. A business configuration value",
+        "C. A customer-specific CDS view",
+        "D. A new organizational entity",
+        "E. An adapted Fiori UI"
+    ],
+    correct: [
+        "A. A custom form template",
+        "C. A customer-specific CDS view",
+        "E. An adapted Fiori UI"
+    ],
+    explanation: ""
+},
+{
+    question: "29-Which statement is true regarding Situation Handling in SAP S/4HANA?",
+    type: "single",
+    options: [
+        "A. Situation Handling is only applicable to financial operations.",
+        "B. Situation Handling provides alerts for non-critical issues only.",
+        "C. Situation Handling helps improve user efficiency by bringing critical issues to your attention at the right time.",
+        "D. Situation Handling follows a manual approach for resolving issues."
+    ],
+    correct: [
+        "C. Situation Handling helps improve user efficiency by bringing critical issues to your attention at the right time."
+    ],
+    explanation: ""
+},
+{
+    question: "30-What is the relation between the entry view and the general ledger view of a journal entry?",
+    type: "single",
+    options: [
+        "A. The general ledger view has as many or more line items as the entry view.",
+        "B. The entry view has as many or more line items as the general ledger view.",
+        "C. The general ledger view displays direct account assignments not available in the entry view.",
+        "D. The entry view displays subledger accounts not available in the general ledger view."
+    ],
+    correct: [
+        "A. The general ledger view has as many or more line items as the entry view."
+    ],
+    explanation: ""
+},
+{
+    question: "31-Which dimension is used to produce external financial statements based on cost-of-sales accounting?",
+    type: "single",
+    options: [
+        "A. Segment",
+        "B. Market segment",
+        "C. Functional area",
+        "D. Profit center"
+    ],
+    correct: [
+        "C. Functional area"
+    ],
+    explanation: ""
+},
+{
+    question: "32-The Balance Sheet/Income Statement report can be exported to XLSX or PDF format.",
+    type: "single",
+    options: [
+        "A. True",
+        "B. False"
+    ],
+    correct: [
+        "B. False"
+    ],
+    explanation: ""
+},
+{
+    question: "33-Which fields can you define at the chart of accounts level of a G/L account?",
+    type: "multiple",
+    options: [
+        "A. Account currency",
+        "B. Account group",
+        "C. G/L account type",
+        "D. Functional area"
+    ],
+    correct: [
+        "B. Account group",
+        "C. G/L account type"
+    ],
+    explanation: ""
+},
+{
+    question: "34-Which two-tier ERP scenario is used when finance runs on SAP S/4HANA Cloud Public Edition and other LoBs on Private Edition?",
+    type: "single",
+    options: [
+        "A. Headquarter and Subsidiary",
+        "B. Central Services",
+        "C. Supply Chain Ecosystem"
+    ],
+    correct: [
+        "B. Central Services"
+    ],
+    explanation: ""
+},
+{
+    question: "35-Which solutions are included in the SAP Business Suite?",
+    type: "multiple",
+    options: [
+        "A. SAP Business AI",
+        "B. SAP Solution Manager",
+        "C. SAP Business Data Cloud",
+        "D. SAP Enterprise Central Component",
+        "E. SAP cloud ERP applications"
+    ],
+    correct: [
+        "A. SAP Business AI",
+        "C. SAP Business Data Cloud",
+        "E. SAP cloud ERP applications"
+    ],
+    explanation: ""
+},
+{
+    question: "36-If you cannot find a prepackaged solution process for integration requirements, where would you look?",
+    type: "single",
+    options: [
+        "A. SAP Signavio Process",
+        "B. SAP Business Accelerator Hub",
+        "C. SAP Business Technology Platform",
+        "D. SAP Discovery Center",
+        "E. SAP Cloud ALM"
+    ],
+    correct: [
+        "B. SAP Business Accelerator Hub"
+    ],
+    explanation: ""
+},
+{
+    question: "37-Who is responsible for delivering advisory, implementation, and application management services for cloud ERP?",
+    type: "single",
+    options: [
+        "A. SAP only",
+        "B. Partners",
+        "C. End customers",
+        "D. CIOs"
+    ],
+    correct: [
+        "B. Partners"
+    ],
+    explanation: ""
+},
+{
+    question: "38-Which elements belong to the configuration of a financial statement version?",
+    type: "multiple",
+    options: [
+        "A. Currency",
+        "B. FSV Item",
+        "C. Accounts"
+    ],
+    correct: [
+        "B. FSV Item",
+        "C. Accounts"
+    ],
+    explanation: ""
+},
+{
+    question: "39-Where can you launch the Quick Qualification?",
+    type: "multiple",
+    options: [
+        "A. Known integrations",
+        "B. Data volume to be migrated",
+        "C. Legal entities",
+        "D. Extensibility requirements",
+        "E. Percentage of processes selected in a line of business"
+    ],
+    correct: [
+        "A. Known integrations",
+        "C. Legal entities",
+        "E. Percentage of processes selected in a line of business"
+    ],
+    explanation: ""
+},
+{
+    question: "40-What is the best definition of a semantic tag?",
+    type: "single",
+    options: [
+        "A. A textual identifier used to highlight key figures in financial statement versions (FSVs).",
+        "B. A calculation logic always developed by the business.",
+        "C. A formula manually embedded into SAP reports."
+    ],
+    correct: [
+        "A. A textual identifier used to highlight key figures in financial statement versions (FSVs)."
+    ],
+    explanation: ""
+}
 
-        let userAnswers = {};
-        let userExplanations = {};
-        let validated = false;
 
-        // Load saved data from localStorage
-        function loadProgress() {
-            const savedAnswers = localStorage.getItem('quizAnswers');
-            const savedExplanations = localStorage.getItem('quizExplanations');
-            const savedValidated = localStorage.getItem('quizValidated');
 
-            if (savedAnswers) {
-                userAnswers = JSON.parse(savedAnswers);
-            }
-            if (savedExplanations) {
-                userExplanations = JSON.parse(savedExplanations);
-            }
-            if (savedValidated) {
-                validated = JSON.parse(savedValidated);
+            ];
+        }
+
+
+        // =====================================================================================
+        // FONCTIONS DE GESTION DE VUES ET DE DONNÉES
+        // =====================================================================================
+
+        function switchView(viewId) {
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('admin-view').classList.add('hidden');
+
+            document.getElementById(viewId).classList.remove('hidden');
+
+            if (viewId === 'admin-view') {
+                renderAdminPanel();
             }
         }
 
-        // Save progress to localStorage
-        function saveProgress() {
-            localStorage.setItem('quizAnswers', JSON.stringify(userAnswers));
-            localStorage.setItem('quizExplanations', JSON.stringify(userExplanations));
-            localStorage.setItem('quizValidated', JSON.stringify(validated));
-        }
-
-        // Initialize quiz
-        function initQuiz() {
-            loadProgress();
-            renderQuestions();
-            updateProgress();
-        }
-
-        // Render all questions
-        function renderQuestions() {
-            const container = document.getElementById('questionsContainer');
-            container.innerHTML = '';
-
-            questions.forEach(question => {
-                const questionCard = document.createElement('div');
-                questionCard.className = 'question-card';
-                questionCard.id = `question-${question.id}`;
-                renderSingleQuestion(question, questionCard);
-                container.appendChild(questionCard);
-            });
-        }
-
-        // Render a single question
-        function renderSingleQuestion(question, questionCard) {
-            const inputType = question.multipleChoice ? 'checkbox' : 'radio';
-            const isValidated = userAnswers[question.id] && userAnswers[question.id].validated;
-            const answers = userAnswers[question.id] && userAnswers[question.id].answers ? userAnswers[question.id].answers : [];
-
-            const optionsHTML = question.options.map(option => {
-                const isChecked = answers.includes(option.id);
-                const optionClass = isValidated || validated ? getOptionClass(question, option.id) : (isChecked ? 'selected' : '');
-
-                return `
-                    <label class="option ${optionClass}">
-                        <input type="${inputType}" 
-                               name="question-${question.id}" 
-                               value="${option.id}"
-                               ${isChecked ? 'checked' : ''}
-                               ${isValidated || validated ? 'disabled' : ''}
-                               onchange="handleAnswer(${question.id}, '${option.id}', ${question.multipleChoice})">
-                        <span>${option.id}. ${option.text}</span>
-                    </label>
-                `;
-            }).join('');
-
-            const typeLabel = question.multipleChoice ? 'Choix Multiple' : 'Choix Unique';
-            const explanation = userExplanations[question.id] || '';
-            const showExplanation = explanation || isValidated || validated;
-
-            // Check if question is answered
-            const hasAnswer = answers.length > 0;
-
-            // Validation status
-            let validationStatusHTML = '';
-            if (isValidated || validated) {
-                const isCorrect = arraysEqual(
-                    answers.slice().sort(),
-                    question.correctAnswers.slice().sort()
-                );
-                validationStatusHTML = `<span class="validation-status ${isCorrect ? 'correct' : 'incorrect'}">
-                    ${isCorrect ? '✓ Correct' : '✗ Incorrect'}
-                </span>`;
+        // Utility function to shuffle an array
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
             }
-
-            questionCard.innerHTML = `
-                <div class="question-header">
-                    <div>
-                        <span class="question-number">Question ${question.id}</span>
-                        <span class="question-type">${typeLabel}</span>
-                        ${validationStatusHTML}
-                    </div>
-                </div>
-                <div class="question-text">${question.text}</div>
-                <div class="options">${optionsHTML}</div>
-                ${!isValidated && !validated ? `
-                    <button class="validate-question-btn" 
-                            onclick="validateQuestion(${question.id})"
-                            ${!hasAnswer ? 'disabled' : ''}>
-                        ✓ Valider cette question
-                    </button>
-                ` : ''}
-                <div class="explanation-section ${showExplanation ? 'show' : ''}" id="explanation-${question.id}">
-                    <div class="explanation-header">Explication</div>
-                    <div class="explanation-text" id="explanation-text-${question.id}">
-                        ${explanation || (isValidated || validated ? 'Aucune explication ajoutée.' : '')}
-                    </div>
-                    ${!isValidated && !validated ? `
-                        <button class="add-explanation-btn" onclick="toggleExplanationInput(${question.id})">
-                            ${explanation ? '✏️ Modifier' : '➕ Ajouter une explication'}
-                        </button>
-                        <div id="explanation-input-${question.id}" style="display: none;">
-                            <textarea class="explanation-input" id="textarea-${question.id}" placeholder="Entrez votre explication ici...">${explanation}</textarea>
-                            <button class="save-explanation-btn" onclick="saveExplanation(${question.id})">💾 Enregistrer</button>
-                        </div>
-                    ` : ''}
-                </div>
-            `;
         }
 
-        // Handle answer selection
-        function handleAnswer(questionId, optionId, isMultiple) {
-            // Check if question is validated or global validation is done
-            const questionData = userAnswers[questionId];
-            if (validated || (questionData && questionData.validated)) return;
-
-            if (!userAnswers[questionId]) {
-                userAnswers[questionId] = { answers: [], validated: false };
-            }
-
-            if (isMultiple) {
-                const index = userAnswers[questionId].answers.indexOf(optionId);
-                if (index > -1) {
-                    userAnswers[questionId].answers.splice(index, 1);
-                } else {
-                    userAnswers[questionId].answers.push(optionId);
+        // Chargement du QuizData et du progrès utilisateur
+        function loadQuizData() {
+            // 1. Charger les questions
+            const storedData = localStorage.getItem('quizData');
+            if (storedData) {
+                try {
+                    quizData = JSON.parse(storedData);
+                } catch (e) {
+                    console.error("Erreur lors du chargement de localStorage (quizData). Utilisation des données par défaut.", e);
+                    quizData = getInitialQuizData();
                 }
             } else {
-                userAnswers[questionId].answers = [optionId];
+                quizData = getInitialQuizData();
             }
 
-            saveProgress();
-            updateProgress();
-            updateOptionStyles(questionId);
+            // Randomize options for each question
+            quizData.forEach(question => {
+                if (question.options && Array.isArray(question.options)) {
+                    shuffleArray(question.options);
+                }
+            });
 
-            // Enable/disable validate button
-            const validateBtn = document.querySelector(`#question-${questionId} .validate-question-btn`);
-            if (validateBtn) {
-                validateBtn.disabled = userAnswers[questionId].answers.length === 0;
+            totalQuestions = quizData.length;
+
+            // 2. Charger la progression utilisateur
+            const storedProgress = localStorage.getItem('userProgress');
+            if (storedProgress) {
+                try {
+                    userProgress = JSON.parse(storedProgress);
+                } catch (e) {
+                    console.error("Erreur lors du chargement de localStorage (userProgress). Réinitialisation de la progression.", e);
+                    userProgress = {};
+                }
+            } else {
+                userProgress = {};
             }
         }
 
-        // Update option styles
-        function updateOptionStyles(questionId) {
-            const question = questions.find(q => q.id === questionId);
-            const options = document.querySelectorAll(`#question-${questionId} .option`);
-            const isValidated = validated || (userAnswers[questionId] && userAnswers[questionId].validated);
+        // Sauvegarde de la progression utilisateur
+        function saveUserProgress() {
+            localStorage.setItem('userProgress', JSON.stringify(userProgress));
+        }
 
-            options.forEach(option => {
-                const input = option.querySelector('input');
-                if (isValidated) {
-                    option.className = 'option ' + getOptionClass(question, input.value);
-                } else {
-                    option.className = input.checked ? 'option selected' : 'option';
+        // NOUVEAU: Fonction déclenchée par le bouton de réinitialisation pour afficher la confirmation
+        function promptResetQuiz() {
+            // Réinitialise la modal pour le contenu de confirmation
+            const modalContentText = document.getElementById('modal-content-text');
+            modalContentText.innerHTML = `
+        <p class="text-lg font-semibold text-gray-800">Êtes-vous sûr de vouloir réinitialiser tout l'historique de vos réponses ?</p>
+        <p class="text-red-600 mt-2">Cette action est <span class="font-bold">irréversible</span> et votre progression actuelle sera perdue.</p>
+        <div id="modal-button-container" class="flex justify-end space-x-3 mt-6">
+            <button onclick="closeMessageModal()" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition font-medium">
+                Annuler
+            </button>
+            <button onclick="resetQuizProgress()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium">
+                Confirmer la Réinitialisation
+            </button>
+        </div>
+    `;
+            showMessageModal("Confirmation de Réinitialisation", modalContentText.innerHTML, false);
+        }
+
+        // NOUVEAU: Logique de réinitialisation après confirmation
+        function resetQuizProgress() {
+            closeMessageModal(); // Ferme la modal de confirmation
+
+            localStorage.removeItem('userProgress');
+            userProgress = {};
+            currentScore = 0;
+
+            // Redessine le quiz pour appliquer l'état initial
+            renderQuiz();
+
+            // Affiche une modal de succès
+            showMessageModal(
+                "Réinitialisation Effectuée",
+                '<p class="text-green-600 font-semibold">L\'historique du quiz a été réinitialisé avec succès !</p>',
+                true // Afficher le bouton de fermeture par défaut
+            );
+        }
+
+        // =====================================================================================
+        // LOGIQUE DU QUIZ
+        // =====================================================================================
+
+        function calculateScore() {
+            let score = 0;
+            quizData.forEach((q, qIndex) => {
+                const progress = userProgress[qIndex];
+                if (progress && progress.isCorrect) {
+                    score++;
                 }
+            });
+            return score;
+        }
+
+        function updateScoreDisplay() {
+            currentScore = calculateScore();
+            const scoreEl = document.getElementById('score-display');
+            if (scoreEl) {
+                scoreEl.textContent = `Score: ${currentScore} / ${totalQuestions}`;
+            }
+        }
+
+        function renderChapterNav() {
+            const navContainer = document.getElementById('nav-links-container');
+            if (!navContainer) return;
+
+            navContainer.innerHTML = '';
+
+            chapterBreaks.forEach(chapter => {
+                const link = document.createElement('a');
+                link.href = `#${chapter.anchor}`;
+                link.textContent = chapter.title.split(': ')[0];
+                link.title = chapter.title;
+                link.className = 'nav-link bg-indigo-50 text-indigo-700 font-semibold text-center shadow-sm';
+                navContainer.appendChild(link);
             });
         }
 
-        // Get option class for validation
-        function getOptionClass(question, optionId) {
-            const isCorrect = question.correctAnswers.includes(optionId);
-            const answers = userAnswers[question.id] && userAnswers[question.id].answers ? userAnswers[question.id].answers : [];
-            const isSelected = answers.includes(optionId);
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
 
-            if (isSelected && isCorrect) return 'correct';
-            if (isSelected && !isCorrect) return 'incorrect';
-            if (!isSelected && isCorrect) return 'correct';
-            return '';
-        }
+            loadQuizData();
+            updateScoreDisplay();
+            renderChapterNav();
 
-        // Validate individual question
-        function validateQuestion(questionId) {
-            if (!userAnswers[questionId] || userAnswers[questionId].answers.length === 0) return;
+            let currentChapterIndex = 0;
 
-            userAnswers[questionId].validated = true;
-            saveProgress();
-            updateProgress();
+            quizData.forEach((q, qIndex) => {
+                const progress = userProgress[qIndex] || { answered: false, userSelections: [], isCorrect: false };
 
-            // Re-render just this question
-            const question = questions.find(q => q.id === questionId);
-            const questionCard = document.getElementById(`question-${questionId}`);
-            if (questionCard && question) {
-                renderSingleQuestion(question, questionCard);
-            }
-        }
-
-        // Toggle explanation input
-        function toggleExplanationInput(questionId) {
-            const inputDiv = document.getElementById(`explanation-input-${questionId}`);
-            inputDiv.style.display = inputDiv.style.display === 'none' ? 'block' : 'none';
-        }
-
-        // Save explanation
-        function saveExplanation(questionId) {
-            const textarea = document.getElementById(`textarea-${questionId}`);
-            const explanation = textarea.value.trim();
-
-            if (explanation) {
-                userExplanations[questionId] = explanation;
-                document.getElementById(`explanation-text-${questionId}`).textContent = explanation;
-                document.getElementById(`explanation-${questionId}`).classList.add('show');
-                document.getElementById(`explanation-input-${questionId}`).style.display = 'none';
-                saveProgress();
-            }
-        }
-
-        // Update progress bar and stats
-        function updateProgress() {
-            const answeredCount = Object.keys(userAnswers).filter(key =>
-                userAnswers[key].answers && userAnswers[key].answers.length > 0
-            ).length;
-            const correctCount = calculateCorrectAnswers();
-            const totalCount = questions.length;
-            const percentage = Math.round((answeredCount / totalCount) * 100);
-
-            document.getElementById('progressFill').style.width = percentage + '%';
-            document.getElementById('progressFill').textContent = percentage + '%';
-            document.getElementById('answeredCount').textContent = answeredCount;
-
-            // Show correct count if any question is validated
-            const anyValidated = Object.values(userAnswers).some(q => q.validated) || validated;
-            document.getElementById('correctCount').textContent = anyValidated ? correctCount : '-';
-            document.getElementById('totalCount').textContent = totalCount;
-        }
-
-        // Calculate correct answers
-        function calculateCorrectAnswers() {
-            let correct = 0;
-            questions.forEach(question => {
-                const answers = userAnswers[question.id] && userAnswers[question.id].answers ? userAnswers[question.id].answers : [];
-                if (arraysEqual(answers.slice().sort(), question.correctAnswers.slice().sort())) {
-                    correct++;
+                // Ajouter le titre du chapitre si c'est le début d'un nouveau chapitre
+                if (currentChapterIndex < chapterBreaks.length && chapterBreaks[currentChapterIndex].start === qIndex) {
+                    const chapter = chapterBreaks[currentChapterIndex];
+                    const chapterTitleHtml = `
+                <h2 id="${chapter.anchor}" class="text-3xl font-extrabold text-indigo-700 mt-10 mb-4 pt-4 border-b-2 border-indigo-300">
+                    ${chapter.title}
+                </h2>
+            `;
+                    container.innerHTML += chapterTitleHtml;
+                    currentChapterIndex++;
                 }
-            });
-            return correct;
-        }
 
-        // Check if arrays are equal
-        function arraysEqual(a, b) {
-            if (a.length !== b.length) return false;
-            for (let i = 0; i < a.length; i++) {
-                if (a[i] !== b[i]) return false;
-            }
-            return true;
-        }
+                const questionHtml = `
+            <div id="q-${qIndex}" class="question-card p-4 md:p-6 bg-white rounded-xl border border-gray-200 ${progress.answered ? (progress.isCorrect ? 'bg-custom-green border-custom-green' : 'bg-custom-red border-custom-red') : ''}">
+                <p class="font-semibold text-gray-700 mb-4 text-lg">
+                    ${qIndex + 1}. ${q.question}
+                    ${q.type === 'multiple' ? '<span class="text-sm font-normal text-indigo-500 italic">(Plusieurs réponses possibles)</span>' : ''}
+                </p>
+                <div class="options-container space-y-3">
+                    ${q.options.map((option, oIndex) => {
+                    const isSelected = progress.userSelections.includes(option.trim());
+                    const isDisabled = progress.answered;
+                    const isCorrectOption = q.correct.includes(option.trim());
 
-        // Validate all answers
-        function validateAnswers() {
-            validated = true;
-            saveProgress();
-            renderQuestions();
-            updateProgress();
+                    let labelClasses = 'option-label flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors duration-150 bg-white';
 
-            // Show all explanations
-            questions.forEach(question => {
-                const explSection = document.getElementById(`explanation-${question.id}`);
-                if (explSection) {
-                    explSection.classList.add('show');
-                }
+                    if (progress.answered) {
+                        if (isSelected) {
+                            labelClasses = isCorrectOption
+                                ? 'bg-custom-green border-custom-green flex items-center p-3 rounded-lg border'
+                                : 'bg-custom-red border-custom-red flex items-center p-3 rounded-lg border';
+                        } else if (isCorrectOption) {
+                            // Afficher la bonne réponse manquée
+                            labelClasses = 'bg-custom-green border-dashed border-2 border-green-400 flex items-center p-3 rounded-lg border';
+                        } else {
+                            labelClasses = 'bg-white flex items-center p-3 rounded-lg border border-gray-200';
+                        }
+                    }
+
+                    return `
+                            <label for="q${qIndex}o${oIndex}" class="${labelClasses}">
+                                <input 
+                                    type="${q.type === 'single' ? 'radio' : 'checkbox'}" 
+                                    id="q${qIndex}o${oIndex}" 
+                                    name="q${qIndex}" 
+                                    value="${option.trim()}" 
+                                    class="form-${q.type === 'single' ? 'radio' : 'checkbox'} text-indigo-600 focus:ring-indigo-500 h-4 w-4"
+                                    ${isSelected ? 'checked' : ''}
+                                    ${isDisabled ? 'disabled' : ''}
+                                >
+                                <span class="ml-3 text-gray-800">${option}</span>
+                            </label>
+                        `;
+                }).join('')}
+                </div>
+                <div class="flex flex-wrap gap-3 mt-4">
+                    <button 
+                        onclick="checkAnswer(${qIndex})" 
+                        id="btn-${qIndex}" 
+                        class="px-6 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition duration-150 shadow-md disabled:opacity-50"
+                        ${progress.answered ? 'disabled' : ''}
+                    >
+                        Vérifier la réponse
+                    </button>
+                    <button 
+                        onclick="showExplanation(${qIndex})" 
+                        id="exp-btn-${qIndex}" 
+                        class="px-6 py-2 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition duration-150 shadow-md"
+                    >
+                        Explication
+                    </button>
+                </div>
+                <div id="feedback-${qIndex}" class="mt-3 text-sm font-medium ${progress.answered ? '' : 'hidden'}">
+                    ${progress.answered ? (progress.isCorrect ? '<span class="text-green-600">Correct !</span>' : generateFeedbackHtml(qIndex, q, progress.userSelections)) : ''}
+                </div>
+            </div>
+        `;
+                container.innerHTML += questionHtml;
             });
         }
 
-        // Reset quiz
-        function resetQuiz() {
-            if (confirm('Êtes-vous sûr de vouloir recommencer le test ? Toutes vos réponses seront effacées.')) {
-                userAnswers = {};
-                userExplanations = {};
-                validated = false;
-                saveProgress();
-                renderQuestions();
-                updateProgress();
+        function generateFeedbackHtml(qIndex, question, userSelections) {
+            if (userProgress[qIndex] && userProgress[qIndex].isCorrect) {
+                return '<span class="text-green-600">Correct !</span>';
             }
+
+            const correctAnswersHtml = question.correct.map(answer =>
+                `<span class="font-bold">${answer}</span>`
+            ).join(' <span class="mx-1">&bull;</span> ');
+
+            return `
+        <span class="text-red-600">Faux. Veuillez revoir la réponse.</span>
+        <div class="mt-2 p-2 bg-red-100 rounded-lg border border-red-300">
+            <span class="font-semibold text-gray-800">Réponse(s) correcte(s) :</span>
+            <p class="text-red-700">${correctAnswersHtml}</p>
+        </div>
+    `;
         }
 
-        // Show results
-        function showResults() {
-            const correctCount = calculateCorrectAnswers();
-            const totalCount = questions.length;
-            const percentage = Math.round((correctCount / totalCount) * 100);
+        function checkAnswer(qIndex) {
+            const question = quizData[qIndex];
+            const questionEl = document.getElementById(`q-${qIndex}`);
+            const optionsContainer = questionEl.querySelector('.options-container');
+            const options = Array.from(optionsContainer.querySelectorAll(`input[name="q${qIndex}"]`));
+            const checkButton = document.getElementById(`btn-${qIndex}`);
 
-            const scoreDisplay = document.getElementById('scoreDisplay');
-            scoreDisplay.textContent = `${correctCount}/${totalCount} (${percentage}%)`;
-            scoreDisplay.className = percentage >= 50 ? 'score-display' : 'score-display fail';
+            if (checkButton.disabled) return;
 
-            const message = percentage >= 80 ? '🎉 Excellent travail !' :
-                percentage >= 60 ? '👍 Bon travail !' :
-                    percentage >= 50 ? '✓ Passable' :
-                        '❌ Besoin de réviser';
+            let userSelections = options
+                .filter(input => input.checked)
+                .map(input => input.value);
 
-            document.getElementById('scoreMessage').textContent = message;
-            document.getElementById('resultsModal').classList.add('show');
+            // Vérification de la correction
+            const isCorrect = question.correct.length === userSelections.length &&
+                question.correct.every(val => userSelections.includes(val));
+
+            // Mise à jour et sauvegarde de la progression
+            userProgress[qIndex] = {
+                answered: true,
+                userSelections: userSelections,
+                isCorrect: isCorrect
+            };
+            saveUserProgress();
+
+            // Redessiner uniquement la question pour appliquer les classes et le feedback
+            renderQuestion(qIndex);
+            updateScoreDisplay();
         }
 
-        // Close results modal
-        function closeResults() {
-            document.getElementById('resultsModal').classList.remove('show');
+        // Fonction pour rendre une seule question (utilisée après la vérification)
+        function renderQuestion(qIndex) {
+            const question = quizData[qIndex];
+            const progress = userProgress[qIndex] || { answered: false, userSelections: [], isCorrect: false };
+            const questionEl = document.getElementById(`q-${qIndex}`);
+            const checkButton = document.getElementById(`btn-${qIndex}`);
+            const feedbackEl = document.getElementById(`feedback-${qIndex}`);
+
+            // Appliquer les styles de carte
+            questionEl.classList.remove('bg-custom-green', 'border-custom-green', 'bg-custom-red', 'border-custom-red', 'bg-white');
+            questionEl.classList.add(progress.isCorrect ? 'bg-custom-green' : 'bg-custom-red');
+            questionEl.classList.add(progress.isCorrect ? 'border-custom-green' : 'border-custom-red');
+
+            // Afficher le feedback
+            feedbackEl.innerHTML = generateFeedbackHtml(qIndex, question, progress.userSelections);
+            feedbackEl.classList.remove('hidden');
+
+            // Désactiver le bouton de vérification
+            checkButton.disabled = true;
+
+            // Mise à jour des options dans le DOM (pour les classes et désactivation)
+            const optionsContainer = questionEl.querySelector('.options-container');
+            const options = Array.from(optionsContainer.querySelectorAll(`input[name="q${qIndex}"]`));
+
+            options.forEach(input => {
+                const optionValue = input.value;
+                const isCorrectOption = question.correct.includes(optionValue);
+                const isSelected = input.checked;
+                const label = input.closest('label');
+
+                // Nettoyer les classes non persistantes
+                label.classList.remove('bg-custom-green', 'border-custom-green', 'bg-custom-red', 'border-custom-red', 'bg-gray-50', 'bg-white', 'border-dashed', 'border-2', 'border-green-400');
+
+                input.disabled = true;
+
+                if (isSelected) {
+                    label.classList.add(isCorrectOption ? 'bg-custom-green' : 'bg-custom-red');
+                    label.classList.add(isCorrectOption ? 'border-custom-green' : 'border-custom-red');
+                } else if (isCorrectOption) {
+                    // Afficher la bonne réponse non sélectionnée si la réponse globale est fausse
+                    if (!progress.isCorrect) {
+                        label.classList.add('bg-custom-green', 'border-dashed', 'border-2', 'border-green-400');
+                    }
+                }
+                if (!label.classList.contains('bg-custom-green') && !label.classList.contains('bg-custom-red')) {
+                    label.classList.add('bg-white');
+                }
+            });
+
         }
 
-        // Initialize on page load
-        window.onload = initQuiz;
+        // =====================================================================================
+        // LOGIQUE DE L'ADMINISTRATION
+        // =====================================================================================
+
+        function renderAdminPanel() {
+            const adminContent = document.getElementById('admin-content');
+            adminContent.innerHTML = `
+        <h3 class="text-2xl font-bold text-gray-700 mb-6 border-b pb-2">Liste des Questions</h3>
+        <ul id="question-list" class="space-y-2 max-h-[60vh] overflow-y-auto p-2 bg-gray-50 rounded-lg">
+            ${quizData.map((q, index) => `
+                <li class="p-3 bg-white rounded-lg border border-gray-200 flex justify-between items-center hover:bg-indigo-50 cursor-pointer transition-colors duration-150">
+                    <span class="text-sm font-medium text-gray-800 truncate">${index + 1}. ${q.question}</span>
+                    <button 
+                        class="text-xs px-3 py-1 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 font-semibold ml-4"
+                        onclick="editQuestionExplanation(${index})"
+                    >
+                        Éditer
+                    </button>
+                </li>
+            `).join('')}
+        </ul>
+        
+        <div id="explanation-editor" class="mt-8 hidden">
+            <!-- Le contenu de l'éditeur sera injecté ici lors de l'édition -->
+        </div>
+    `;
+            // Assure que l'éditeur est caché initialement
+            document.getElementById('explanation-editor').innerHTML = '';
+        }
+
+        function editQuestionExplanation(qIndex) {
+            currentlyEditingIndex = qIndex;
+            const question = quizData[qIndex];
+
+            const editorHtml = `
+        <h3 class="text-xl font-bold text-gray-700 mb-4">Éditer l'Explication de la Question ${qIndex + 1}</h3>
+        <p id="editor-q-text" class="italic text-gray-600 mb-4 bg-gray-100 p-3 rounded-lg border border-gray-200">${question.question}</p>
+        
+        <label for="explanation-textarea" class="block text-sm font-medium text-gray-700 mb-2">Nouvelle Explication (Markdown accepté)</label>
+        <textarea id="explanation-textarea" rows="8" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">${question.explanation || ''}</textarea>
+        
+        <div class="flex flex-wrap gap-4 mt-4">
+            <button 
+                onclick="saveExplanation()" 
+                id="save-exp-btn" 
+                class="px-6 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition duration-150 shadow-md"
+            >
+                Sauvegarder
+            </button>
+            <button 
+                onclick="renderAdminPanel()" 
+                class="px-6 py-2 bg-gray-400 text-white font-medium rounded-lg hover:bg-gray-500 transition duration-150 shadow-md"
+            >
+                Annuler
+            </button>
+        </div>
+    `;
+
+            document.getElementById('explanation-editor').innerHTML = editorHtml;
+            document.getElementById('explanation-editor').classList.remove('hidden');
+            document.getElementById('question-list').classList.add('hidden');
+            document.getElementById('admin-view').scrollTop = 0;
+        }
+
+        function saveExplanation() {
+            if (currentlyEditingIndex === -1) {
+                console.error("Aucune question sélectionnée pour la sauvegarde.");
+                return;
+            }
+
+            const newExplanation = document.getElementById('explanation-textarea').value.trim();
+
+            quizData[currentlyEditingIndex].explanation = newExplanation;
+
+            // Persistance des questions mises à jour 
+            localStorage.setItem('quizData', JSON.stringify(quizData));
+
+            // Remplacement de window.alert() par une modal de succès
+            showMessageModal(
+                "Sauvegarde Effectuée",
+                `<p class="text-green-600 font-semibold">Explication de la Question ${currentlyEditingIndex + 1} sauvegardée avec succès !</p>`,
+                true
+            );
+
+            // Retour à la liste des questions
+            currentlyEditingIndex = -1;
+            renderAdminPanel();
+            document.getElementById('question-list').classList.remove('hidden');
+        }
+
+
+        // =====================================================================================
+        // LOGIQUE DE LA MODAL (UNIFIÉE POUR MESSAGES ET EXPLICATIONS)
+        // =====================================================================================
+
+        // NOUVEAU: Fonction pour afficher un message/explication dans la modal
+        function showMessageModal(title, content, showCloseButton = true) {
+            const modal = document.getElementById('message-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalContentText = document.getElementById('modal-content-text');
+            const closeBtn = modal.querySelector('.close-btn');
+
+            modalTitle.textContent = title;
+            modalContentText.innerHTML = content;
+
+            // Gère l'affichage du bouton de fermeture (utile pour les confirmations)
+            closeBtn.style.display = showCloseButton ? 'block' : 'none';
+
+            // S'assurer que le bouton de fermeture par défaut est retiré s'il y a des boutons personnalisés
+            if (modalContentText.querySelector('#modal-button-container')) {
+                closeBtn.style.display = 'none';
+            }
+
+            modal.style.display = 'block';
+        }
+
+        // NOUVEAU: Fonction pour fermer la modal
+        function closeMessageModal() {
+            document.getElementById('message-modal').style.display = 'none';
+            // Nettoyer les boutons de confirmation après fermeture
+            const buttonContainer = document.getElementById('modal-content-text').querySelector('#modal-button-container');
+            if (buttonContainer) buttonContainer.remove();
+        }
+
+        // Ancienne fonction showExplanation, mise à jour pour utiliser showMessageModal
+        function showExplanation(qIndex) {
+            const question = quizData[qIndex];
+            const title = `Explication de la Question ${qIndex + 1}`;
+            const content = `
+        <p class="font-semibold text-lg text-gray-800 mb-2">${question.question}</p>
+        <div class="bg-gray-100 p-3 rounded-lg border border-gray-200">
+            <h5 class="font-bold text-indigo-600 mb-1">Détails:</h5>
+            <p>${question.explanation ? question.explanation.replace(/\n/g, '<br>') : 'Aucune explication n\'est encore disponible pour cette question.'}</p>
+        </div>
+    `;
+            showMessageModal(title, content);
+        }
+
+
+        // =====================================================================================
+        // INITIALISATION
+        // =====================================================================================
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Lie la fonction de fermeture de la modal au clic sur le bouton de fermeture
+            document.getElementById('message-modal').querySelector('.close-btn').onclick = closeMessageModal;
+
+            // Lie la fonction de fermeture de la modal au clic en dehors de la modal
+            window.onclick = function (event) {
+                const modal = document.getElementById('message-modal');
+                if (event.target == modal) {
+                    closeMessageModal();
+                }
+            }
+
+            loadQuizData();
+            renderQuiz();
+            switchView('quiz-view');
+        });
     </script>
+
 </body>
 
 </html>

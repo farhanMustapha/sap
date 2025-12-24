@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QCM Practice App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style_globale.css">
+</head>
+
+<body>
+
+    <div class="app-container">
+        <!-- Mobile Header -->
+        <header class="mobile-header">
+            <button id="menu-toggle" class="icon-btn"><span class="material-icons">menu</span></button>
+            <h1>QCM App</h1>
+        </header>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>PAS App</h2>
+                <button id="menu-close" class="icon-btn mobile-only"><span class="material-icons">close</span></button>
+            </div>
+
+            <div class="nav-section">
+                <h3>Modes</h3>
+                <button id="btn-global" class="nav-btn active">
+                    <span class="material-icons">public</span> Global
+                </button>
+                <button id="btn-incorrect" class="nav-btn">
+                    <span class="material-icons">error_outline</span> Incorrectes
+                    <span id="incorrect-count" class="badge">0</span>
+                </button>
+
+
+                <div class="sidebar-footer">
+                    <button id="btn-reset-data" class="danger-btn">
+                        <span class="material-icons">delete_sweep</span> Réinitialiser
+                    </button>
+                </div>
+
+
+            </div>
+
+            <div class="nav-section">
+                <h3>Chapitres</h3>
+                <div id="chapter-list" class="chapter-list">
+                    <!-- Chapters injected here -->
+                </div>
+            </div>
+
+
+        </aside>
+
+        <!-- Overlay for mobile sidebar -->
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div id="quiz-area">
+                <div class="question-header">
+                    <span id="q-chapter-tag" class="tag">Chapitre 1</span>
+                    <span id="q-number" class="counter">Question 1 / 100</span>
+                    <span id="q-multi-badge" class="tag multi-choice hidden">Plusieurs choix possibles</span>
+                </div>
+
+                <div class="progress-bar-container">
+                    <div id="global-progress" class="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="progress-label">
+                    <span id="progress-text">0/100</span>
+                </div>
+
+                <div class="action-bar">
+                    <button id="btn-prev" class="secondary-btn" disabled>Précédent</button>
+                    <button id="btn-validate" class="primary-btn">Valider</button>
+                    <button id="btn-next" class="secondary-btn">Suivant</button>
+                </div>
+                
+                <div class="question-card">
+                    <p id="question-text" class="question-text">Loading...</p>
+
+                    <div id="options-container" class="options-list">
+                        <!-- Options injected here -->
+                    </div>
+                </div>
+
+                <div id="feedback-area" class="feedback-area hidden">
+                    <h4 id="feedback-title">Correct !</h4>
+                    <p id="feedback-explanation">Explication ici...</p>
+                </div>
+
+                
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="empty-state hidden">
+                <span class="material-icons large-icon">check_circle</span>
+                <h3>Tout est à jour !</h3>
+                <p>Aucune question incorrecte trouvée ou sélection vide.</p>
+                <button id="btn-back-global" class="primary-btn">Retour au Global</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="tout_les_questions.js"></script>
+    <script src="script_globale.js"></script>
+</body>
+
+</html>

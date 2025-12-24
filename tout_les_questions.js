@@ -1,4 +1,4 @@
-var test_blanc_1 = [
+var test_test_blanc_1 = [
   {
     id: 1,
     text: "1-Which financial statement nodes are part of the calculation for net profit/loss? Note: There are 2 correct answers to this question.",
@@ -484,7 +484,7 @@ var test_blanc_1 = [
 ];
 
 //---------------
-var test_blanc_2 = [
+var test_test_blanc_2 = [
   {
     q: "1-How can you identify an asset number as a main asset number?",
     options: [
@@ -898,7 +898,7 @@ var test_blanc_2 = [
 ];
 
 //---------------------------------------------
-var test_blanc_3 = [
+var test_test_blanc_3 = [
   {
     q: "1-What are the restrictions when posting general journal entries to special periods? (2 correct answers)",
     options: [
@@ -1370,7 +1370,7 @@ var test_blanc_3 = [
 ];
 
 //-------------------------------
-var test_blanc_4 = [
+var test_test_blanc_4 = [
   {
     question: "What are the restrictions when posting general journal entries to special periods? Note: There are 2 correct answers to this question.",
     type: "multiple",
@@ -2032,7 +2032,7 @@ var test_blanc_4 = [
 ];
 
 //---------
-var test_evaluation_1 = [
+var test_test_evaluation_1 = [
   {
     "id": 1,
     "text": "Which of the following is a benefit of cloud computing?",
