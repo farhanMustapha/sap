@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAP S/4HANA Finance Learning Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f4f6; }
+        .sap-gradient { background: linear-gradient(135deg, #0a192f 0%, #1c4e80 100%); }
+        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        
+        /* Animation pour le Popup */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes popUpScale { 
+            0% { transform: scale(0.8); opacity: 0; } 
+            100% { transform: scale(1); opacity: 1; } 
+        }
+        .popup-anim { animation: popUpScale 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    </style>
+</head>
+<body class="text-gray-800 h-screen flex flex-col relative">
+
+    <!-- POPUP DE BIENVENUE (Hidden by default) -->
+    <div id="welcome-popup" class="fixed inset-0 z-[60] flex items-center justify-center bg-gray-900 bg-opacity-60 backdrop-blur-sm hidden transition-opacity duration-300 opacity-0">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-sm md:max-w-md text-center relative mx-4 transform transition-all duration-300 scale-95" id="popup-content">
+            <!-- Décoration gradient -->
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 to-indigo-600 rounded-t-2xl"></div>
+            
+            <!-- Emoji animé -->
+            <div class="mb-4 mt-2">
+                <span class="text-6xl inline-block animate-bounce">🎉</span>
+            </div>
+            
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Bienvenue sur <span class="text-indigo-600">PAS</span> !</h2>
+            
+            <p class="text-gray-600 mb-6 leading-relaxed">
+                Ravi de vous voir ici ! Prêt à devenir un expert sur <span class="font-semibold">PAS S/4HANA Finance</span> ? Votre parcours d'apprentissage commence maintenant.
+            </p>
+            
+            <button onclick="closePopup()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl transition duration-300 shadow-lg hover:shadow-indigo-500/30 flex items-center justify-center gap-2">
+                <span>C'est parti !</span> <i class="fa-solid fa-rocket"></i>
+            </button>
+        </div>
+    </div>
+    <!-- FIN DU POPUP -->
+
+    <!-- Navigation Bar -->
+    <nav class="sap-gradient text-white p-4 shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="showDashboard()">
+                <i class="fa-solid fa-graduation-cap text-2xl text-yellow-400"><a href="dificile_qsts.html"> pas</a></i>
+                <h1 class="text-xl font-bold tracking-wide"> S/4HANA <span class="font-light">FARHAN Academy</span></h1>
+            </div>
+            
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="container mx-auto p-6 flex-grow">
+        
+        <!-- DASHBOARD VIEW (GRID) -->
+        <div id="dashboard-view" class="fade-in">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Tableau de Bord de Formation</h2>
+                <p class="text-gray-600">Sélectionnez un module pour commencer votre apprentissage SAP FI Public Cloud.</p>
+            </div>
+
+            <!-- The Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <!-- 1. Explore -->
+                <a href="explore.html" class="block bg-white p-6 rounded-xl shadow-md cursor-pointer card-hover border-l-4 border-blue-600 transition-all duration-300 no-underline text-gray-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-indigo-100 p-3 rounded-full text-indigo-600">
+                            <i class="fa-solid fa-compass text-xl"></i>
+                        </div>
+                        <span class="text-xs font-bold text-gray-400">MODULE 1</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Les Quiz d'Explore</h3>
+                    <p class="text-sm text-gray-500">Phase Explore : Fit-to-Standard et analyse des écarts.</p>
+                </a>
+                
+                <!-- 2. Implementation -->
+                <a href="implimentation.html" class="block bg-white p-6 rounded-xl shadow-md cursor-pointer card-hover border-l-4 border-blue-600 transition-all duration-300 no-underline text-gray-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-indigo-100 p-3 rounded-full text-indigo-600">
+                            <i class="fa-solid fa-tools text-xl"></i>
+                        </div>
+                        <span class="text-xs font-bold text-gray-400">MODULE 02</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Les Quiz d'Implémentation</h3>
+                    <p class="text-sm text-gray-500">Configuration et réalisation via SAP Central Business Configuration.</p>
+                </a>
+
+                <!-- 3. Finance -->
+                <a href="finance.html" class="block bg-white p-6 rounded-xl shadow-md cursor-pointer card-hover border-l-4 border-blue-600 transition-all duration-300 no-underline text-gray-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-blue-100 p-3 rounded-full text-blue-600">
+                            <i class="fa-solid fa-chart-line text-xl"></i>
+                        </div>
+                        <span class="text-xs font-bold text-gray-400">MODULE 03</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Les Quiz de Finance</h3>
+                    <p class="text-sm text-gray-500">Comptabilité générale, AP/AR et Asset Accounting.</p>
+                </a>
+
+                <!-- 4. evaluation 1 -->
+                <a href="evaluation1.html" class="block bg-white p-6 rounded-xl shadow-md cursor-pointer card-hover border-l-4 border-blue-600 transition-all duration-300 no-underline text-gray-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-purple-100 p-3 rounded-full text-purple-600">
+                            <i class="fa-solid fa-file-signature text-xl"></i>
+                        </div>
+                        <span class="text-xs font-bold text-gray-400">EVALUATION 1</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Evaluation 1 : Explore & Impl.</h3>
+                    <p class="text-sm text-gray-500">Validez vos acquis sur la méthodologie.</p>
+                </a>
+
+                <!-- 4. evaluation 2 -->
+                <a href="evaluation2.html" class="block bg-white p-6 rounded-xl shadow-md cursor-pointer card-hover border-l-4 border-blue-600 transition-all duration-300 no-underline text-gray-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-purple-100 p-3 rounded-full text-purple-600">
+                            <i class="fa-solid fa-file-invoice-dollar text-xl"></i>
+                        </div>
+                        <span class="text-xs font-bold text-gray-400">EVALUATION 2</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Evaluation 2 : Finance</h3>
+                    <p class="text-sm text-gray-500">Testez vos connaissances financières.</p>
+                </a>
+
+                <!-- 5. Test Blanc 1 -->
+                <a href="test_blanc1.html" class="block bg-white p-6 rounded-xl shadow-md cursor-pointer card-hover border-l-4 border-blue-600 transition-all duration-300 no-underline text-gray-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-green-100 p-3 rounded-full text-green-600">
+                            <i class="fa-solid fa-clock text-xl"></i>
+                        </div>
+                        <span class="text-xs font-bold text-gray-400">Preparation</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Test blanc 1 : 40 questions</h3>
+                    <p class="text-sm text-gray-500">Le challenge final.</p>
+                </a>
+
+                <!-- 6. Test Blanc 2 -->
+                <a href="test_blanc2.html" class="block bg-white p-6 rounded-xl shadow-md cursor-pointer card-hover border-l-4 border-blue-600 transition-all duration-300 no-underline text-gray-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-green-100 p-3 rounded-full text-green-600">
+                            <i class="fa-solid fa-clock text-xl"></i>
+                        </div>
+                        <span class="text-xs font-bold text-gray-400">Preparation</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Test blanc 2 : 40 questions</h3>
+                    <p class="text-sm text-gray-500">Le challenge final.</p>
+                </a>
+
+                <!-- 7. Test Blanc 3 -->
+                <a href="test_blanc3.html" class="block bg-white p-6 rounded-xl shadow-md cursor-pointer card-hover border-l-4 border-blue-600 transition-all duration-300 no-underline text-gray-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-green-100 p-3 rounded-full text-green-600">
+                            <i class="fa-solid fa-clock text-xl"></i>
+                        </div>
+                        <span class="text-xs font-bold text-gray-400">Preparation</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Test blanc 3 : 47 questions</h3>
+                    <p class="text-sm text-gray-500">Le challenge final.</p>
+                </a>
+
+                <!-- 7. Test Blanc 4 -->
+                <a href="test_blanc4.html" class="block bg-white p-6 rounded-xl shadow-md cursor-pointer card-hover border-l-4 border-blue-600 transition-all duration-300 no-underline text-gray-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-green-100 p-3 rounded-full text-green-600">
+                            <i class="fa-solid fa-clock text-xl"></i>
+                        </div>
+                        <span class="text-xs font-bold text-gray-400">Preparation</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Test blanc 4 : 96 Questions</h3>
+                    <p class="text-sm text-gray-500">Le challenge final.</p>
+                </a>
+
+                <!-- 8. revision questions difficile-->
+                <a href="globale.html" class="block bg-white p-6 rounded-xl shadow-md cursor-pointer card-hover border-l-4 border-blue-600 transition-all duration-300 no-underline text-gray-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-green-100 p-3 rounded-full text-green-600">
+                            <i class="fa-solid fa-clock text-xl"></i>
+                        </div>
+                        <span class="text-xs font-bold text-gray-400">Revision globale avec filtrage</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Revision globale avec filtrage</h3>
+                    <p class="text-sm text-gray-500">Le challenge final.</p>
+                </a>
+
+                <!-- 8. revision questions difficile-->
+                <a href="test_demo_cbc.html" class="block bg-white p-6 rounded-xl shadow-md cursor-pointer card-hover border-l-4 border-blue-600 transition-all duration-300 no-underline text-gray-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-green-100 p-3 rounded-full text-green-600">
+                            <i class="fa-solid fa-clock text-xl"></i>
+                        </div>
+                        <span class="text-xs font-bold text-gray-400">CBC</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Passage Demo</h3>
+                    <p class="text-sm text-gray-500">Le challenge final.</p>
+                </a>
+
+                <!-- 8. revision questions difficile-->
+                <a href="lamya_system.html" class="block bg-white p-6 rounded-xl shadow-md cursor-pointer card-hover border-l-4 border-blue-600 transition-all duration-300 no-underline text-gray-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-green-100 p-3 rounded-full text-green-600">
+                            <i class="fa-solid fa-clock text-xl"></i>
+                        </div>
+                        <span class="text-xs font-bold text-gray-400">questions sur site</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">question SAP / site</h3>
+                    <p class="text-sm text-gray-500">Le challenge final.</p>
+                </a>
+
+                <!-- 8. revision questions difficile-->
+                <a href="fi_rihana_site.html" class="block bg-white p-6 rounded-xl shadow-md cursor-pointer card-hover border-l-4 border-blue-600 transition-all duration-300 no-underline text-gray-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-green-100 p-3 rounded-full text-green-600">
+                            <i class="fa-solid fa-clock text-xl"></i>
+                        </div>
+                        <span class="text-xs font-bold text-gray-400">finance RH</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">finance RH</h3>
+                    <p class="text-sm text-gray-500">Le challenge final.</p>
+                </a>
+
+                <!-- 8. revision questions difficile-->
+                <a href="implimentation_rihana_site.html" class="block bg-white p-6 rounded-xl shadow-md cursor-pointer card-hover border-l-4 border-blue-600 transition-all duration-300 no-underline text-gray-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-green-100 p-3 rounded-full text-green-600">
+                            <i class="fa-solid fa-clock text-xl"></i>
+                        </div>
+                        <span class="text-xs font-bold text-gray-400">Implimentation RH</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Implimentation RH</h3>
+                    <p class="text-sm text-gray-500">Le challenge final.</p>
+                </a>
+                
+
+                <!-- 9. configuration flow-->
+                <a href="sap_fi_configuration.html" class="block bg-white p-6 rounded-xl shadow-md cursor-pointer card-hover border-l-4 border-blue-600 transition-all duration-300 no-underline text-gray-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-green-100 p-3 rounded-full text-green-600">
+                            <i class="fa-solid fa-clock text-xl"></i>
+                        </div>
+                        <span class="text-xs font-bold text-gray-400">configuration FLOW</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">configuration FLOW</h3>
+                    <p class="text-sm text-gray-500">Le challenge final.</p>
+                </a>
+
+                <!-- 10. configuration sur CBC-->
+                <a href="maintenance.html" class="block bg-white p-6 rounded-xl shadow-md cursor-pointer card-hover border-l-4 border-blue-600 transition-all duration-300 no-underline text-gray-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-green-100 p-3 rounded-full text-green-600">
+                            <i class="fa-solid fa-clock text-xl"></i>
+                        </div>
+                        <span class="text-xs font-bold text-gray-400">configuration sur CBC</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">configuration sur CBC</h3>
+                    <p class="text-sm text-gray-500">Le challenge final.</p>
+                </a>
+
+                <!-- 11. Migration des donnees-->
+                <a href="maintenance.html" class="block bg-white p-6 rounded-xl shadow-md cursor-pointer card-hover border-l-4 border-blue-600 transition-all duration-300 no-underline text-gray-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-green-100 p-3 rounded-full text-green-600">
+                            <i class="fa-solid fa-clock text-xl"></i>
+                        </div>
+                        <span class="text-xs font-bold text-gray-400">Migration des données</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Migration des données</h3>
+                    <p class="text-sm text-gray-500">Le challenge final.</p>
+                </a>
+
+                <!-- 12. dunning-->
+                <a href="maintenance.html" class="block bg-white p-6 rounded-xl shadow-md cursor-pointer card-hover border-l-4 border-blue-600 transition-all duration-300 no-underline text-gray-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-green-100 p-3 rounded-full text-green-600">
+                            <i class="fa-solid fa-clock text-xl"></i>
+                        </div>
+                        <span class="text-xs font-bold text-gray-400">Key dunning Terminologie</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Key dunning Terminologie</h3>
+                    <p class="text-sm text-gray-500">Le challenge final.</p>
+                </a>
+
+            </div>
+        </div>
+
+        <!-- MODULE CONTENT VIEW (Hidden by default) -->
+        <div id="module-view" class="hidden fade-in bg-white rounded-xl shadow-lg min-h-[500px] flex flex-col">
+            <!-- Header of the module -->
+            <div class="bg-gray-100 p-6 rounded-t-xl border-b border-gray-200 flex justify-between items-center">
+                <div>
+                    <span id="module-tag" class="text-xs font-bold px-2 py-1 bg-blue-600 text-white rounded uppercase">Finance</span>
+                    <h2 id="module-title" class="text-2xl font-bold text-gray-800 mt-2">Titre du Module</h2>
+                </div>
+                <button onclick="showDashboard()" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition shadow-sm flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-left"></i> Retour
+                </button>
+            </div>
+            
+            <!-- Body of the module -->
+            <div id="module-content" class="p-8 text-gray-700 leading-relaxed">
+                <!-- Content injected via JS -->
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white text-center p-4 mt-8 text-sm">
+        <p>&copy; 2025 SAP S/4HANA Public Cloud Training. Designed for Excellence.</p>
+    </footer>
+
+    <script>
+        // --- POPUP LOGIC ---
+        window.onload = function() {
+            // Petit délai pour que l'effet soit fluide après le chargement
+            setTimeout(() => {
+                const popup = document.getElementById('welcome-popup');
+                const content = document.getElementById('popup-content');
+                
+                popup.classList.remove('hidden');
+                
+                // On force un petit reflow pour activer la transition CSS
+                setTimeout(() => {
+                    popup.classList.remove('opacity-0');
+                    content.classList.remove('scale-95');
+                    content.classList.add('scale-100');
+                    // Ajout animation CSS spécifique
+                    content.classList.add('popup-anim');
+                }, 50);
+            }, 800); // Apparaît après 0.8 seconde
+        };
+
+        function closePopup() {
+            const popup = document.getElementById('welcome-popup');
+            const content = document.getElementById('popup-content');
+            
+            // Effet de fermeture
+            popup.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            
+            // Attendre la fin de la transition pour cacher l'élément
+            setTimeout(() => {
+                popup.classList.add('hidden');
+            }, 300);
+        }
+
+        // --- EXISTING LOGIC ---
+        
+        // Database of content for each module
+        const modulesData = {
+            'finance': {
+                title: "Finance (FI)",
+                tag: "Core Module",
+                content: `
+                    <div class="space-y-6">
+                        <div class="p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
+                            <h4 class="font-bold text-blue-900">Définition</h4>
+                            <p>Le module Finance permet de gérer toutes les données financières et comptables de l'entreprise. Il assure la conformité légale et fournit une vue précise de la santé financière.</p>
+                        </div>
+                        
+                        <h3 class="text-xl font-semibold border-b pb-2">Concepts Clés</h3>
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li><strong>Structure d'entreprise :</strong> Définition des Company Codes, Segments, et Profit Centers.</li>
+                            <li><strong>General Ledger (GL) :</strong> Le grand livre qui centralise toutes les écritures.</li>
+                            <li><strong>Accounts Payable (AP) & Accounts Receivable (AR) :</strong> Gestion des fournisseurs et des clients.</li>
+                        </ul>
+
+                        <h3 class="text-xl font-semibold border-b pb-2 mt-6">Apps Fiori Essentielles</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="border p-3 rounded hover:bg-gray-50"><i class="fa-regular fa-window-maximize text-blue-500 mr-2"></i> Manage Journal Entries</div>
+                            <div class="border p-3 rounded hover:bg-gray-50"><i class="fa-regular fa-window-maximize text-blue-500 mr-2"></i> Manage G/L Account Master Data</div>
+                            <div class="border p-3 rounded hover:bg-gray-50"><i class="fa-regular fa-window-maximize text-blue-500 mr-2"></i> Run Compliance Reports</div>
+                            <div class="border p-3 rounded hover:bg-gray-50"><i class="fa-regular fa-window-maximize text-blue-500 mr-2"></i> Display Financial Statements</div>
+                        </div>
+                    </div>
+                `
+            },
+            'implementation': {
+                title: "Implémentation & Configuration",
+                tag: "Methodology",
+                content: `
+                    <div class="space-y-6">
+                        <p>L'implémentation dans le Cloud Public diffère drastiquement du "On-Premise". Nous utilisons une approche standardisée.</p>
+                        
+                        <h3 class="text-xl font-semibold border-b pb-2">Outils Clés</h3>
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li><strong>SAP Central Business Configuration (CBC) :</strong> L'outil principal pour activer le périmètre (Scoping) et structurer l'organisation.</li>
+                            <li><strong>Implementation Activities :</strong> Gestion des tâches de configuration via l'app <em>Manage Your Solution</em>.</li>
+                        </ul>
+
+                        <div class="bg-yellow-50 p-4 rounded border border-yellow-200 mt-4">
+                            <strong>Note de l'expert :</strong> Ne confondez pas le SPRO (guide d'implémentation classique) avec le CBC. Dans le cloud public, l'accès au customizing est restreint pour garantir les mises à jour automatiques.
+                        </div>
+                    </div>
+                `
+            },
+            'explore': {
+                title: "Phase Explore & Fit-to-Standard",
+                tag: "SAP Activate",
+                content: `
+                    <div class="space-y-6">
+                        <p>La phase Explore est critique. C'est ici que nous abandonnons l'analyse des besoins traditionnelle ("Blueprinting") pour adopter l'approche <strong>Fit-to-Standard</strong>.</p>
+                        
+                        <h3 class="text-xl font-semibold border-b pb-2">Objectifs des Ateliers</h3>
+                        <ol class="list-decimal pl-5 space-y-2">
+                            <li>Montrer les processus standards SAP (Best Practices).</li>
+                            <li>Identifier les écarts (Gaps) qui nécessitent une extensibilité.</li>
+                            <li>Valider la configuration requise.</li>
+                        </ol>
+
+                        <h3 class="text-xl font-semibold border-b pb-2 mt-6">Ressources</h3>
+                        <p>Utilisez le <strong>SAP Best Practices Explorer</strong> (ou Process Navigator) pour télécharger les diagrammes de flux (BPMN) et les scripts de test.</p>
+                    </div>
+                `
+            },
+            // Generic content for exams/tests
+            'eval1': { title: "Évaluation Finale 1", tag: "Examen", content: generateTestContent("Évaluation théorique", 45) },
+            'eval2': { title: "Évaluation Finale 2", tag: "Examen", content: generateTestContent("Étude de cas pratique", 60) },
+            'test1': { title: "Test Blanc 1 : Record-to-Report", tag: "Simulation", content: generateTestContent("Simulation Certification C_S4CFI", 30) },
+            'test2': { title: "Test Blanc 2 : Order-to-Cash", tag: "Simulation", content: generateTestContent("Simulation Certification C_S4CFI", 30) },
+            'test3': { title: "Test Blanc 3 : Procure-to-Pay", tag: "Simulation", content: generateTestContent("Simulation Certification C_S4CFI", 30) },
+            'test4': { title: "Test Blanc 4 : Asset Accounting", tag: "Simulation", content: generateTestContent("Simulation Certification C_S4CFI", 30) },
+        };
+
+        // Helper to generate generic test content
+        function generateTestContent(type, duration) {
+            return `
+                <div class="text-center py-10">
+                    <i class="fa-solid fa-stopwatch text-6xl text-gray-300 mb-4"></i>
+                    <h3 class="text-2xl font-bold mb-2">${type}</h3>
+                    <p class="text-gray-600 mb-6">Durée estimée : ${duration} minutes</p>
+                    <button class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition shadow">
+                        Démarrer le test
+                    </button>
+                    <p class="mt-4 text-sm text-gray-400">Assurez-vous d'avoir une connexion stable.</p>
+                </div>
+            `;
+        }
+
+        function showDashboard() {
+            document.getElementById('dashboard-view').classList.remove('hidden');
+            document.getElementById('module-view').classList.add('hidden');
+            window.scrollTo(0,0);
+        }
+
+        function openModule(moduleId) {
+            const data = modulesData[moduleId];
+            if (!data) return;
+
+            // Populate content
+            document.getElementById('module-title').innerText = data.title;
+            document.getElementById('module-tag').innerText = data.tag;
+            document.getElementById('module-content').innerHTML = data.content;
+
+            // Switch views
+            document.getElementById('dashboard-view').classList.add('hidden');
+            document.getElementById('module-view').classList.remove('hidden');
+            window.scrollTo(0,0);
+        }
+    </script>
+</body>
+</html>
