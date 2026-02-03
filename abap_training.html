@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABAP Mastery Lab - HTML/JS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap');
+        
+        body {
+            background-color: #0f172a;
+            color: #f1f5f9;
+        }
+
+        .editor-container {
+            background-color: #1e1e1e;
+            border: 1px solid #334155;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        #code-editor {
+            width: 100%;
+            height: 400px;
+            background-color: transparent;
+            color: #93c5fd;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            padding: 1.5rem;
+            resize: none;
+            outline: none;
+            border: none;
+            line-height: 1.6;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1e1e1e;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+
+        .success-bg { background-color: rgba(20, 83, 45, 0.3); border: 1px solid #15803d; color: #4ade80; }
+        .error-bg { background-color: rgba(127, 29, 29, 0.3); border: 1px solid #b91c1c; color: #f87171; }
+        .info-bg { background-color: rgba(30, 58, 138, 0.3); border: 1px solid #1d4ed8; color: #60a5fa; }
+    </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen">
+
+    <!-- En-tête -->
+    <header class="max-w-6xl mx-auto mb-8 flex justify-between items-center border-b border-slate-700 pb-4">
+        <div class="flex items-center gap-3">
+            <div class="bg-blue-600 p-2 rounded-lg text-white">
+                <i class="fas fa-user-graduate text-2xl"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-300">
+                    ABAP Mastery Lab
+                </h1>
+                <p class="text-slate-400 text-sm italic">Apprenez l'ABAP par la pratique</p>
+            </div>
+        </div>
+        <div class="bg-slate-800 px-4 py-2 rounded-full border border-slate-700 font-mono text-blue-400">
+            Score: <span id="score-display">0</span>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+        
+        <!-- Section Question -->
+        <div class="space-y-6">
+            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-xl">
+                <div class="mb-4">
+                    <span id="question-index-tag" class="bg-blue-900/50 text-blue-400 text-xs font-bold px-2 py-1 rounded border border-blue-700/50 uppercase tracking-widest">
+                        EXERCICE 1/4
+                    </span>
+                </div>
+                <h2 id="question-title" class="text-xl font-semibold mb-3 text-white">Titre de la question</h2>
+                <p id="question-desc" class="text-slate-300 leading-relaxed mb-6">Description de l'exercice...</p>
+
+                <!-- Feedback Area -->
+                <div id="feedback-area" class="hidden p-4 rounded-lg flex items-start gap-3 mb-4 transition-all">
+                    <i id="feedback-icon" class="mt-1"></i>
+                    <p id="feedback-text" class="font-medium text-sm"></p>
+                </div>
+
+                <!-- Solution Area -->
+                <div id="solution-area" class="hidden mt-4 pt-4 border-t border-slate-700">
+                    <p class="text-xs font-bold text-yellow-500 mb-1 uppercase tracking-wider">Solution :</p>
+                    <pre id="solution-code" class="bg-slate-950 p-4 rounded-lg border border-yellow-700/30 font-mono text-sm text-yellow-200 overflow-x-auto"></pre>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex flex-wrap gap-3">
+                <button onclick="checkCode()" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-xl font-bold transition-all transform active:scale-95 shadow-lg">
+                    <i class="fas fa-play"></i> Valider le Code
+                </button>
+                <button onclick="showSolutionToggle()" class="flex items-center gap-2 bg-slate-700 hover:bg-slate-600 text-slate-100 px-6 py-3 rounded-xl font-bold transition-all border border-slate-600">
+                    <i class="fas fa-lightbulb"></i> Solution
+                </button>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-6 py-3 rounded-xl font-bold transition-all animate-pulse">
+                    Suivant <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Section Éditeur -->
+        <div class="editor-container flex flex-col h-[500px]">
+            <div class="bg-[#252526] px-4 py-2 border-b border-slate-700 flex justify-between items-center">
+                <div class="flex items-center gap-2 text-slate-400 text-sm font-mono">
+                    <i class="fas fa-code"></i>
+                    <span>main.abap</span>
+                </div>
+                <div class="flex gap-1.5">
+                    <div class="w-3 h-3 rounded-full bg-red-500/50"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500/50"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500/50"></div>
+                </div>
+            </div>
+            
+            <div class="flex-1 relative bg-[#1e1e1e]">
+                <textarea id="code-editor" spellcheck="false" placeholder="* Écrivez votre code ABAP ici..."></textarea>
+            </div>
+
+            <div class="bg-[#1e1e1e] px-4 py-2 border-t border-slate-700 text-xs text-slate-500 flex justify-between">
+                <span>ABAP 7.5+ Environment</span>
+                <span id="line-counter">Lignes: 1</span>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Questions Database
+        const ABAP_QUESTIONS = [
+            {
+                title: "Déclaration de Variables",
+                description: "Déclarez une variable nommée 'lv_name' de type 'string' et assignez-lui la valeur 'ABAP Expert'. N'oubliez pas le point final (.)",
+                initialCode: "* Écrivez votre code ici\n",
+                solution: "DATA lv_name TYPE string.\nlv_name = 'ABAP Expert'.",
+                validationRegex: /DATA\s+lv_name\s+TYPE\s+string\s*\.\s*lv_name\s*=\s*'ABAP Expert'\s*\./i
+            },
+            {
+                title: "Table Interne Standard",
+                description: "Créez une table interne 'lt_users' avec une structure contenant 'id' (type i) et 'name' (type string).",
+                initialCode: "TYPES: BEGIN OF ty_user,\n         id TYPE i,\n         name TYPE string,\n       END OF ty_user.\n\n* Déclarez la table interne ici",
+                solution: "DATA lt_users TYPE STANDARD TABLE OF ty_user.",
+                validationRegex: /DATA\s+lt_users\s+TYPE\s+STANDARD\s+TABLE\s+OF\s+ty_user\s*\./i
+            },
+            {
+                title: "Logique Conditionnelle",
+                description: "Écrivez un IF qui vérifie si 'lv_score' est > 50. Si oui, mettez 'lv_status' à 'Pass'.",
+                initialCode: "DATA: lv_score TYPE i VALUE 75,\n      lv_status TYPE string.\n\n* Écrivez le IF ici",
+                solution: "IF lv_score > 50.\n  lv_status = 'Pass'.\nENDIF.",
+                validationRegex: /IF\s+lv_score\s*>\s*50\s*\.\s*lv_status\s*=\s*'Pass'\s*\.\s*ENDIF\s*\./i
+            },
+            {
+                title: "Instruction SELECT",
+                description: "Sélectionnez tout de la table 'MARA' vers 'lt_mara' pour le 'MATNR' = '001'.",
+                initialCode: "DATA lt_mara TYPE TABLE OF mara.\n\n* Écrivez le SELECT ici",
+                solution: "SELECT * FROM mara INTO TABLE lt_mara WHERE matnr = '001'.",
+                validationRegex: /SELECT\s+\*\s+FROM\s+mara\s+INTO\s+TABLE\s+lt_mara\s+WHERE\s+matnr\s*=\s*'001'\s*\./i
+            }
+        ];
+
+        let currentIndex = 0;
+        let score = 0;
+
+        // Elements
+        const editor = document.getElementById('code-editor');
+        const feedbackArea = document.getElementById('feedback-area');
+        const feedbackText = document.getElementById('feedback-text');
+        const feedbackIcon = document.getElementById('feedback-icon');
+        const solutionArea = document.getElementById('solution-area');
+        const solutionCode = document.getElementById('solution-code');
+        const scoreDisplay = document.getElementById('score-display');
+        const nextBtn = document.getElementById('next-btn');
+        const lineCounter = document.getElementById('line-counter');
+
+        function loadQuestion() {
+            const q = ABAP_QUESTIONS[currentIndex];
+            document.getElementById('question-index-tag').innerText = `EXERCICE ${currentIndex + 1}/${ABAP_QUESTIONS.length}`;
+            document.getElementById('question-title').innerText = q.title;
+            document.getElementById('question-desc').innerText = q.description;
+            editor.value = q.initialCode;
+            solutionCode.innerText = q.solution;
+            
+            // Reset UI
+            feedbackArea.classList.add('hidden');
+            solutionArea.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            updateLineCount();
+        }
+
+        function checkCode() {
+            const q = ABAP_QUESTIONS[currentIndex];
+            const userCode = editor.value.trim();
+            const isValid = q.validationRegex.test(userCode);
+
+            feedbackArea.classList.remove('hidden', 'success-bg', 'error-bg', 'info-bg');
+            
+            if (isValid) {
+                feedbackArea.classList.add('success-bg');
+                feedbackText.innerText = "Correct ! Excellent travail.";
+                feedbackIcon.className = "fas fa-check-circle mt-1";
+                score += 10;
+                scoreDisplay.innerText = score;
+                nextBtn.classList.remove('hidden');
+            } else {
+                feedbackArea.classList.add('error-bg');
+                feedbackText.innerText = "Erreur ! Vérifiez la syntaxe et les points finaux (.)";
+                feedbackIcon.className = "fas fa-times-circle mt-1";
+            }
+        }
+
+        function showSolutionToggle() {
+            solutionArea.classList.toggle('hidden');
+            if (!solutionArea.classList.contains('hidden')) {
+                feedbackArea.classList.remove('hidden', 'success-bg', 'error-bg');
+                feedbackArea.classList.add('info-bg');
+                feedbackText.innerText = "Voici la solution pour vous aider.";
+                feedbackIcon.className = "fas fa-lightbulb mt-1";
+            }
+        }
+
+        function nextQuestion() {
+            if (currentIndex < ABAP_QUESTIONS.length - 1) {
+                currentIndex++;
+                loadQuestion();
+            } else {
+                alert("Félicitations ! Vous avez terminé tous les exercices.");
+            }
+        }
+
+        function updateLineCount() {
+            const lines = editor.value.split('\n').length;
+            lineCounter.innerText = `Lignes: ${lines}`;
+        }
+
+        editor.addEventListener('input', updateLineCount);
+
+        // Initial Load
+        window.onload = loadQuestion;
+    </script>
+</body>
+</html>
